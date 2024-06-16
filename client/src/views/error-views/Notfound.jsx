@@ -9,7 +9,10 @@ export default function Notfound() {
       <section className="flex h-screen items-center justify-center text-center">
         <Row justify="center">
           <Col sm={24} md={12}>
-            <img src={imageNotfound} className="m-auto h-48 md:h-56 lg:h-60 xl:h-72" />
+            <img
+              src={imageNotfound}
+              className="m-auto h-48 md:h-56 lg:h-60 xl:h-72"
+            />
           </Col>
           <Col span={24}>
             <div className="mt-7">
@@ -18,7 +21,11 @@ export default function Notfound() {
                 Link halaman yang anda tuju tidak ditemukan di server ini.
               </p>
               <Link to="/">
-                <Button id="btn-error-notfound" type="primary" className="h-[50px] px-10 font-medium">
+                <Button
+                  id="btn-error-notfound"
+                  type="primary"
+                  className="h-[50px] px-10 font-medium"
+                >
                   Kembali ke halaman utama
                 </Button>
               </Link>
