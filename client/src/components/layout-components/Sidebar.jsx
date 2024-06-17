@@ -55,40 +55,40 @@ export default function Sidebar() {
     getItem(
       "Dashboard",
       "dashboard",
-      <Link to="/sidebar" className="p-2">
+      <Link to="/dashboard" className="p-2">
         <TfiDashboard className={iconStyle} id="dashboard-icon-sidebar" />
       </Link>,
     ),
     getItem(
-      "Janji Temu",
+      "Absensi",
       "janji",
       <Link to="/janji-temu" className="p-2">
         <MdOutlinePeopleAlt className={iconStyle} id="dashboard-icon-sidebar" />
       </Link>,
     ),
     getItem(
-      "Jadwal Saya",
+      "Cuti",
       "jadwal",
       <Link to="/jadwal-saya" className="p-2">
         <AiOutlineSchedule className={iconStyle} id="janji-temu-icon-sidebar" />
       </Link>,
     ),
     getItem(
-      "Artikel",
+      "Mutasi",
       "artikel",
       <Link to="/artikel-saya" className="p-2">
         <HiOutlineNewspaper className={iconStyle} id="artikel-icon-sidebar" />
       </Link>,
     ),
     getItem(
-      "Forum",
+      "Penugasan",
       "forum",
       <Link to="/forum" className="p-2">
         <PiWechatLogoBold className={iconStyle} id="forum-icon-sidebar" />
       </Link>,
     ),
     getItem(
-      "Profil",
+      "Reward & Punishment",
       "profil",
       <Link to="/profil" className="p-2">
         <CgProfile className={iconStyle} id="profile-icon-sidebar" />
