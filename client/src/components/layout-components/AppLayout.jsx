@@ -1,6 +1,7 @@
-import { Layout } from "antd";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import { Layout } from "antd";
+import { Outlet } from "react-router-dom";
 
 export default function AppLayout() {
   return (
@@ -9,7 +10,16 @@ export default function AppLayout() {
       <Topbar />
       <main className="flex">
         <Sidebar />
+        <Content />
       </main>
     </Layout>
+  );
+}
+
+function Content() {
+  return (
+    <section className="w-full overflow-x-hidden px-5">
+      <Outlet />
+    </section>
   );
 }
