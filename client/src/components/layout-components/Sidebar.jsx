@@ -6,10 +6,11 @@ import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { TfiDashboard } from "react-icons/tfi";
 import { HiOutlineNewspaper } from "react-icons/hi";
-import { PiWechatLogoBold } from "react-icons/pi";
 import { CgProfile } from "react-icons/cg";
 import { IoIosLogOut } from "react-icons/io";
-import { MdOutlinePeopleAlt } from "react-icons/md";
+import { MdOutlineAssignment, MdOutlinePeopleAlt } from "react-icons/md";
+import { BsPersonVcard } from "react-icons/bs";
+import { PiTipJar } from "react-icons/pi";
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(true);
@@ -50,6 +51,7 @@ export default function Sidebar() {
         margin: "20px 0",
         border: "none",
         borderTop: "2px solid #e8e8e8",
+        // display: collapsed ? "block" : "none",
       },
     },
     getItem(
@@ -60,38 +62,55 @@ export default function Sidebar() {
       </Link>,
     ),
     getItem(
+      "Rekrutmen",
+      "rekrut",
+      <Link to="/rekrutmen" className="p-2">
+        <BsPersonVcard className={iconStyle} id="rekrutmen-icon-sidebar" />
+      </Link>,
+    ),
+    getItem(
       "Absensi",
       "janji",
       <Link to="/janji-temu" className="p-2">
-        <MdOutlinePeopleAlt className={iconStyle} id="dashboard-icon-sidebar" />
+        <MdOutlinePeopleAlt className={iconStyle} id="absensi-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Cuti",
       "jadwal",
       <Link to="/jadwal-saya" className="p-2">
-        <AiOutlineSchedule className={iconStyle} id="janji-temu-icon-sidebar" />
+        <AiOutlineSchedule className={iconStyle} id="cuti-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Mutasi",
       "artikel",
       <Link to="/artikel-saya" className="p-2">
-        <HiOutlineNewspaper className={iconStyle} id="artikel-icon-sidebar" />
+        <HiOutlineNewspaper className={iconStyle} id="mutasi-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Penugasan",
       "forum",
       <Link to="/forum" className="p-2">
-        <PiWechatLogoBold className={iconStyle} id="forum-icon-sidebar" />
+        <MdOutlineAssignment
+          className={iconStyle}
+          id="penugasan-icon-sidebar"
+        />
       </Link>,
     ),
     getItem(
       "Reward & Punishment",
       "profil",
+      <Link to="/reward" className="p-2">
+        <PiTipJar className={iconStyle} id="reward-icon-sidebar" />
+      </Link>,
+    ),
+    getItem(
+      "Profile",
+      "profil",
       <Link to="/profil" className="p-2">
-        <CgProfile className={iconStyle} id="profile-icon-sidebar" />
+        <CgProfile className={iconStyle} id="reward-icon-sidebar" />
       </Link>,
     ),
     {
@@ -139,7 +158,7 @@ export default function Sidebar() {
         }}
       >
         <Menu
-          className={`relative flex h-[calc(100vh-75.91px)] min-h-[500px] max-w-[256px] flex-col space-y-5 pt-5 font-medium text-grey-200 transition-all duration-700 ease-out sm:max-md:h-[calc(100vh-82.6px)] ${
+          className={`relative flex h-[calc(100vh-75.91px)] min-h-[500px] max-w-[256px] flex-col space-y-4 pt-5 font-medium text-grey-200 transition-all duration-700 ease-out sm:max-md:h-[calc(100vh-82.6px)] ${
             collapsed ? "px-2" : "px-8"
           }`}
           defaultSelectedKeys={[selectedKeys]}

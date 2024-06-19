@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { ConfigProvider, Drawer, Menu, Space } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import { BsList } from "react-icons/bs";
+import { BsList, BsPersonVcard } from "react-icons/bs";
 import { TfiDashboard } from "react-icons/tfi";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { HiOutlineNewspaper } from "react-icons/hi";
-import { PiWechatLogoBold } from "react-icons/pi";
+import { PiTipJar } from "react-icons/pi";
 import { CgProfile } from "react-icons/cg";
-import { MdOutlinePeopleAlt } from "react-icons/md";
+import { MdOutlineAssignment, MdOutlinePeopleAlt } from "react-icons/md";
 
-import logoTopbar from "@/assets/company-logo.jpg";
+import logoTopbar from "@/assets/react.svg";
 
 export default function DrawerSidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,38 +31,55 @@ export default function DrawerSidebar() {
       </Link>,
     ),
     getItem(
+      "Rekrutmen",
+      "rekrut",
+      <Link to="/rekrutmen" className="p-2">
+        <BsPersonVcard className={iconStyle} id="rekrutmen-icon-sidebar" />
+      </Link>,
+    ),
+    getItem(
       "Absensi",
       "janji",
       <Link to="/janji-temu" className="p-2">
-        <MdOutlinePeopleAlt className={iconStyle} id="dashboard-icon-sidebar" />
+        <MdOutlinePeopleAlt className={iconStyle} id="absensi-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Cuti",
       "jadwal",
       <Link to="/jadwal-saya" className="p-2">
-        <AiOutlineSchedule className={iconStyle} id="janji-temu-icon-sidebar" />
+        <AiOutlineSchedule className={iconStyle} id="cuti-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Mutasi",
       "artikel",
       <Link to="/artikel-saya" className="p-2">
-        <HiOutlineNewspaper className={iconStyle} id="artikel-icon-sidebar" />
+        <HiOutlineNewspaper className={iconStyle} id="mutasi-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Penugasan",
       "forum",
       <Link to="/forum" className="p-2">
-        <PiWechatLogoBold className={iconStyle} id="forum-icon-sidebar" />
+        <MdOutlineAssignment
+          className={iconStyle}
+          id="penugasan-icon-sidebar"
+        />
       </Link>,
     ),
     getItem(
       "Reward & Punishment",
       "profil",
+      <Link to="/reward" className="p-2">
+        <PiTipJar className={iconStyle} id="reward-icon-sidebar" />
+      </Link>,
+    ),
+    getItem(
+      "Profile",
+      "profil",
       <Link to="/profil" className="p-2">
-        <CgProfile className={iconStyle} id="profile-icon-sidebar" />
+        <CgProfile className={iconStyle} id="reward-icon-sidebar" />
       </Link>,
     ),
   ];
