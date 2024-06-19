@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { IoNotificationsOutline } from "react-icons/io5";
-import { PiRobot } from "react-icons/pi";
+// import { PiRobot } from "react-icons/pi";
 
 import anonymousPict from "@/assets/anonymous profile.jpg";
 import logoTopbar from "@/assets/react.svg";
@@ -26,14 +26,14 @@ export default function Topbar() {
         </div>
 
         <div id="profile-doctor-topbar" className="flex items-center gap-3">
-          <div
+          {/* <div
             id="bot-icon-topbar"
             className="flex items-center justify-center text-xl md:text-2xl"
           >
             <Link to="/asisten-dokter" className="hover:text-green-500">
               <PiRobot />
             </Link>
-          </div>
+          </div> */}
           <div id="notification-icon-topbar" className="text-xl md:text-2xl">
             <Link to="/notifikasi" className="hover:text-green-500">
               <IoNotificationsOutline />
