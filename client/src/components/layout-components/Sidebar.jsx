@@ -1,5 +1,5 @@
-import { ConfigProvider, Menu } from "antd";
 import { useState } from "react";
+import { ConfigProvider, Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
 
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
@@ -12,11 +12,22 @@ import { MdOutlineAssignment, MdOutlinePeopleAlt } from "react-icons/md";
 import { BsPersonVcard } from "react-icons/bs";
 import { PiTipJar } from "react-icons/pi";
 
+import { LogoutModal } from "@/components/layout-components/LogoutModal";
+
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(true);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const location = useLocation();
   const regex = /([a-zA-Z]+)/;
   const selectedKeys = location.pathname.match(regex)[0];
+
+  const openLogoutModal = () => {
+    setShowLogoutModal(true);
+  };
+
+  const closeLogoutModal = () => {
+    setShowLogoutModal(false);
+  };
 
   const toggleCollapsed = () => {
     setCollapsed((prev) => !prev);
@@ -126,7 +137,7 @@ export default function Sidebar() {
         <div
           id="logout-button"
           className={`${collapsed ? "-ml-8 px-8" : "-ml-6 py-3 pl-6 pr-16"}`}
-          //   onClick={openLogoutModal}
+          onClick={openLogoutModal}
         >
           {collapsed ? (
             <IoIosLogOut className="-ml-1 mt-2.5 h-5 w-5" id="logout-icon" />
@@ -168,6 +179,8 @@ export default function Sidebar() {
           items={items}
         ></Menu>
       </ConfigProvider>
+      {/* Logout Modal */}
+      {showLogoutModal && <LogoutModal closeModal={closeLogoutModal} />}
     </div>
   );
 }
