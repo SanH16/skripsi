@@ -11,9 +11,9 @@ export default function Rekrutmen() {
             <h3 className="font-bold">Lowongan Kerja</h3>
           </Col>
           <Col>
-            <Link to="/unggah-artikel">
+            <Link to="/upload-rekrutmen">
               <Button
-                id="write-article"
+                id="write-rekrutmen"
                 type="primary"
                 className="flex bg-green-500"
               >
