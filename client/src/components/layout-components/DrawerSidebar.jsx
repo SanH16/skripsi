@@ -10,15 +10,42 @@ import { CgProfile } from "react-icons/cg";
 import { MdOutlineAssignment, MdOutlinePeopleAlt } from "react-icons/md";
 
 import logoTopbar from "@/assets/react.svg";
+import { IoIosLogOut } from "react-icons/io";
+import { LogoutModal } from "@/components/layout-components/LogoutModal";
 
 export default function DrawerSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isShow, setIsShow] = useState(false);
   const location = useLocation();
   const regex = /([a-zA-Z]+)/;
   const selectedKeys = location.pathname.match(regex)[0];
 
   const handleOpen = () => {
     setIsOpen((prev) => !prev);
+  };
+
+  const handleOpenModal = () => {
+    setIsShow((prev) => !prev);
+  };
+
+  const LogoutItem = () => {
+    return (
+      <div className="flex justify-center px-4">
+        <button
+          id="logout-button-drawer"
+          className="flex w-full flex-row rounded-lg py-[0.6rem] text-sm text-negative hover:bg-negative hover:text-white"
+          onClick={handleOpenModal}
+        >
+          <span className="ms-4">
+            <IoIosLogOut
+              className="me-2 text-xl font-semibold"
+              id="logout-icon"
+            />
+          </span>
+          Keluar
+        </button>
+      </div>
+    );
   };
 
   const iconStyle = "text-xl";
@@ -108,7 +135,7 @@ export default function DrawerSidebar() {
           closable={true}
           onClose={handleOpen}
           open={isOpen}
-          // footer={<LogoutItem />}
+          footer={<LogoutItem />}
         >
           <Menu
             className="flex flex-col gap-1 border-0"
@@ -119,6 +146,8 @@ export default function DrawerSidebar() {
           ></Menu>
         </Drawer>
       </ConfigProvider>
+      {/* Logout Modal */}
+      {isShow && <LogoutModal closeModal={handleOpenModal} />}
     </>
   );
 }
