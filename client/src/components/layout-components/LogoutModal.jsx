@@ -59,7 +59,7 @@ export function LogoutModal({ closeModal }) {
           className="my-4 h-10 w-10"
         />
         <p id="doctor-name" className="mt-2 text-xl font-semibold">
-          Halo, Username!
+          Halo, User name!
         </p>
 
         <p
