@@ -40,4 +40,13 @@ export const ListLowongan = [
     author: "Widya",
     date: "24 juni 2024",
   },
+  {
+    image: jobVaca2,
+    image_desc: "Thumbnail Lowongan",
+    tags: "Officers",
+    title: "Dibutuhkan segera Sales Penjualan untuk semua lulusan",
+    ava: logoAva,
+    author: "Kirani",
+    date: "24 juni 2024",
+  },
 ];
