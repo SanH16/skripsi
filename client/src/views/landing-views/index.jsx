@@ -1,13 +1,25 @@
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
-import { DataHeroSection } from "@/views/landing-views/constant/home-page";
+import {
+  DataHeroSection,
+  DataAboutSection,
+} from "@/views/landing-views/constant/home-page";
+
+import { ButtonAppStore } from "@/components/shared-components/ButtonAppStore";
+import { ButtonGooglePlay } from "@/components/shared-components/ButtonGooglePlay";
 
 import contentImg from "@/assets/content-pages.png";
+import handPhone from "@/assets/handphone.png";
 
 export default function LandingPage() {
   useDocumentTitle("Simpeg");
   useScrollToTop();
-  return <HeroSection />;
+  return (
+    <>
+      <HeroSection />
+      <AboutSection />
+    </>
+  );
 }
 
 function HeroSection() {
@@ -36,8 +48,8 @@ function HeroSection() {
             </p>
           </div>
           <div id="hero-button" className="mt-14 flex gap-2 md:gap-10">
-            {/* <ButtonAppStore />
-            <ButtonGooglePlay /> */}
+            <ButtonAppStore />
+            <ButtonGooglePlay />
           </div>
         </div>
         <div className="static">
@@ -51,5 +63,30 @@ function HeroSection() {
         </div>
       </div>
     </header>
+  );
+}
+
+function AboutSection() {
+  const aboutSection = DataAboutSection;
+  return (
+    <section
+      id="tentang-kami"
+      className="h-auto bg-green-50 p-2 py-14 sm:px-12 md:relative lg:px-[5.5rem] xl:px-32 2xl:px-[10.5rem]"
+    >
+      <div className="absolute hidden h-[21.9rem] w-[24rem] lg:bottom-0 lg:left-16 lg:block">
+        <img src={handPhone} alt="handphone" />
+      </div>
+      <div className="lg:ms-[20rem] lg:mt-10 lg:text-justify">
+        <h2 id="about-title" className="text-2xl text-green-900 sm:text-4xl">
+          {aboutSection.title}
+        </h2>
+        <p
+          id="about-description"
+          className="mt-5 py-2 text-sm font-medium text-grey-400 sm:text-base"
+        >
+          {aboutSection.description}
+        </p>
+      </div>
+    </section>
   );
 }
