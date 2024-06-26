@@ -72,10 +72,10 @@ export function Navbar() {
           <li className="md:text-md mt-6 text-sm hover:bg-green-50 md:my-0 md:hover:bg-transparent">
             <a
               id="link-service-navbar"
-              href="/#layanan"
+              href="/#lowongan-lists-page"
               className="ms-16 duration-200 hover:text-green-500 md:ms-0"
             >
-              Layanan
+              Lowongan
             </a>
           </li>
           <li className="md:text-md mt-6 text-sm hover:bg-green-50 md:my-0 md:hover:bg-transparent">

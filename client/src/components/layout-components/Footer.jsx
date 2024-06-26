@@ -39,7 +39,7 @@ export function Footer() {
                 </div>
                 <div id="instagram-icon" className="icon-footer">
                   <Link
-                    to="https://instagram.com/"
+                    to="https://instagram.com/radenmatputratunggal/"
                     target="_blank"
                     className="hover:text-green-200"
                   >
@@ -48,7 +48,7 @@ export function Footer() {
                 </div>
                 <div id="youtube-icon" className="icon-footer">
                   <Link
-                    to="https://youtube.com/"
+                    to="https://youtube.com/@adhityasan16/"
                     target="_blank"
                     className="hover:text-green-200"
                   >
@@ -78,9 +78,9 @@ export function Footer() {
                   Tentang Kami
                 </p>
               </a>
-              <a href="/#layanan" id="link-to-service">
+              <a href="/#lowongan-lists-page" id="link-to-service">
                 <p className="mb-1 cursor-pointer hover:text-green-100">
-                  Layanan
+                  Lowongan
                 </p>
               </a>
               <a href="/#manfaat" id="link-to-benefit">
