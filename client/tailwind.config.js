@@ -49,7 +49,7 @@ export default {
       // "vector-header-2": 'url("./assets/vector-2.png")',
       // "ellipse-header": 'url("./assets/ellipse.svg")',
       // "doctor-header": 'url("./assets/doctor.svg")',
-      // "error-timeout": 'url("./assets/error-timeout.png")',
+      "error-timeout": 'url("./assets/error-timeout.png")',
       "error-notfound": 'url("./assets/notfound.svg")',
     },
   },
