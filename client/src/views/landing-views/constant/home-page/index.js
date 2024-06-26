@@ -12,7 +12,7 @@ export const DataHeroSection = {
 export const DataAboutSection = {
   title: "Tentang Radenmat",
   description:
-    "ReproHealth berkomitmen untuk memberikan akses mudah, informasi terpercaya, dan layanan yang nyaman kepada penggunanya. Dengan fitur forum diskusi, janji temu dengan dokter, dan artikel kesehatan reproduksi, ReproHealth membantu mengatasi setiap permasalahan reproduksi dan meningkatkan pemahaman tentang kesehatan reproduksi. Kami adalah mitra kesehatan reproduksi yang setia, siap mendukung pengguna dalam perjalanan mereka menuju kesehatan reproduksi yang optimal.",
+    "Radenmat Putra Tunggal berawal dari usaha perorangan yang didirikan pada tahun 1970 dengan modal terbatas. Dimulai dari usaha rumahan kecil, dengan ketekunan dan kegigihan, Radenmat Putra Tunggal terus berkembang dan 2 meningkatkan kualitas produksinya. Hal ini dilakukan dengan memperbarui cara kerja dan alat produksi dengan mesin yang lebih modern mengikuti perkembangan dunia usaha. Pada tahun 2015 usaha perorangan ini resmi berubah menjadi perseroan terbatas dengan nama PT Radenmat Putra Tunggal. Saat ini, perusahaan tidak hanya fokus pada jasa pembuatan seragam sekolah, tetapi juga menerima berbagai jenis jahitan sesuai dengan permintaan konsumen. PT Radenmat Putra Tunggal bergerak di bidang manufaktur dan pengadaan seragam sekolah di Sumatera Selatan. PT Radenmat Putra Tunggal memiliki total karyawan sejumlah 25 orang. Perusahaan ini menawarkan jasa pembuatan baju atau pakaian seragam sekolah dengan kualitas terbaik.",
 };
 
 export const DataServiceSection = {
