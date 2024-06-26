@@ -3,6 +3,7 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 import {
   DataHeroSection,
   DataAboutSection,
+  DataServiceSection,
 } from "@/views/landing-views/constant/home-page";
 
 import { ButtonAppStore } from "@/components/shared-components/ButtonAppStore";
@@ -10,6 +11,7 @@ import { ButtonGooglePlay } from "@/components/shared-components/ButtonGooglePla
 
 import contentImg from "@/assets/content-pages.png";
 import handPhone from "@/assets/handphone.png";
+import { ListingLowongan } from "../../components/shared-components/ListingLowongan";
 
 export default function LandingPage() {
   useDocumentTitle("Simpeg");
@@ -18,6 +20,7 @@ export default function LandingPage() {
     <>
       <HeroSection />
       <AboutSection />
+      <LowonganListsPage />
     </>
   );
 }
@@ -68,6 +71,7 @@ function HeroSection() {
 
 function AboutSection() {
   const aboutSection = DataAboutSection;
+
   return (
     <section
       id="tentang-kami"
@@ -88,5 +92,27 @@ function AboutSection() {
         </p>
       </div>
     </section>
+  );
+}
+
+function LowonganListsPage() {
+  const serviceLists = DataServiceSection;
+
+  return (
+    <>
+      <section
+        id="lowongan-lists-page"
+        className="h-auto bg-grey-10 p-2 py-8 sm:px-12 lg:px-[5.5rem] xl:px-32 2xl:px-[10.5rem]"
+      >
+        <h2
+          id="services-title"
+          className="my-5 mb-[2.5rem] text-center text-2xl text-green-900 md:text-4xl"
+        >
+          {serviceLists.title}
+        </h2>
+
+        <ListingLowongan />
+      </section>
+    </>
   );
 }

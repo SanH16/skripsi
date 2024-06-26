@@ -16,7 +16,7 @@ export const DataAboutSection = {
 };
 
 export const DataServiceSection = {
-  title: "Pelayanan Kesehatan Untukmu",
+  title: "Informasi Lowongan Untukmu",
   content: [
     {
       id: 1,
