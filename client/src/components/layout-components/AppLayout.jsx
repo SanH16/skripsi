@@ -3,7 +3,7 @@ import Topbar from "./Topbar";
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 
-export default function AppLayout() {
+export function AppLayout() {
   return (
     <Layout className="bg-white">
       <div className="text-red-800"></div>
