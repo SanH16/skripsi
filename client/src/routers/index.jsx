@@ -4,11 +4,14 @@ import LandingPage from "@/views/landing-views";
 import Rekrutmen from "@/views/app-views/rekrutmen";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "@/views/app-views/dashboard";
+import PublicRoute from "./PublicRoute";
 
 export default function SetupRoutes() {
   return (
     <Routes>
-      <Route index element={<LandingPage />} />
+      <Route path="/" element={<PublicRoute />}>
+        <Route index element={<LandingPage />} />
+      </Route>
       <Route path="/" element={<PrivateRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/rekrutmen" element={<Rekrutmen />} />
