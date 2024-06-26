@@ -1,5 +1,5 @@
 import { MdOutlineWifiOff } from "react-icons/md";
-import useDocumentTitle from "@/hooks/useDocumentTitle";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export default function Timeout() {
   useDocumentTitle("Error");
