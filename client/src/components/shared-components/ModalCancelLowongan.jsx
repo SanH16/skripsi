@@ -25,7 +25,7 @@ export function ModalCancelLowongan({ closeModal }) {
               border: "transparent",
             }}
           >
-            <Link to="/artikel-saya">Ya, Saya Yakin</Link>
+            <Link to="/rekrutmen">Ya, Saya Yakin</Link>
           </Button>
           <Button
             id="button-article-cancel"
