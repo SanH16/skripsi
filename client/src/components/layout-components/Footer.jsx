@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FaFacebookF, FaTwitter, FaYoutube } from "react-icons/fa";
 import { AiFillInstagram } from "react-icons/ai";
 
-import logoFooter from "@/assets/react.svg";
+import logoFooter from "@/assets/logo-radenmat-white.png";
 export function Footer() {
   return (
     <>
@@ -15,7 +15,7 @@ export function Footer() {
           <Col className="gutter-row" span={8} xs={24} md={8} lg={7}>
             <div>
               <Link id="logo-footer" to="/">
-                <img src={logoFooter} alt="" />
+                <img src={logoFooter} alt="" className="h-[100px]" />
               </Link>
               <p className="my-3 pt-5 font-semibold">Sosial Media</p>
               <div className="flex gap-3">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import logoNavbar from "@/assets/react.svg";
+import logoNavbar from "@/assets/logo-radenmat-poppins.png";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
 import { IoCloseSharp } from "react-icons/io5";
@@ -25,7 +25,7 @@ export function Navbar() {
               id="logo-reprohealth-navbar"
               src={logoNavbar}
               alt="logo"
-              className="h-[50px] w-32 cursor-pointer sm:w-44 md:w-52"
+              className="h-auto w-32 cursor-pointer sm:w-44 md:w-52"
             />
           </Link>
         </div>
