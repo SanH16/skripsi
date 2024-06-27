@@ -81,6 +81,6 @@ export const DataBenefitLists = {
 };
 
 export const DataCtaDoctor = {
-  title: "Ingin bergabung sebagai dokter?",
-  subs: "Kesempatan bergabung dengan Tim ReproHealth",
+  title: "Ingin bergabung bersama kami?",
+  subs: "Kesempatan bergabung dengan Tim Radenmat",
 };
