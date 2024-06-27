@@ -4,6 +4,7 @@ import {
   DataHeroSection,
   DataAboutSection,
   DataServiceSection,
+  DataCtaDoctor,
 } from "@/views/landing-views/constant/home-page";
 
 import { ButtonAppStore } from "@/components/shared-components/ButtonAppStore";
@@ -11,7 +12,11 @@ import { ButtonGooglePlay } from "@/components/shared-components/ButtonGooglePla
 
 import contentImg from "@/assets/content-pages.png";
 import handPhone from "@/assets/handphone.png";
-import { ListingLowongan } from "../../components/shared-components/ListingLowongan";
+import { ListingLowongan } from "@/components/shared-components/ListingLowongan";
+import { Button } from "antd";
+import { FaArrowRight } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { BannerDownload } from "@/components/shared-components/BannerDownload";
 
 export default function LandingPage() {
   useDocumentTitle("Simpeg");
@@ -21,6 +26,8 @@ export default function LandingPage() {
       <HeroSection />
       <AboutSection />
       <LowonganListsPage />
+      <DownloadSection />
+      <JoinSection />
     </>
   );
 }
@@ -33,7 +40,7 @@ function HeroSection() {
       id="hero-section"
       className="relative h-[59rem] bg-green-50 pt-8 md:h-[68rem] lg:h-[45rem]"
     >
-      <div className="bg-vector-header absolute h-[38rem] w-full bg-repeat-x"></div>
+      <div className="absolute h-[38rem] w-full bg-vector-header bg-repeat-x"></div>
       <div className="static grid h-[34.6rem] grid-cols-1 px-2 sm:px-16 lg:grid-cols-2 lg:px-[5.5rem] xl:px-32 2xl:px-[10.5rem]">
         <div className="z-10 pt-5 md:w-[40rem] md:pt-20">
           <h3 id="hero-title" className="text-green-500">
@@ -56,8 +63,8 @@ function HeroSection() {
           </div>
         </div>
         <div className="static">
-          <div className="bg-ellipse-header absolute -bottom-0 right-0 h-[20rem] w-[40rem] md:h-[30rem] md:w-[44rem]"></div>
-          <div className="bg-content-header hidden h-[38rem] w-[36rem] sm:absolute sm:-bottom-0 sm:right-0 sm:block md:-bottom-0 md:right-24 lg:absolute lg:right-14"></div>
+          <div className="absolute -bottom-0 right-0 h-[20rem] w-[40rem] bg-ellipse-header md:h-[30rem] md:w-[44rem]"></div>
+          <div className="hidden h-[38rem] w-[36rem] bg-content-header sm:absolute sm:-bottom-0 sm:right-0 sm:block md:-bottom-0 md:right-24 lg:absolute lg:right-14"></div>
           <img
             src={contentImg}
             alt="content"
@@ -114,5 +121,55 @@ function LowonganListsPage() {
         <ListingLowongan />
       </section>
     </>
+  );
+}
+
+function DownloadSection() {
+  return (
+    <section className="my-5 h-auto p-2 py-8 sm:px-12 md:relative lg:px-[5.5rem] xl:px-36 2xl:px-[10.5rem]">
+      <BannerDownload />
+    </section>
+  );
+}
+
+function JoinSection() {
+  const JoinSection = DataCtaDoctor;
+  return (
+    <section
+      id="cta-doctor"
+      className="base-container h-auto w-auto bg-green-100"
+    >
+      <div className="py-[3.25rem] md:text-center">
+        <h2 id="cta-doctor-title" className="text-green-900">
+          {JoinSection.title}
+        </h2>
+        <p
+          id="cta-doctor-description"
+          className="mt-1 text-sm md:text-base lg:text-lg xl:text-xl"
+        >
+          {JoinSection.subs}
+        </p>
+        <div className="mt-6 flex text-white md:justify-center">
+          <Link id="link-cta-doctor" to="/bergabung-sebagai-dokter">
+            <ButtonCtaJoin />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ButtonCtaJoin() {
+  return (
+    <Button
+      id="button-cta-doctor"
+      type="primary"
+      className="flex items-center px-8 py-6 text-base font-semibold"
+    >
+      Pelajari Lebih Lanjut
+      <span className="ms-2 text-base text-white">
+        <FaArrowRight />
+      </span>
+    </Button>
   );
 }
