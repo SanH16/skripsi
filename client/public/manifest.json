@@ -1,0 +1,21 @@
+{
+  "name": "Simpeg",
+  "short_name": "Simpeg",
+  "description": "Partner Terpercaya untuk Kualitas Seragam Anda",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff",
+  "theme_color": "#17c6a3",
+  "icons": [
+    {
+      "src": "logo-radenmat-kecil.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "logo-radenmat-white.png",
+      "sizes": "539x165",
+      "type": "image/png"
+    }
+  ]
+}
