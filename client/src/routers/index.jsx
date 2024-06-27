@@ -5,6 +5,7 @@ import Rekrutmen from "@/views/app-views/rekrutmen";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "@/views/app-views/dashboard";
 import PublicRoute from "./PublicRoute";
+import UploadLowongan from "@/views/app-views/rekrutmen/misc/UploadLowongan";
 
 export default function SetupRoutes() {
   return (
@@ -15,6 +16,7 @@ export default function SetupRoutes() {
       <Route path="/" element={<PrivateRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/rekrutmen" element={<Rekrutmen />} />
+        <Route path="/unggah-lowongan" element={<UploadLowongan />} />
       </Route>
       <Route>
         <Route path="/404" element={<Notfound />} />
