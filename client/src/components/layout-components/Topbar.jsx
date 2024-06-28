@@ -3,7 +3,7 @@ import { IoNotificationsOutline } from "react-icons/io5";
 // import { PiRobot } from "react-icons/pi";
 
 import anonymousPict from "@/assets/anonymous profile.jpg";
-import logoTopbar from "@/assets/react.svg";
+import logoTopbar from "@/assets/logo-radenmat-poppins.png";
 import DrawerSidebar from "./DrawerSidebar";
 
 export default function Topbar() {
