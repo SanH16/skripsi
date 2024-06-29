@@ -18,14 +18,27 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { useState } from "react";
+// import axios from "axios";
 
 dayjs.locale("id");
 
 export function ListingLowongan() {
   const [currentPage, setCurrentPage] = useState(1);
+  // const [dataLowongan, setDataLowongan] = useState([]);
   const sizePage = 6;
-
   const path = window.location.pathname;
+
+  // useEffect(() => {
+  //   const fetchLowongan = async () => {
+  //     try {
+  //       const result = await axios.get("http://localhost:5000/rekrutmens");
+  //       setDataLowongan(result?.response.data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchLowongan();
+  // }, []);
 
   useScrollToTop();
 

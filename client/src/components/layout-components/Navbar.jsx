@@ -88,10 +88,7 @@ export function Navbar() {
             </a>
           </li>
           <li className="md:text-md ms-16 mt-6 text-sm text-grey-10 hover:bg-green-50 md:my-0 md:ms-0 md:hover:bg-transparent">
-            <Link
-              to="https://drive.google.com/drive/folders/1zPcloKV1jKKxmaKEVK9TiTCCvtEhG7QZ"
-              target="_blank"
-            >
+            <Link to="/login">
               <Button
                 id="download-app"
                 type="primary"

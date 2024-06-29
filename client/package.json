@@ -12,6 +12,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
     "antd": "^5.18.1",
+    "axios": "^1.7.2",
     "html-react-parser": "^5.1.10",
     "js-cookie": "^3.0.5",
     "react": "^18.2.0",
