@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   Card,
   Col,
   ConfigProvider,
@@ -23,6 +24,8 @@ dayjs.locale("id");
 export function ListingLowongan() {
   const [currentPage, setCurrentPage] = useState(1);
   const sizePage = 6;
+
+  const path = window.location.pathname;
 
   useScrollToTop();
 
@@ -55,13 +58,21 @@ export function ListingLowongan() {
                   </p>
 
                   <Flex gap="middle">
-                    <div className="self-center">
-                      <Avatar src={item.ava} />
-                    </div>
-                    <div>
-                      <h6 className="font-semibold">{item.author}</h6>
-                      <h6 className="text-grey-200">{item.date}</h6>
-                    </div>
+                    {path === "/" ? (
+                      <>
+                        <Button type="primary">Lamar</Button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="self-center">
+                          <Avatar src={item.ava} />
+                        </div>
+                        <div>
+                          <h6 className="font-semibold">{item.author}</h6>
+                          <h6 className="text-grey-200">{item.date}</h6>
+                        </div>
+                      </>
+                    )}
                   </Flex>
                 </Card>
               </Col>

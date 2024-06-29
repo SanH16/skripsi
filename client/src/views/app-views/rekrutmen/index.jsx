@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Row, Col, Button } from "antd";
 import { MdOutlineFileUpload } from "react-icons/md";
-import ListLowongan from "./components/ListLowongan";
+import { ListLowongan } from "./components/ListLowongan";
 
 export default function Rekrutmen() {
   return (
