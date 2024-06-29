@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   Card,
   Col,
   ConfigProvider,
@@ -24,6 +25,8 @@ export function ListingLowongan() {
   const [currentPage, setCurrentPage] = useState(1);
   const sizePage = 6;
 
+  const path = window.location.pathname;
+
   useScrollToTop();
 
   return (
@@ -33,7 +36,7 @@ export function ListingLowongan() {
           {dataLowongan
             .slice((currentPage - 1) * sizePage, currentPage * sizePage)
             .map((item, i) => (
-              <Col span={8} key={i}>
+              <Col span={8} key={i} xs={24} md={12} lg={8}>
                 <Card
                   hoverable
                   cover={
@@ -42,7 +45,7 @@ export function ListingLowongan() {
                         alt={item.image_desc}
                         src={item.image}
                         className="h-[200px] md:h-[190px] lg:h-[200px] xl:h-[250px]"
-                        preview={false}
+                        preview={true}
                         fallback={dataLowongan[0].image}
                       />
                     </>
@@ -55,13 +58,21 @@ export function ListingLowongan() {
                   </p>
 
                   <Flex gap="middle">
-                    <div className="self-center">
-                      <Avatar src={item.ava} />
-                    </div>
-                    <div>
-                      <h6 className="font-semibold">{item.author}</h6>
-                      <h6 className="text-grey-200">{item.date}</h6>
-                    </div>
+                    {path === "/" ? (
+                      <>
+                        <Button type="primary">Lamar</Button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="self-center">
+                          <Avatar src={item.ava} />
+                        </div>
+                        <div>
+                          <h6 className="font-semibold">{item.author}</h6>
+                          <h6 className="text-grey-200">{item.date}</h6>
+                        </div>
+                      </>
+                    )}
                   </Flex>
                 </Card>
               </Col>

@@ -34,8 +34,8 @@ export const ListLowongan = [
   {
     image: jobVaca3,
     image_desc: "Thumbnail Lowongan",
-    tags: "Operasional",
-    title: "Dibutuhkan segera Pemotong pakaian untuk semua lulusan",
+    tags: "Project Manager",
+    title: "Dibutuhkan segera Kepala Produksi untuk semua lulusan",
     ava: logoAva,
     author: "Widya",
     date: "24 juni 2024",
@@ -52,8 +52,8 @@ export const ListLowongan = [
   {
     image: jobVaca,
     image_desc: "Thumbnail Lowongan",
-    tags: "Officers",
-    title: "Dibutuhkan segera Sales Penjualan untuk semua lulusan",
+    tags: "IT Support",
+    title: "Dibutuhkan segera IT Support untuk semua lulusan",
     ava: logoAva,
     author: "Kirani",
     date: "24 juni 2024",
