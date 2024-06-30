@@ -12,6 +12,7 @@ export const Login = async (req, res) => {
   const match = await argon2.verify(user.password, req.body.password);
   if (!match) return res.status(400).json({ msg: "Wrong Password" });
   req.session.userId = user.uuid;
+  console.log("User logged in, session ID:", req.session.userId);
 
   const uuid = user.uuid;
   const name = user.name;
@@ -21,6 +22,7 @@ export const Login = async (req, res) => {
 };
 
 export const GetUserLogin = async (req, res) => {
+  console.log("GetUserLogin session data:", req.session);
   if (!req.session.userId) {
     return res.status(401).json({ msg: "Mohon login ke akun Anda!" });
   }
@@ -39,6 +41,7 @@ export const GetUserLogin = async (req, res) => {
 export const LogOut = (req, res) => {
   req.session.destroy((err) => {
     if (err) return res.status(400).json({ msg: "Tidak dapat logout" });
+    res.clearCookie("connect.sid");
     res.status(200).json({ msg: "Anda telah logout" });
   });
 };

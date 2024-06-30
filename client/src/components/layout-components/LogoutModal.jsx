@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { Button, Modal } from "antd";
 
+import { APIAuth } from "@/apis/APIauth";
 import logoutModalIcon from "@/assets/logout-modal-icon.svg";
+import { authService } from "@/configs/auth";
+import { useNavigate } from "react-router-dom";
 
 export function LogoutModal({ closeModal }) {
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const navigate = useNavigate();
 
   const handleOk = () => {
     setIsModalOpen(false);
-    // APIAuth.logout();
+    APIAuth.logout();
+    authService.clearSessionIdFromCookie();
+    navigate("/");
     closeModal();
   };
 
