@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { axiosInstance } from "@/configs/axiosInstance";
 import { authService } from "../configs/auth";
 
-export const APIAuth = {
+export const APIauth = {
   login: async (data) => {
     try {
       const result = await axiosInstance.post("/login", data);

@@ -7,7 +7,7 @@ import loginIllus from "@/assets/login-illustration.svg";
 
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { Link, useNavigate } from "react-router-dom";
-import { APIAuth } from "@/apis/APIauth";
+import { APIauth } from "@/apis/APIauth";
 import { showErrorToast } from "@/components/shared-components/Toast";
 
 export default function Login() {
@@ -27,7 +27,7 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await APIAuth.login(dataLogin);
+      const response = await APIauth.login(dataLogin);
       console.log("Success login", response);
       setIsLoading(false);
       navigate("/dashboard");
