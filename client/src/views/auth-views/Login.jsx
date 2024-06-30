@@ -6,7 +6,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import loginIllus from "@/assets/login-illustration.svg";
 
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { APIauth } from "@/apis/APIauth";
 import { showErrorToast } from "@/components/shared-components/Toast";
 
@@ -22,12 +22,23 @@ export default function Login() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const { search } = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    let returnTo = "/dashboard";
+    const params = new URLSearchParams(search);
+    const redirectTo = params.get("return_to");
+
     try {
       const response = await APIauth.login(dataLogin);
+      if (redirectTo) {
+        returnTo = `/${redirectTo}`;
+        return navigate(returnTo);
+      } else {
+        navigate(returnTo);
+      }
       console.log("Success login", response);
       setIsLoading(false);
       navigate("/dashboard");
@@ -39,7 +50,9 @@ export default function Login() {
         "top-right",
         "medium",
       );
-      setError(error.message || "Login failed");
+      setError(
+        error.message || "Login failed | Email dan Password tidak sesuai",
+      );
     }
   };
 

@@ -1,14 +1,19 @@
 import { useState } from "react";
-import { Button, Modal } from "antd";
+import { Button, Modal, Skeleton } from "antd";
 
 import { APIauth } from "@/apis/APIauth";
 import logoutModalIcon from "@/assets/logout-modal-icon.svg";
 import { authService } from "@/configs/auth";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 
 export function LogoutModal({ closeModal }) {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const navigate = useNavigate();
+  const userState = useSelector(selectGetUserLogin);
+  const userName = userState?.data?.name;
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -64,9 +69,20 @@ export function LogoutModal({ closeModal }) {
           alt="logout-modal-icon"
           className="my-4 h-10 w-10"
         />
-        <p id="doctor-name" className="mt-2 text-xl font-semibold">
+        {/* <p id="doctor-name" className="mt-2 text-xl font-semibold">
           Halo, User name!
-        </p>
+        </p> */}
+        {userState.status === "loading" && (
+          <Skeleton.Input active size="small" />
+        )}
+        {userState.status === "success" && (
+          <p id="doctor-name" className="mt-2 text-xl font-semibold">
+            Halo, {userName?.split(",")[0]}!
+          </p>
+        )}
+        {userState.status === "failed" && (
+          <Skeleton.Input active size="small" />
+        )}
 
         <p
           id="logout-modal-text"

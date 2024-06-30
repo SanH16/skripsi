@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { axiosInstance } from "@/configs/axiosInstance";
-import { authService } from "../configs/auth";
+// import { authService } from "../configs/auth";
 
 export const APIauth = {
   login: async (data) => {
@@ -8,14 +8,6 @@ export const APIauth = {
       const result = await axiosInstance.post("/login", data);
       console.log("Login response:", result);
 
-      const loginResponse = {
-        data: {
-          sessionId: "your_session_id",
-        },
-      };
-
-      // Simpan session ID ke dalam cookie menggunakan AuthService
-      authService.storeSessionIdToCookie(loginResponse.data.sessionId);
       return result.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -29,7 +21,7 @@ export const APIauth = {
   getUserLogin: async () => {
     try {
       const result = await axiosInstance.get("/get-user-login");
-      console.log(result);
+      console.log("data: ", result.data);
       return result.data;
     } catch (err) {
       if (err instanceof AxiosError) {
