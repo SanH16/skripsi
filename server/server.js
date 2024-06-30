@@ -26,11 +26,12 @@ const store = new sessionStore({
 app.use(
   session({
     secret: process.env.SESS_SECRET,
-    resave: false,
-    saveUninitialized: true,
+    resave: false, // Tidak menyimpan sesi jika tidak ada perubahan
+    saveUninitialized: false, // Tidak menyimpan sesi yang baru kecuali sudah dimodifikasi
     store: store,
     cookie: {
-      secure: "auto",
+      secure: false, // Set ke true jika menggunakan HTTPS
+      sameSite: "strict",
     },
   })
 );

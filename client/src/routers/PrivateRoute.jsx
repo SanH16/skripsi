@@ -1,12 +1,23 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { AppLayout } from "@/components/layout-components/AppLayout";
 import { useNavigatorOnline } from "@/hooks/useNavigatorOnline";
 import Timeout from "@/views/error-views/Timeout";
 
-export default function PrivateRoute() {
-  const isOnline = useNavigatorOnline();
+import { authService } from "@/configs/auth";
 
-  if (isOnline) {
+export default function PrivateRoute() {
+  const isAuthenticated = authService.isAuthorized();
+  const isOnline = useNavigatorOnline();
+  const location = useLocation();
+  const { pathname } = location;
+
+  let path = "/login";
+
+  if (pathname !== "/") {
+    path += `?return_to=${pathname.slice(1, pathname.length)}`;
+  }
+
+  if (isAuthenticated && isOnline) {
     return (
       <AppLayout>
         <Outlet />
@@ -15,5 +26,5 @@ export default function PrivateRoute() {
   } else if (!isOnline) {
     return <Timeout />;
   }
-  return <Navigate to={"/"} />;
+  return <Navigate to={path} />;
 }
