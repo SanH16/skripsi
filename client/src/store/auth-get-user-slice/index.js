@@ -13,7 +13,7 @@ const initialState = {
 };
 
 const getUserLoginSlice = createSlice({
-  name: "getUserLogin",
+  name: "userLogin",
   initialState,
   extraReducers: (builder) => {
     builder.addCase("fetch/getUserLogin/pending", (state) => {
@@ -33,5 +33,5 @@ const getUserLoginSlice = createSlice({
   },
 });
 
-export const selectGetUserLogin = (state) => state.getUserLogin;
+export const selectGetUserLogin = (state) => state.userLogin;
 export default getUserLoginSlice.reducer;

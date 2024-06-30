@@ -12,7 +12,6 @@ dotenv.config();
 const port = process.env.APP_PORT;
 
 const app = express();
-
 const sessionStore = SequelizeStore(session.Store);
 
 const store = new sessionStore({
@@ -21,24 +20,28 @@ const store = new sessionStore({
 
 // (async () => { // Generate table di db
 //   await db.sync();
+// await store.sync(); // Sinkronisasi tabel sessions
 // })();
 
 app.use(
   session({
-    secret: process.env.SESS_SECRET,
+    name: "token", // Nama cookie untuk menyimpan session ID
+    secret: process.env.SESS_SECRET, // untuk assign cookie
     resave: false, // Tidak menyimpan sesi jika tidak ada perubahan
     saveUninitialized: false, // Tidak menyimpan sesi yang baru kecuali sudah dimodifikasi
-    store: store,
+    store: store, // Store untuk menyimpan sesi di database
     cookie: {
       secure: false, // Set ke true jika menggunakan HTTPS
-      sameSite: "strict",
+      sameSite: "strict", // Mencegah pengiriman cookie ke situs lain
+      maxAge: 1000 * 60 * 60 * 24, // expire cookie (1 hari)
+      httpOnly: false,
     },
   })
 );
 
 app.use(
   cors({
-    credentials: true,
+    credentials: true, // allow pengiriman cookie di CORS
     origin: "http://localhost:5173",
   })
 );
@@ -49,7 +52,8 @@ app.use(UserRoute);
 app.use(RekrutmenRoute);
 app.use(AuthRoute);
 
-// store.sync(); // membuat table session di db
+// store.sync(); // sinkronisasi table session di db
+// store.sync({force: true}); // sinkronisasi table session di db dan menghapus data lama
 
 app.listen(port, () => {
   console.log(`Server up and running on port ${port}`);

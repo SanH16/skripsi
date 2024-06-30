@@ -8,6 +8,7 @@ import PublicRoute from "./PublicRoute";
 import UploadLowongan from "@/views/app-views/rekrutmen/misc/UploadLowongan";
 import ProtectedRoute from "./ProtectedRoute";
 import Login from "@/views/auth-views/Login";
+import Profile from "@/views/app-views/profile";
 
 export default function SetupRoutes() {
   return (
@@ -19,6 +20,7 @@ export default function SetupRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/rekrutmen" element={<Rekrutmen />} />
         <Route path="/unggah-lowongan" element={<UploadLowongan />} />
+        <Route path="/profil" element={<Profile />} />
       </Route>
       <Route path="/" element={<ProtectedRoute />}>
         <Route path="/login" element={<Login />} />

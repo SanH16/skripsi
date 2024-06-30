@@ -112,7 +112,7 @@ export default function Sidebar() {
     ),
     getItem(
       "Reward & Punishment",
-      "profil",
+      "reward",
       <Link to="/reward" className="p-2">
         <PiTipJar className={iconStyle} id="reward-icon-sidebar" />
       </Link>,
