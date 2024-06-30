@@ -1,67 +1,67 @@
-// import * as yup from "yup";
+import * as yup from "yup";
 import { useState } from "react";
 import { AiOutlineMail, AiOutlineLock } from "react-icons/ai";
 import { LeftOutlined } from "@ant-design/icons";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import loginIllus from "@/assets/login-illustration.svg";
 
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { APIauth } from "@/apis/APIauth";
+
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { showErrorToast } from "@/components/shared-components/Toast";
 
 export default function Login() {
   useDocumentTitle("Login");
 
-  const [dataLogin, setDataLogin] = useState({
-    email: "",
-    password: "",
-  });
   const [visible, setVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const { search } = useLocation();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const schema = yup.object().shape({
+    email: yup
+      .string()
+      .required("Email harus diisi")
+      .email("Email tidak valid"),
+    password: yup
+      .string()
+      .required("Kata sandi harus diisi")
+      .min(5, "Kata sandi minimal 5 karakter"),
+  });
+
+  const {
+    register,
+    formState: { errors, isSubmitting, isValid },
+    handleSubmit,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const onSubmitHandler = async (data) => {
     let returnTo = "/dashboard";
     const params = new URLSearchParams(search);
     const redirectTo = params.get("return_to");
 
     try {
-      const response = await APIauth.login(dataLogin);
-      if (redirectTo) {
-        returnTo = `/${redirectTo}`;
-        return navigate(returnTo);
-      } else {
-        navigate(returnTo);
-      }
-      console.log("Success login", response);
-      setIsLoading(false);
-      navigate("/dashboard");
+      await APIauth.login(data).then(() => {
+        if (redirectTo) {
+          returnTo = `/${redirectTo}`;
+          return navigate(returnTo);
+        } else {
+          navigate(returnTo);
+        }
+      });
     } catch (error) {
-      console.error("Failed login", error);
-      setIsLoading(false);
+      console.error(error);
       showErrorToast(
         "email atau password yang anda masukan salah!",
         "top-right",
         "medium",
       );
-      setError(
-        error.message || "Login failed | Email dan Password tidak sesuai",
-      );
     }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setDataLogin((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
   };
 
   return (
@@ -86,7 +86,11 @@ export default function Login() {
                 </p>
               </div>
 
-              <form id="login-form" onSubmit={handleSubmit} className="mt-8">
+              <form
+                id="login-form"
+                onSubmit={handleSubmit(onSubmitHandler)}
+                className="mt-8"
+              >
                 {/* Email */}
                 <div>
                   <label
@@ -97,29 +101,26 @@ export default function Login() {
                   </label>
                   <div
                     className={`relative mt-2 rounded-lg border focus-within:ring ${
-                      error
+                      errors.email
                         ? "border-negative text-negative focus-within:text-negative focus-within:ring-negative"
                         : "border-grey-200 text-grey-200 focus-within:text-grey-900 focus-within:ring-grey-900"
-                    } ${!error ? "focus-within:text-grey-900" : ""}`}
+                    } ${isValid ? "focus-within:text-grey-900" : ""}`}
                   >
                     <div className="absolute inset-y-0 start-0 flex items-center ps-4">
                       <AiOutlineMail size={24} />
                     </div>
                     <input
-                      // {...register("email")}
+                      {...register("email")}
                       id="email"
-                      name="email"
                       type="email"
-                      value={dataLogin.email}
-                      onChange={handleInputChange}
-                      autoComplete="email-doctor"
+                      // autoComplete="email-doctor"
                       className="w-full rounded-lg p-4 pe-8 ps-14 text-base font-medium focus:border-0 focus:outline-none focus:ring-0"
                       placeholder="Masukkan email anda"
                     />
                   </div>
-                  {error && (
-                    <span className="text-xs text-red-500">{error}</span>
-                  )}
+                  <span className="text-xs text-red-500">
+                    {errors.email?.message}
+                  </span>
                 </div>
 
                 {/* Passoword */}
@@ -132,21 +133,19 @@ export default function Login() {
                   </label>
                   <div
                     className={`relative mt-2 rounded-lg border focus-within:ring ${
-                      error
+                      errors.password
                         ? "border-negative text-negative focus-within:text-negative focus-within:ring-negative"
                         : "border-grey-200 text-grey-200 focus-within:text-grey-900 focus-within:ring-grey-900"
-                    } ${!error ? "focus-within:text-grey-900" : ""}`}
+                    } ${isValid ? "focus-within:text-grey-900" : ""}`}
                   >
                     <div className="absolute inset-y-0 start-0 flex items-center ps-4">
                       <AiOutlineLock size={24} />
                     </div>
                     <input
-                      // {...register("password")}
+                      {...register("password")}
                       id="login-password"
                       name="password"
                       autoComplete="current-password"
-                      value={dataLogin.password}
-                      onChange={handleInputChange}
                       type={`${visible ? "text" : "password"}`}
                       className="w-full rounded-lg p-4 pe-8 ps-14 text-base font-medium focus:border-0 focus:outline-none focus:ring-0"
                       placeholder="Masukkan kata sandi anda"
@@ -164,9 +163,9 @@ export default function Login() {
                       )}
                     </button>
                   </div>
-                  {error && (
-                    <span className="text-xs text-red-500">{error}</span>
-                  )}
+                  <span className="text-xs text-red-500">
+                    {errors.password?.message}
+                  </span>
                 </div>
 
                 {/* Remember me & Forgot Password */}
@@ -176,7 +175,7 @@ export default function Login() {
                   <button
                     id="submit-button"
                     className="w-full rounded-lg bg-green-500 px-4 py-4 text-xl font-bold text-grey-10 hover:bg-green-600 disabled:bg-green-700"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                   >
                     Masuk
                   </button>
