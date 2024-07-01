@@ -10,6 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "@/views/auth-views/Login";
 import Profile from "@/views/app-views/profile";
 import DetailLowongan from "@/views/app-views/rekrutmen/misc/DetailLowongan";
+import UpdateLowongan from "@/views/app-views/rekrutmen/misc/UpdateLowongan";
 
 import { globalRoute } from "@/utils/GlobalRoute";
 
@@ -26,6 +27,10 @@ export default function SetupRoutes() {
         <Route
           path="/detail-lowongan/:rekrutmenId"
           element={<DetailLowongan />}
+        />
+        <Route
+          path="/update-lowongan/:rekrutmenId"
+          element={<UpdateLowongan />}
         />
       </Route>
       <Route path="/" element={<ProtectedRoute />}>

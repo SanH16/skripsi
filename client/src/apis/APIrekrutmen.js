@@ -31,6 +31,20 @@ export const APIrekrutmen = {
     }
   },
 
+  updateRekrutmen: async (id, data) => {
+    try {
+      const result = await axiosInstance.patch(`/rekrutmens/${id}`, data);
+      console.log("update rekrutmen", result);
+      return result.data;
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        const { message } = err;
+        throw new AxiosError(message);
+      }
+      throw new Error(err);
+    }
+  },
+
   createRekrutmen: async (data) => {
     try {
       const result = await axiosInstance.post("/rekrutmens", data, {
