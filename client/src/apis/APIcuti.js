@@ -2,11 +2,11 @@ import { AxiosError } from "axios";
 import { axiosInstance } from "@/configs/axiosInstance";
 import { showSuccessToast } from "@/components/shared-components/Toast";
 
-export const APIrekrutmen = {
-  getAllRekrutmens: async () => {
+export const APIcuti = {
+  getAllCuti: async () => {
     try {
-      const result = await axiosInstance.get("/rekrutmens");
-      console.log("data rekrutmen", result);
+      const result = await axiosInstance.get("/cuti");
+      console.log("data cuti", result);
       return result.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -17,10 +17,10 @@ export const APIrekrutmen = {
     }
   },
 
-  getRekrutmenById: async (id) => {
+  getCutiById: async (id) => {
     try {
-      const result = await axiosInstance.get(`/rekrutmens/${id}`);
-      console.log("detail rekrutmen", result);
+      const result = await axiosInstance.get(`/cuti/${id}`);
+      console.log("cuti by id rekrutmen", result);
       return result.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -31,10 +31,10 @@ export const APIrekrutmen = {
     }
   },
 
-  updateRekrutmen: async (id, data) => {
+  updateCuti: async (id, data) => {
     try {
-      const result = await axiosInstance.patch(`/rekrutmens/${id}`, data);
-      console.log("update rekrutmen", result);
+      const result = await axiosInstance.patch(`/cuti/${id}`, data);
+      console.log("update cuti", result);
       return result.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -45,14 +45,14 @@ export const APIrekrutmen = {
     }
   },
 
-  createRekrutmen: async (data) => {
+  createCuti: async (data) => {
     try {
-      const result = await axiosInstance.post("/rekrutmens", data, {
+      const result = await axiosInstance.post("/cuti", data, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      console.log("rekrutmen dibuat", result);
+      console.log("cuti dibuat dari api", result);
       return result.data;
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -63,10 +63,10 @@ export const APIrekrutmen = {
     }
   },
 
-  deleteRekrutmen: async (id) => {
+  deleteCuti: async (id) => {
     try {
-      const result = await axiosInstance.delete(`/rekrutmens/${id}`);
-      showSuccessToast("Lowongan berhasil dihapus", "top-center", "large");
+      const result = await axiosInstance.delete(`/cuti/${id}`);
+      showSuccessToast("Data Cuti berhasil dihapus", "top-center", "large");
       return result.data;
     } catch (error) {
       if (error instanceof AxiosError) {

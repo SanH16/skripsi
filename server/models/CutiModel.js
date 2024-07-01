@@ -31,14 +31,14 @@ const Cuti = db.define(
       },
     },
     start_cuti: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
     end_cuti: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
       validate: {
         notEmpty: true,
