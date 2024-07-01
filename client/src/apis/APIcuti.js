@@ -6,7 +6,7 @@ export const APIcuti = {
   getAllCuti: async () => {
     try {
       const result = await axiosInstance.get("/cuti");
-      console.log("data cuti", result);
+      console.log("data cuti", result.data);
       return result.data;
     } catch (err) {
       if (err instanceof AxiosError) {

@@ -1,8 +1,11 @@
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { TableCuti } from "./components/TableCuti";
 
 export default function Cuti() {
-  useDocumentTitle("Halaman Cuti");
-  useScrollToTop();
-  return <div>Cuti</div>;
+  return (
+    <>
+      <section className="py-5">
+        <TableCuti />
+      </section>
+    </>
+  );
 }
