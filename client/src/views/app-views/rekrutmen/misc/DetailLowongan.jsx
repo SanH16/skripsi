@@ -92,7 +92,7 @@ export default function DetailLowongan() {
             </Link>
             {verifRole && (
               <Flex justify="space-around" align="center">
-                <section>
+                <section className="me-5">
                   <Space size="middle">
                     <Button
                       onClick={handleOpenModalDelete}
@@ -104,6 +104,22 @@ export default function DetailLowongan() {
                       </span>
                       Hapus
                     </Button>
+                  </Space>
+                </section>
+
+                <section>
+                  <Space size="middle">
+                    <Link to={`/update-lowongan/${rekrutmenId}`}>
+                      <Button
+                        id="update-lowongan"
+                        className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+                      >
+                        <span className="me-2 text-lg">
+                          <FaTrashAlt />
+                        </span>
+                        Update
+                      </Button>
+                    </Link>
                   </Space>
                 </section>
               </Flex>

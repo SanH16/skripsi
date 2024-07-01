@@ -88,7 +88,7 @@ export function ListingLowongan() {
                       <>
                         <Image
                           alt={item.image_desc}
-                          src={item.image[0]}
+                          src={item?.image.data}
                           className="h-[200px] md:h-[190px] lg:h-[200px] xl:h-[250px]"
                           preview={true}
                           onClick={handleLamarClick}

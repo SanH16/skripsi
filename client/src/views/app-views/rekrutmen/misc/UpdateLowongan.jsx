@@ -1,7 +1,7 @@
 import "react-quill/dist/quill.snow.css";
 import * as yup from "yup";
 import ReactQuill from "react-quill";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Flex, Col, Row, Button, Space, Select } from "antd";
 import { IoImageOutline } from "react-icons/io5";
 import { MdOutlineFileUpload } from "react-icons/md";
@@ -13,11 +13,14 @@ import { ModalCancelLowongan } from "@/components/shared-components/ModalCancelL
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { globalRoute } from "@/utils/GlobalRoute";
 
+import prevImage from "@/assets/job-vacancy.jpg";
+
 import {
   showErrorToast,
   showSuccessToast,
 } from "@/components/shared-components/Toast";
 import { APIrekrutmen } from "@/apis/APIrekrutmen";
+import { useParams } from "react-router-dom";
 
 const optionTags = [
   {
@@ -41,15 +44,17 @@ const optionTags = [
     label: "Operasional",
   },
 ];
-const UploadLowongan = () => {
-  useDocumentTitle("Unggah Lowongan");
+const UpdateLowongan = () => {
+  useDocumentTitle("Update Lowongan");
 
   const [imagePreview, setImagePreview] = useState(null);
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
-  const MAX_IMAGE_SIZE = 25000000;
-  const ALLOWED_IMAGE_TYPE = ["image/jpeg", "image/png"];
+
+  const { rekrutmenId } = useParams();
+  //   const MAX_IMAGE_SIZE = 25000000;
+  //   const ALLOWED_IMAGE_TYPE = ["image/jpeg", "image/png"];
 
   const module = {
     toolbar: [
@@ -77,27 +82,26 @@ const UploadLowongan = () => {
       .trim()
       .min(3, "Referensi minimal 3 karakter")
       .required("Referensi harus diisi"),
-    image: yup
-      .mixed()
-      // .required("Gambar harus diisi Bro!")
-      // .test("required", "Gambar harus diisi", (value) => {
-      //   if (value.length === 0) return false;
-      //   return true;
-      // })
-      .test(
-        "fileSize",
-        "Ukuran file terlalu besar, maksimal 20 MB",
-        (value) => {
-          return value.size <= MAX_IMAGE_SIZE;
-        },
-      )
-      .test(
-        "fileType",
-        "Format file tidak valid, hanya file gambar yang diperbolehkan",
-        (value) => {
-          return ALLOWED_IMAGE_TYPE.includes(value.type);
-        },
-      ),
+    image: yup.mixed(),
+    // .required("Gambar harus diisi Bro!")
+    // .test("required", "Gambar harus diisi", (value) => {
+    //   if (value.length === 0) return false;
+    //   return true;
+    // })
+    //   .test(
+    //     "fileSize",
+    //     "Ukuran file terlalu besar, maksimal 20 MB",
+    //     (value) => {
+    //       return value.size >= MAX_IMAGE_SIZE;
+    //     },
+    //   )
+    //   .test(
+    //     "fileType",
+    //     "Format file tidak valid, hanya file gambar yang diperbolehkan",
+    //     (value) => {
+    //       return ALLOWED_IMAGE_TYPE.includes(value.type);
+    //     },
+    //   ),
     image_desc: yup
       .string()
       .trim()
@@ -120,17 +124,40 @@ const UploadLowongan = () => {
     resolver: yupResolver(schema),
   });
 
-  const createRekrutmen = async (data) => {
+  const updateRekrutmen = async () => {
     try {
-      const result = await APIrekrutmen.createRekrutmen(data);
-      showSuccessToast("Lowongan berhasil dibuat", "top-center", "large");
+      const result = await APIrekrutmen.updateRekrutmen(rekrutmenId, inputData);
+      showSuccessToast("Lowongan berhasil diupdate", "top-center", "large");
       globalRoute.navigate && globalRoute.navigate(`/rekrutmen`);
-      console.log("post rekrutmen", result);
+      console.log("updating rekrutmen", result);
     } catch (err) {
       console.error(err);
-      showErrorToast("Lowongan gagal diunggah", "top-center", "large");
+      showErrorToast("Lowongan gagal diupdate", "top-center", "large");
     }
   };
+
+  useEffect(() => {
+    const fetchRekrutmenById = async () => {
+      try {
+        const result = await APIrekrutmen.getRekrutmenById(rekrutmenId);
+        console.log("update rekrutmen fetch", result);
+        setInputData(result);
+        setValue("title", result.title);
+        setValue(
+          "tags",
+          result.tags.split(", ").map((tag) => ({ value: tag, label: tag })),
+        );
+        setValue("reference", result.reference);
+        setValue("image", result.image); // assuming result contains imageUrl
+        setValue("image_desc", result.image_desc);
+        setImagePreview(prevImage);
+        setValue("text_desc", result.text_desc);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchRekrutmenById();
+  }, [rekrutmenId, setValue]);
 
   const onSubmitArticle = (data) => {
     const newData = {
@@ -150,14 +177,14 @@ const UploadLowongan = () => {
 
   return (
     <>
-      <section id="unggah-lowongan" className="mb-5 py-5">
+      <section id="update-lowongan" className="mb-5 py-5">
         <form
           onSubmit={handleSubmit(onSubmitArticle)}
           className="flex flex-col gap-6"
         >
           {/* Title */}
           <Flex justify="space-between" align="center">
-            <h3 className="font-bold">Unggah Lowongan</h3>
+            <h3 className="font-bold">Update Lowongan</h3>
             <div>
               <Space size="middle">
                 <Button
@@ -173,7 +200,7 @@ const UploadLowongan = () => {
                   htmlType="submit"
                   disabled={isSubmitting}
                 >
-                  Unggah
+                  Update
                 </Button>
               </Space>
             </div>
@@ -399,15 +426,15 @@ const UploadLowongan = () => {
         {isShowConfirm && (
           <ModalConfirm
             closeModal={handleOpenModalConfirm}
-            modalTitle="Unggah Lowongan"
+            modalTitle="Update Lowongan"
             inputData={inputData}
-            action={createRekrutmen}
+            action={updateRekrutmen}
           >
             <>
               <p>
                 Lowongan yang telah dibuat
                 <span className="font-semibold"> tidak dapat diubah </span>
-                kembali. Apakah anda yakin ingin mengunggah lowongan ini?
+                kembali. Apakah anda yakin ingin mengupdate lowongan ini?
               </p>
             </>
           </ModalConfirm>
@@ -417,4 +444,4 @@ const UploadLowongan = () => {
   );
 };
 
-export default UploadLowongan;
+export default UpdateLowongan;
