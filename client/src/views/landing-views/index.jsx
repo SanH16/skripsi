@@ -12,11 +12,14 @@ import { ButtonGooglePlay } from "@/components/shared-components/ButtonGooglePla
 
 import contentImg from "@/assets/content-pages.png";
 import handPhone from "@/assets/handphone.png";
-import { ListingLowongan } from "@/components/shared-components/ListingLowongan";
+// import { ListingLowongan } from "@/components/shared-components/ListingLowongan";
 import { Button } from "antd";
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { BannerDownload } from "@/components/shared-components/BannerDownload";
+import { ListingLowongan } from "../app-views/rekrutmen/components/ListLowongan";
+
+// import { ListingLowongan } from "@/app-views/rekrutmen/components/ListLowongan";
 
 export default function LandingPage() {
   useDocumentTitle("Radenmat");
