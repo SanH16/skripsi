@@ -1,14 +1,22 @@
 import { Card, Table } from "antd";
-// import { ColumnAppointment } from "../constant/appointment";
 import { useEffect, useState } from "react";
 import { APIuser } from "@/apis/APIuser";
 import { ColumnUser } from "../constant/column-user";
+import { ModalDeleteUser } from "@/components/shared-components/ModalDeleteUser";
 
 export default function UserTable() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [showAll, setShowAll] = useState(false);
+
+  const [isShowDelete, setIsShowDelete] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  const handleOpenModalDelete = (user) => {
+    setUserToDelete(user);
+    setIsShowDelete((prev) => !prev);
+  };
 
   const DataSource = showAll ? data : data.slice(0, 2);
 
@@ -53,7 +61,7 @@ export default function UserTable() {
         <Table
           id="table-appointment"
           loading={isLoading}
-          columns={ColumnUser}
+          columns={ColumnUser(handleOpenModalDelete)}
           dataSource={DataSource}
           pagination={false}
           scroll={{ x: true }}
@@ -76,6 +84,13 @@ export default function UserTable() {
         <h6 id="more-appointment-footer" className="mt-5 text-grey-200">
           Menampilkan 5 data teratas
         </h6>
+        {isShowDelete && (
+          <ModalDeleteUser
+            closeModal={handleOpenModalDelete}
+            stateModal={userToDelete}
+            // deleteUser={deleteUser} // Fungsi untuk menghapus pengguna
+          />
+        )}
       </Card>
     </>
   );

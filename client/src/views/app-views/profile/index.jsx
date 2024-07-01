@@ -24,7 +24,6 @@ export default function Profile() {
           <UserProfile />
         </Col>
         <Col span={24}>
-          {/* <TabsDoctor /> */}
           {dataUser?.role === "admin" ? <UserTable /> : <TabsUser />}
         </Col>
       </Row>

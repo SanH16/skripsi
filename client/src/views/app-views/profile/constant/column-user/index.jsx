@@ -1,8 +1,9 @@
 import { Button } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/id";
+import { Link } from "react-router-dom";
 
-export const ColumnUser = [
+export const ColumnUser = (handleOpenModalDelete) => [
   {
     title: "ID",
     dataIndex: "uuid",
@@ -40,13 +41,19 @@ export const ColumnUser = [
   {
     title: "Action",
     width: 100,
-    render: () => {
+    render: (record) => {
       return (
         <>
-          <Button type="primary" className="me-2">
-            <span className="font-medium">Update</span>
-          </Button>
-          <Button className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white">
+          <Link to={`/update-user/${record.uuid}`}>
+            <Button type="primary" className="me-2">
+              <span className="font-medium">Update</span>
+            </Button>
+          </Link>
+
+          <Button
+            onClick={() => handleOpenModalDelete(record)}
+            className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+          >
             <span className="font-medium">Delete</span>
           </Button>
         </>
