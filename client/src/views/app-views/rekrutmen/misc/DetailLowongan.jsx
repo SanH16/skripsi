@@ -48,7 +48,7 @@ export default function DetailLowongan() {
   const { rekrutmenId } = useParams();
   const [isShowDelete, setIsShowDelete] = useState(false);
 
-  useDocumentTitle("Lowongan");
+  useDocumentTitle("Detail Lowongan");
   useScrollToTop();
 
   const tags = splitString(detailRekrutmen?.tags);

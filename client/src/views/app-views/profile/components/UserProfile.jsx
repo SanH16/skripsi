@@ -1,4 +1,4 @@
-import { Card, Flex, Skeleton } from "antd";
+import { Button, Card, Flex, Skeleton } from "antd";
 import { BiSolidErrorCircle } from "react-icons/bi";
 
 import anonymousPict from "@/assets/anonymous profile.jpg";
@@ -9,10 +9,18 @@ import { useSelector } from "react-redux";
 export default function UserProfile() {
   const stateDataUser = useSelector(selectGetUserLogin);
   const dataUser = stateDataUser?.data;
+
   return (
     <>
       <Card>
-        <h3>Profil</h3>
+        <div className="flex justify-between">
+          <h3>Profil</h3>
+          {dataUser?.role === "admin" && (
+            <Button className="block border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
+              Add New
+            </Button>
+          )}
+        </div>
         {stateDataUser?.status === "success" && (
           <div className="my-4 items-center space-y-4 md:grid md:grid-cols-2 lg:grid-cols-12">
             <div className="flex justify-center md:col-span-1 lg:col-span-3 xl:col-span-2">
@@ -57,7 +65,7 @@ export default function UserProfile() {
                   </p>
                 </div>
                 <div className="flex-col">
-                  <p className="text-sm md:text-base">email</p>
+                  <p className="text-sm md:text-base">{dataUser?.email}</p>
                   <p className="text-sm md:text-base">phone</p>
                 </div>
               </div>
