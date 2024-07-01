@@ -19,6 +19,8 @@ import Mutasi from "@/views/app-views/mutasi";
 import Penugasan from "@/views/app-views/penugasan";
 import PemutusanHubunganKerja from "@/views/app-views/phk";
 import RewardAndPunishment from "@/views/app-views/reward-punishment";
+import AddUser from "@/views/app-views/profile/components/AddUser";
+import UpdateUser from "@/views/app-views/profile/components/UpdateUser";
 
 export default function SetupRoutes() {
   const navigate = useNavigate();
@@ -28,6 +30,8 @@ export default function SetupRoutes() {
       <Route path="/" element={<PrivateRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profil" element={<Profile />} />
+        <Route path="/add-user" element={<AddUser />} />
+        <Route path="/update-user/:userId" element={<UpdateUser />} />
         <Route path="/absensi" element={<Absensi />} />
         <Route path="/cuti" element={<Cuti />} />
         <Route path="/mutasi" element={<Mutasi />} />

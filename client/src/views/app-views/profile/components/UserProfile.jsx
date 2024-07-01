@@ -5,6 +5,7 @@ import anonymousPict from "@/assets/anonymous profile.jpg";
 
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export default function UserProfile() {
   const stateDataUser = useSelector(selectGetUserLogin);
@@ -16,9 +17,11 @@ export default function UserProfile() {
         <div className="flex justify-between">
           <h3>Profil</h3>
           {dataUser?.role === "admin" && (
-            <Button className="block border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
-              Add New
-            </Button>
+            <Link to={"/add-user"}>
+              <Button className="block border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
+                Add New
+              </Button>
+            </Link>
           )}
         </div>
         {stateDataUser?.status === "success" && (
