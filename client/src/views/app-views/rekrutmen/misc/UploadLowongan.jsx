@@ -10,10 +10,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { ModalConfirm } from "@/components/shared-components/ModalConfirm";
 import { ModalCancelLowongan } from "@/components/shared-components/ModalCancelLowongan";
-// import { APIArticle } from "@/apis/APIArticle";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-// import { globalRoute } from "@/utils/GlobalRoute";
-// import { showErrorToast } from "@/components/shared-components/Toast";
+import { globalRoute } from "@/utils/GlobalRoute";
+
+import {
+  showErrorToast,
+  showSuccessToast,
+} from "@/components/shared-components/Toast";
+import { APIrekrutmen } from "@/apis/APIrekrutmen";
 
 const optionTags = [
   {
@@ -44,8 +48,8 @@ const UploadLowongan = () => {
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
-  const MAX_IMAGE_SIZE = 25000000;
-  const ALLOWED_IMAGE_TYPE = ["image/jpeg", "image/png"];
+  // const MAX_IMAGE_SIZE = 25000000;
+  // const ALLOWED_IMAGE_TYPE = ["image/jpeg", "image/png"];
 
   const module = {
     toolbar: [
@@ -73,36 +77,35 @@ const UploadLowongan = () => {
       .trim()
       .min(3, "Referensi minimal 3 karakter")
       .required("Referensi harus diisi"),
-    image: yup
-      .mixed()
-      .required("Gambar harus diisi Bro!")
-      .test("required", "Gambar harus diisi", (value) => {
-        if (value.length === 0) return false;
-        return true;
-      })
-      .test(
-        "fileSize",
-        "Ukuran file terlalu besar, maksimal 20 MB",
-        (value) => {
-          return value.size <= MAX_IMAGE_SIZE;
-        },
-      )
-      .test(
-        "fileType",
-        "Format file tidak valid, hanya file gambar yang diperbolehkan",
-        (value) => {
-          return ALLOWED_IMAGE_TYPE.includes(value.type);
-        },
-      ),
+    image: yup.mixed(),
+    // .required("Gambar harus diisi Bro!")
+    // .test("required", "Gambar harus diisi", (value) => {
+    //   if (value.length === 0) return false;
+    //   return true;
+    // })
+    // .test(
+    //   "fileSize",
+    //   "Ukuran file terlalu besar, maksimal 20 MB",
+    //   (value) => {
+    //     return value.size <= MAX_IMAGE_SIZE;
+    //   },
+    // )
+    // .test(
+    //   "fileType",
+    //   "Format file tidak valid, hanya file gambar yang diperbolehkan",
+    //   (value) => {
+    //     return ALLOWED_IMAGE_TYPE.includes(value.type);
+    //   },
+    // ),
     image_desc: yup
       .string()
       .trim()
       .min(3, "Deskripsi gambar minimal 3 karakter")
       .required("Deskripsi gambar harus diisi"),
-    content: yup
+    text_desc: yup
       .string()
       .trim()
-      .min(30, "Isi lowongan minimal 30 karakter")
+      .min(5, "Isi lowongan minimal 5 karakter")
       .required("Isi lowongan harus diisi"),
   });
   const {
@@ -115,16 +118,19 @@ const UploadLowongan = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  //   const addArticle = async (data) => {
-  //     try {
-  //       const result = await APIArticle.addArticle(data);
-  //       const { id } = result;
-  //       globalRoute.navigate && globalRoute.navigate(`/artikel/${id}`);
-  //     } catch (err) {
-  //       console.error(err);
-  //       showErrorToast("Lowongan gagal diunggah", "top-center", "large");
-  //     }
-  //   };
+
+  const createRekrutmen = async (data) => {
+    try {
+      const result = await APIrekrutmen.createRekrutmen(data);
+      showSuccessToast("Lowongan berhasil dibuat", "top-center", "large");
+      globalRoute.navigate && globalRoute.navigate(`/rekrutmen`);
+      console.log("post rekrutmen", result);
+    } catch (err) {
+      console.error(err);
+      showErrorToast("Lowongan gagal diunggah", "top-center", "large");
+    }
+  };
+
   const onSubmitArticle = (data) => {
     const newData = {
       ...data,
@@ -360,17 +366,17 @@ const UploadLowongan = () => {
               <div>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="text-content"
+                  htmlFor="text-desc"
                 >
                   Isi Lowongan
                 </label>
                 <Controller
-                  name="content"
+                  name="text_desc"
                   control={control}
-                  defaultValue=""
+                  defaultValue="Apa aja yang penting ada"
                   render={({ field }) => (
                     <ReactQuill
-                      id="text-content"
+                      id="text_desc"
                       modules={module}
                       className="mt-2"
                       {...field}
@@ -381,7 +387,7 @@ const UploadLowongan = () => {
                 />
               </div>
               <span className="pt-1 text-xs text-negative">
-                {errors.content?.message}
+                {errors.text_desc?.message}
               </span>
             </Flex>
           </Col>
@@ -394,8 +400,7 @@ const UploadLowongan = () => {
             closeModal={handleOpenModalConfirm}
             modalTitle="Unggah Lowongan"
             inputData={inputData}
-            // action={addArticle}
-            action={""}
+            action={createRekrutmen}
           >
             <>
               <p>
