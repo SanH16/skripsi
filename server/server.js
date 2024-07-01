@@ -7,6 +7,7 @@ import SequelizeStore from "connect-session-sequelize";
 import UserRoute from "./routes/UserRoute.js";
 import RekrutmenRoute from "./routes/RekrutmenRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
+import CutiRoute from "./routes/CutiRoute.js";
 
 dotenv.config();
 const port = process.env.APP_PORT;
@@ -18,9 +19,10 @@ const store = new sessionStore({
   db: db,
 });
 
-// (async () => { // Generate table di db
+// (async () => {
+//   // Generate table di db
 //   await db.sync();
-// await store.sync(); // Sinkronisasi tabel sessions
+//   // await store.sync(); // Sinkronisasi tabel sessions
 // })();
 
 app.use(
@@ -51,6 +53,7 @@ app.use(express.json());
 app.use(UserRoute);
 app.use(RekrutmenRoute);
 app.use(AuthRoute);
+app.use(CutiRoute);
 
 // store.sync(); // sinkronisasi table session di db
 // store.sync({force: true}); // sinkronisasi table session di db dan menghapus data lama
