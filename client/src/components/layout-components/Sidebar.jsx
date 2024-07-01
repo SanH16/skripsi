@@ -74,36 +74,36 @@ export default function Sidebar() {
     ),
     getItem(
       "Rekrutmen",
-      "rekrut",
+      "rekrutmen",
       <Link to="/rekrutmen" className="p-2">
         <BsPersonVcard className={iconStyle} id="rekrutmen-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Absensi",
-      "janji",
-      <Link to="/janji-temu" className="p-2">
+      "absen",
+      <Link to="/absensi" className="p-2">
         <MdOutlinePeopleAlt className={iconStyle} id="absensi-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Cuti",
-      "jadwal",
-      <Link to="/jadwal-saya" className="p-2">
+      "cuti",
+      <Link to="/cuti" className="p-2">
         <AiOutlineSchedule className={iconStyle} id="cuti-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Mutasi",
-      "artikel",
-      <Link to="/artikel-saya" className="p-2">
+      "mutasi",
+      <Link to="/mutasi" className="p-2">
         <HiOutlineNewspaper className={iconStyle} id="mutasi-icon-sidebar" />
       </Link>,
     ),
     getItem(
       "Penugasan",
-      "forum",
-      <Link to="/forum" className="p-2">
+      "penugasan",
+      <Link to="/penugasan" className="p-2">
         <MdOutlineAssignment
           className={iconStyle}
           id="penugasan-icon-sidebar"
@@ -112,8 +112,8 @@ export default function Sidebar() {
     ),
     getItem(
       "Reward & Punishment",
-      "reward",
-      <Link to="/reward" className="p-2">
+      "reward-and-punishment",
+      <Link to="/reward-and-punishment" className="p-2">
         <PiTipJar className={iconStyle} id="reward-icon-sidebar" />
       </Link>,
     ),
