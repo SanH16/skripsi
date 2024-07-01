@@ -16,13 +16,23 @@ export const getRekrutmens = async (req, res) => {
           },
         ],
       });
-    } else {
+    } else if (req.role === "user") {
       response = await Rekrutmen.findAll({
         attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc"],
         // jika login as user
         where: {
           userId: req.userId, // melihat data yg diinput oleh user itu sendiri
         },
+        include: [
+          {
+            model: User,
+            attributes: ["name", "email", "role"],
+          },
+        ],
+      });
+    } else {
+      response = await Rekrutmen.findAll({
+        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc"],
         include: [
           {
             model: User,
@@ -51,7 +61,7 @@ export const getRekrutmenById = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Rekrutmen.findOne({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc"],
+        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "createdAt"],
         where: {
           id: rekrutmen.id,
         },
@@ -62,7 +72,7 @@ export const getRekrutmenById = async (req, res) => {
           },
         ],
       });
-    } else {
+    } else if (req.role === "user") {
       response = await Rekrutmen.findOne({
         attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc"],
         where: {
@@ -72,6 +82,19 @@ export const getRekrutmenById = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email"],
+          },
+        ],
+      });
+    } else {
+      response = await Rekrutmen.findOne({
+        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "createdAt"],
+        where: {
+          id: rekrutmen.id,
+        },
+        include: [
+          {
+            model: User,
+            attributes: ["name", "email", "role"],
           },
         ],
       });

@@ -23,7 +23,7 @@ export const ListLowongan = [
     date: "24 juni 2024",
   },
   {
-    image: jobVaca,
+    image: logoAva,
     image_desc: "Thumbnail Lowongan",
     tags: "Operasional, Pria",
     title: "Dibutuhkan segera Penjahit pakaian untuk semua lulusan",

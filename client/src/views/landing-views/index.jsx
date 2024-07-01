@@ -4,7 +4,7 @@ import {
   DataHeroSection,
   DataAboutSection,
   DataServiceSection,
-  DataCtaDoctor,
+  DataCtaUser,
 } from "@/views/landing-views/constant/home-page";
 
 import { ButtonAppStore } from "@/components/shared-components/ButtonAppStore";
@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { BannerDownload } from "@/components/shared-components/BannerDownload";
 
 export default function LandingPage() {
-  useDocumentTitle("Simpeg");
+  useDocumentTitle("Radenmat");
   useScrollToTop();
   return (
     <>
@@ -133,24 +133,24 @@ function DownloadSection() {
 }
 
 function JoinSection() {
-  const JoinSection = DataCtaDoctor;
+  const JoinSection = DataCtaUser;
   return (
     <section
-      id="cta-doctor"
+      id="cta-user"
       className="base-container h-auto w-auto bg-green-100"
     >
       <div className="py-[3.25rem] md:text-center">
-        <h2 id="cta-doctor-title" className="text-green-900">
+        <h2 id="cta-user-title" className="text-green-900">
           {JoinSection.title}
         </h2>
         <p
-          id="cta-doctor-description"
+          id="cta-user-description"
           className="mt-1 text-sm md:text-base lg:text-lg xl:text-xl"
         >
           {JoinSection.subs}
         </p>
         <div className="mt-6 flex text-white md:justify-center">
-          <Link id="link-cta-doctor" to="/bergabung-sebagai-dokter">
+          <Link id="link-cta-user" to="/login">
             <ButtonCtaJoin />
           </Link>
         </div>
@@ -162,7 +162,7 @@ function JoinSection() {
 function ButtonCtaJoin() {
   return (
     <Button
-      id="button-cta-doctor"
+      id="button-cta-user"
       type="primary"
       className="flex items-center px-8 py-6 text-base font-semibold"
     >

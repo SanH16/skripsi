@@ -3,7 +3,13 @@ import { Row, Col, Button } from "antd";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { ListLowongan } from "./components/ListLowongan";
 
+import { useSelector } from "react-redux";
+
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+
 export default function Rekrutmen() {
+  const userState = useSelector(selectGetUserLogin);
+  const isAuthenticated = userState?.data?.role === "admin";
   return (
     <>
       <div className="mb-5 py-5">
@@ -11,20 +17,22 @@ export default function Rekrutmen() {
           <Col span={12}>
             <h3 className="font-bold">Lowongan Kerja</h3>
           </Col>
-          <Col>
-            <Link to="/unggah-lowongan">
-              <Button
-                id="write-rekrutmen"
-                type="primary"
-                className="flex bg-green-500"
-              >
-                Buat Lowongan
-                <span className="ms-1 text-lg">
-                  <MdOutlineFileUpload />
-                </span>
-              </Button>
-            </Link>
-          </Col>
+          {isAuthenticated && (
+            <Col>
+              <Link to="/unggah-lowongan">
+                <Button
+                  id="write-rekrutmen"
+                  type="primary"
+                  className="flex bg-green-500"
+                >
+                  Buat Lowongan
+                  <span className="ms-1 text-lg">
+                    <MdOutlineFileUpload />
+                  </span>
+                </Button>
+              </Link>
+            </Col>
+          )}
         </Row>
         <ListLowongan />
       </div>

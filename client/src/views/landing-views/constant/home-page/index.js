@@ -80,7 +80,7 @@ export const DataBenefitLists = {
   ],
 };
 
-export const DataCtaDoctor = {
+export const DataCtaUser = {
   title: "Ingin bergabung bersama kami?",
   subs: "Kesempatan bergabung dengan Tim Radenmat",
 };
