@@ -6,7 +6,7 @@ import { FaTasks, FaUserSecret } from "react-icons/fa";
 import { FaPeopleLine } from "react-icons/fa6";
 import { MdPeople } from "react-icons/md";
 import { APIcuti } from "@/apis/APIcuti";
-import { APIpegawai } from "../../../../apis/APIpegawai";
+import { APIpegawai } from "@/apis/APIpegawai";
 
 export function TotalCards() {
   const [data, setData] = useState({
