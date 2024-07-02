@@ -3,7 +3,7 @@ import { Modal, Button } from "antd";
 import { IoIosWarning } from "react-icons/io";
 import { useState } from "react";
 
-export function ModalCancelLowongan({ closeModal }) {
+export function ModalCancel({ closeModal }) {
   const [isOpen, setIsOpen] = useState(true);
   const handleCancel = () => {
     setIsOpen(false);

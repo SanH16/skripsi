@@ -9,7 +9,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { ModalConfirm } from "@/components/shared-components/ModalConfirm";
-import { ModalCancelLowongan } from "@/components/shared-components/ModalCancelLowongan";
+import { ModalCancel } from "@/components/shared-components/ModalCancel";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { globalRoute } from "@/utils/GlobalRoute";
 
@@ -420,9 +420,7 @@ const UpdateLowongan = () => {
             </Flex>
           </Col>
         </form>
-        {isShowCancel && (
-          <ModalCancelLowongan closeModal={handleOpenModalCancel} />
-        )}
+        {isShowCancel && <ModalCancel closeModal={handleOpenModalCancel} />}
         {isShowConfirm && (
           <ModalConfirm
             closeModal={handleOpenModalConfirm}

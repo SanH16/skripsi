@@ -34,11 +34,22 @@ export default function UserProfile() {
         <div className="flex justify-between">
           <h3>Profil</h3>
           {dataUser?.role === "admin" ? (
-            <Link to={"/add-user"}>
-              <Button className="block border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
-                Add New Account
-              </Button>
-            </Link>
+            <>
+              <div>
+                <Link to={"/add-user"}>
+                  <Button className="me-3 border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
+                    Add New Account
+                  </Button>
+                </Link>
+                <Link
+                  to={pegawai?.length > 0 ? `/update-pegawai` : "/add-pegawai"}
+                >
+                  <Button className="border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
+                    {pegawai?.length > 0 ? "Ubah Data" : "Tambah Data"}
+                  </Button>
+                </Link>
+              </div>
+            </>
           ) : (
             <Link to={pegawai?.length > 0 ? `/update-pegawai` : "/add-pegawai"}>
               <Button className="block border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
