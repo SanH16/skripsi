@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Card, Table, ConfigProvider, Button, Flex, Space } from "antd";
 
 // import { ListFilter } from "./ListFilter";
-// import { CardAppointment } from "./CardAppointment";
 import { ColumnCuti } from "../constant/column-cuti";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
@@ -12,6 +11,7 @@ import { Link } from "react-router-dom";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 import { ModalDeleteCuti } from "@/components/shared-components/ModalDeleteCuti";
+import { CardCuti } from "../misc/CardCuti";
 
 export function TableCuti() {
   useDocumentTitle("Cuti Pegawai");
@@ -70,7 +70,7 @@ export function TableCuti() {
           </Link>
         </Space>
       </Flex>
-      {/* <CardAppointment data={dataCuti} /> */}
+      <CardCuti data={dataCuti} />
       <Card>
         {/* <ListFilter
           setSearchValue={setSearchValue}
