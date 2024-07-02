@@ -47,7 +47,7 @@ export const APIcuti = {
 
   createCuti: async (data) => {
     try {
-      const result = await axiosInstance.post("/cuti", data, {
+      const result = await axiosInstance.post("/create-cuti", data, {
         headers: {
           "Content-Type": "application/json",
         },

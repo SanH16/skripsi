@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, Table, ConfigProvider } from "antd";
+import { Card, Table, ConfigProvider, Button, Flex, Space } from "antd";
 
 // import { ListFilter } from "./ListFilter";
 // import { CardAppointment } from "./CardAppointment";
@@ -8,6 +8,10 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 // import { useDebounce } from "@/hooks/useDebounce";
 import { APIcuti } from "@/apis/APIcuti";
+import { Link } from "react-router-dom";
+import { MdOutlineFileUpload } from "react-icons/md";
+
+import { ModalDeleteCuti } from "@/components/shared-components/ModalDeleteCuti";
 
 export function TableCuti() {
   useDocumentTitle("Cuti Pegawai");
@@ -20,6 +24,14 @@ export function TableCuti() {
 
   //   const searchQuery = useDebounce(searchValue, 800);
   //   const filterQuery = useDebounce(filterStatus, 800);
+
+  const [isShowDelete, setIsShowDelete] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  const handleOpenModalDelete = (user) => {
+    setUserToDelete(user);
+    setIsShowDelete((prev) => !prev);
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -39,7 +51,25 @@ export function TableCuti() {
 
   return (
     <>
-      <h3 className="mb-3 font-bold">Data Cuti</h3>
+      <Flex justify="space-between" className="mb-6">
+        <Space size="middle">
+          <h3 className="mb-3 font-bold">Data Cuti</h3>
+        </Space>
+
+        <Space size="middle">
+          <Link to={`/pengajuan-cuti`}>
+            <Button
+              id="buat-cuti"
+              className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+            >
+              <span className="me-2 text-lg">
+                <MdOutlineFileUpload />
+              </span>
+              Buat Cuti
+            </Button>
+          </Link>
+        </Space>
+      </Flex>
       {/* <CardAppointment data={dataCuti} /> */}
       <Card>
         {/* <ListFilter
@@ -76,7 +106,7 @@ export function TableCuti() {
             rowClassName={"hover:bg-green-50 hover:cursor-pointer"}
             loading={isLoading}
             id="appointment-table-list"
-            columns={ColumnCuti}
+            columns={ColumnCuti(handleOpenModalDelete)}
             dataSource={dataCuti}
             scroll={{ x: true }}
             style={{ maxWidth: "100%" }}
@@ -107,6 +137,12 @@ export function TableCuti() {
         </ConfigProvider>
       </Card>
       {/* drawer detail pasien */}
+      {isShowDelete && (
+        <ModalDeleteCuti
+          closeModal={handleOpenModalDelete}
+          stateModal={userToDelete}
+        />
+      )}
     </>
   );
 }

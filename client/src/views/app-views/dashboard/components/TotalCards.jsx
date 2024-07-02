@@ -5,6 +5,7 @@ import { APIrekrutmen } from "@/apis/APIrekrutmen";
 import { FaTasks, FaUserSecret } from "react-icons/fa";
 import { FaPeopleLine } from "react-icons/fa6";
 import { MdPeople } from "react-icons/md";
+import { APIcuti } from "../../../../apis/APIcuti";
 
 export function TotalCards() {
   const [data, setData] = useState({
@@ -22,11 +23,12 @@ export function TotalCards() {
   const fetchData = async () => {
     try {
       const rekrutmenTotal = await APIrekrutmen.getAllRekrutmens();
+      const cutiTotal = await APIcuti.getAllCuti();
 
       setData((prevData) => ({
         ...prevData,
         totalRekrutmen: rekrutmenTotal.length,
-        // totalUser: userTotal.length,
+        totalCuti: cutiTotal.length,
       }));
       setIsLoading(false);
     } catch (error) {

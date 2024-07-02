@@ -2,13 +2,14 @@
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { Button } from "antd";
+import { Link } from "react-router-dom";
 
-export const ColumnCuti = [
+export const ColumnCuti = (handleOpenModalDelete) => [
   {
     title: "ID",
     dataIndex: "uuid",
     key: "uuid",
-    width: 100,
+    width: 50,
     render: (val) => <span>{val.slice(0, 5)}</span>,
   },
   {
@@ -16,7 +17,7 @@ export const ColumnCuti = [
     dataIndex: ["user", "name"],
     // render: (user) => user.map((item) => item.name).join(),
     key: "user",
-    width: 250,
+    width: 150,
     sorter: (a, b) => a.user.name.localeCompare(b.user.name),
   },
   {
@@ -49,14 +50,14 @@ export const ColumnCuti = [
     title: "Keterangan",
     dataIndex: "keterangan",
     key: "keterangan",
-    width: 250,
+    width: 100,
     sorter: (a, b) => a.keterangan.localeCompare(b.keterangan),
   },
   {
     title: "Status",
     dataIndex: "status",
     key: "status",
-    width: 200,
+    width: 150,
     render: (_, { status }) => {
       let text;
       let color;
@@ -76,6 +77,28 @@ export const ColumnCuti = [
         <Button className={color} key={status} type="primary">
           <span className="font-medium">{text}</span>
         </Button>
+      );
+    },
+  },
+  {
+    title: "Action",
+    width: 200,
+    render: (record) => {
+      return (
+        <>
+          <Link to={`/update-cuti/${record.uuid}`}>
+            <Button type="primary" className="me-1 w-[80px]">
+              <span className="font-medium">Update</span>
+            </Button>
+          </Link>
+
+          <Button
+            onClick={() => handleOpenModalDelete(record)}
+            className="mt-2 w-[80px] border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+          >
+            <span className="font-medium">Delete</span>
+          </Button>
+        </>
       );
     },
   },

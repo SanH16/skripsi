@@ -104,7 +104,7 @@ export default function UpdateUser() {
       >
         {/* Title */}
         <Flex justify="space-between" align="center">
-          <h3 className="font-bold">Buat User</h3>
+          <h3 className="font-bold">Update User</h3>
           <div>
             <Space size="middle">
               <Button

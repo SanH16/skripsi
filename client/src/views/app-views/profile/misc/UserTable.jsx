@@ -18,7 +18,7 @@ export default function UserTable() {
     setIsShowDelete((prev) => !prev);
   };
 
-  const DataSource = showAll ? data : data.slice(0, 2);
+  const DataSource = showAll ? data : data.slice(0, 3);
 
   const handleClick = () => {
     setShowAll(!showAll);
@@ -54,7 +54,7 @@ export default function UserTable() {
               onClick={handleClick}
               className="text-green-500 hover:text-green-700"
             >
-              {showAll ? "Tampilkan 5 Teratas" : "Lihat semua"}
+              {showAll ? "Tampilkan 3 Teratas" : "Lihat semua"}
             </button>
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function UserTable() {
           }
         />
         <h6 id="more-appointment-footer" className="mt-5 text-grey-200">
-          Menampilkan 5 data teratas
+          {showAll ? "" : "Menampilkan 3 data Teratas"}
         </h6>
         {isShowDelete && (
           <ModalDeleteUser
