@@ -7,7 +7,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { ModalConfirm } from "@/components/shared-components/ModalConfirm";
-import { ModalCancelLowongan } from "@/components/shared-components/ModalCancelLowongan";
+import { ModalCancel } from "@/components/shared-components/ModalCancel";
 import { globalRoute } from "@/utils/GlobalRoute";
 
 import {
@@ -120,7 +120,7 @@ export default function UpdateUser() {
                 htmlType="submit"
                 disabled={isSubmitting}
               >
-                Buat
+                Update
               </Button>
             </Space>
           </div>
@@ -268,18 +268,16 @@ export default function UpdateUser() {
           </div>
         </Col>
       </form>
-      {isShowCancel && (
-        <ModalCancelLowongan closeModal={handleOpenModalCancel} />
-      )}
+      {isShowCancel && <ModalCancel closeModal={handleOpenModalCancel} />}
       {isShowConfirm && (
         <ModalConfirm
           closeModal={handleOpenModalConfirm}
-          modalTitle="Buat User"
+          modalTitle="Update Data User"
           inputData={inputData}
           action={updateUser}
         >
           <>
-            <p>Apakah anda yakin ingin mengubah akun ini?</p>
+            <p>Apakah anda yakin ingin mengubah data akun ini?</p>
           </>
         </ModalConfirm>
       )}

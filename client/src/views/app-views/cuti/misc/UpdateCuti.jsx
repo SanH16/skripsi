@@ -7,7 +7,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { ModalConfirm } from "@/components/shared-components/ModalConfirm";
-import { ModalCancelLowongan } from "@/components/shared-components/ModalCancelLowongan";
+import { ModalCancel } from "@/components/shared-components/ModalCancel";
 import { globalRoute } from "@/utils/GlobalRoute";
 
 import imagePrev from "@/assets/content-pages.png";
@@ -113,7 +113,7 @@ export default function UpdateCuti() {
       >
         {/* Title */}
         <Flex justify="space-between" align="center">
-          <h3 className="font-bold">Buat Cuti</h3>
+          <h3 className="font-bold">Ubah Pengajuan Cuti</h3>
           <div>
             <Space size="middle">
               <Button
@@ -129,7 +129,7 @@ export default function UpdateCuti() {
                 htmlType="submit"
                 disabled={isSubmitting}
               >
-                Buat
+                Update
               </Button>
             </Space>
           </div>
@@ -306,13 +306,11 @@ export default function UpdateCuti() {
           </div>
         </Col>
       </form>
-      {isShowCancel && (
-        <ModalCancelLowongan closeModal={handleOpenModalCancel} />
-      )}
+      {isShowCancel && <ModalCancel closeModal={handleOpenModalCancel} />}
       {isShowConfirm && (
         <ModalConfirm
           closeModal={handleOpenModalConfirm}
-          modalTitle="Buat User"
+          modalTitle="Update Pengajuan Cuti"
           inputData={inputData}
           action={updateCuti}
         >
