@@ -6,20 +6,43 @@ import anonymousPict from "@/assets/anonymous profile.jpg";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { APIpegawai } from "@/apis/APIpegawai";
+import moment from "moment";
 
 export default function UserProfile() {
+  const [pegawai, setPegawai] = useState([]);
   const stateDataUser = useSelector(selectGetUserLogin);
   const dataUser = stateDataUser?.data;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await APIpegawai.getDataPegawai();
+        setPegawai(result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <>
       <Card>
         <div className="flex justify-between">
           <h3>Profil</h3>
-          {dataUser?.role === "admin" && (
+          {dataUser?.role === "admin" ? (
             <Link to={"/add-user"}>
               <Button className="block border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
-                Add New
+                Add New Account
+              </Button>
+            </Link>
+          ) : (
+            <Link to={pegawai?.length > 0 ? `/update-pegawai` : "/add-pegawai"}>
+              <Button className="block border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
+                {pegawai?.length > 0 ? "Ubah Data" : "Tambah Data"}
               </Button>
             </Link>
           )}
@@ -41,20 +64,40 @@ export default function UserProfile() {
                   {dataUser?.name}
                 </p>
                 <p className="text-sm font-medium text-grey-300 md:text-base">
-                  Jabatan (divisi)
+                  Jabatan ({pegawai?.length > 0 && pegawai[0].jabatan}
+                  {!pegawai?.length && "unavailable"})
                 </p>
                 <p className="mt-2">10 tahun pengalaman</p>
               </div>
             </div>
             <div className="me-5 md:col-span-1 lg:col-span-7 xl:col-span-4">
               <div
-                id="doctor-address"
+                id="user-address"
                 className="xl:flex xl:w-[100%] xl:space-x-3"
               >
                 <p className="text-sm font-semibold text-grey-900 md:text-base">
                   Role
                 </p>
                 <p className="text-sm md:text-base">{dataUser?.role}</p>
+              </div>
+              <div id="user-role" className="xl:flex xl:w-[100%] xl:space-x-3">
+                <p className="text-sm font-semibold text-grey-900 md:text-base">
+                  Address
+                </p>
+                <p className="text-sm md:text-base">
+                  {pegawai?.length > 0 && pegawai[0].address}
+                  {!pegawai?.length && "unavailable"}
+                </p>
+              </div>
+              <div id="user-role" className="xl:flex xl:w-[100%] xl:space-x-3">
+                <p className="text-sm font-semibold text-grey-900 md:text-base">
+                  Tanggal Lahir
+                </p>
+                <p className="text-sm md:text-base">
+                  {pegawai?.length > 0 &&
+                    moment(pegawai[0].tanggal_lahir).format("DD MMMM YYYY")}
+                  {!pegawai?.length && "unavailable"}
+                </p>
               </div>
             </div>
             <div className="flex md:col-span-1 lg:col-span-5 xl:col-span-3">
@@ -66,10 +109,27 @@ export default function UserProfile() {
                   <p className="text-sm font-semibold text-grey-900 md:text-base">
                     Phone
                   </p>
+                  <p className="text-sm font-semibold text-grey-900 md:text-base">
+                    Gender
+                  </p>
+                  <p className="text-sm font-semibold text-grey-900 md:text-base">
+                    NIK
+                  </p>
                 </div>
                 <div className="flex-col">
                   <p className="text-sm md:text-base">{dataUser?.email}</p>
-                  <p className="text-sm md:text-base">phone</p>
+                  <p className="text-sm md:text-base">
+                    {pegawai?.length > 0 && pegawai[0].phone}
+                    {!pegawai?.length && "unavailable"}
+                  </p>
+                  <p className="text-sm md:text-base">
+                    {pegawai?.length > 0 && pegawai[0].gender}
+                    {!pegawai?.length && "unavailable"}
+                  </p>
+                  <p className="text-sm md:text-base">
+                    {pegawai?.length > 0 && pegawai[0].nik}
+                    {!pegawai?.length && "unavailable"}
+                  </p>
                 </div>
               </div>
             </div>
