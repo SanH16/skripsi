@@ -7,7 +7,6 @@ import { FaPeopleLine } from "react-icons/fa6";
 import { MdPeople } from "react-icons/md";
 import { APIcuti } from "@/apis/APIcuti";
 import { APIpegawai } from "@/apis/APIpegawai";
-import { Link } from "react-router-dom";
 
 export function TotalCards() {
   const [data, setData] = useState({
@@ -77,7 +76,7 @@ export function TotalCards() {
       <Row gutter={[16, 16]}>
         {cardData.map((item, i) => (
           <Col key={i} span={6} xs={24} md={12} lg={12} xl={6}>
-            <Link to={item.link}>
+            <a href={item.link}>
               <Card hoverable className="hover:shadow-lg">
                 <div className="grid h-32 content-between">
                   <Flex justify="space-between" align="flex-start">
@@ -130,7 +129,7 @@ export function TotalCards() {
                   </Skeleton>
                 </div>
               </Card>
-            </Link>
+            </a>
           </Col>
         ))}
       </Row>
