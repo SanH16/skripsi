@@ -5,13 +5,14 @@ import { APIrekrutmen } from "@/apis/APIrekrutmen";
 import { FaTasks, FaUserSecret } from "react-icons/fa";
 import { FaPeopleLine } from "react-icons/fa6";
 import { MdPeople } from "react-icons/md";
-import { APIcuti } from "../../../../apis/APIcuti";
+import { APIcuti } from "@/apis/APIcuti";
+import { APIpegawai } from "../../../../apis/APIpegawai";
 
 export function TotalCards() {
   const [data, setData] = useState({
     totalRekrutmen: 0,
-    totalUser: 0,
-    totalPenugasan: 0,
+    totalMutasi: 0,
+    totalPegawai: 0,
     totalCuti: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -24,11 +25,13 @@ export function TotalCards() {
     try {
       const rekrutmenTotal = await APIrekrutmen.getAllRekrutmens();
       const cutiTotal = await APIcuti.getAllCuti();
+      const pegawaiTotal = await APIpegawai.getDataPegawai();
 
       setData((prevData) => ({
         ...prevData,
         totalRekrutmen: rekrutmenTotal.length,
         totalCuti: cutiTotal.length,
+        totalPegawai: pegawaiTotal.length,
       }));
       setIsLoading(false);
     } catch (error) {
@@ -37,50 +40,30 @@ export function TotalCards() {
     }
   };
 
-  const formatPrice = (num) => {
-    if (num >= 1000000) {
-      return num / 1000000 + " M";
-    } else if (num >= 1000) {
-      return num / 1000 + " K";
-    } else {
-      return num;
-    }
-  };
-
-  const formatPercentage = (percentage) => {
-    return percentage !== undefined
-      ? percentage < 0
-        ? percentage.toFixed(2) + "%"
-        : percentage % 1 === 0
-          ? "+" + percentage.toFixed(0) + "%"
-          : "+" + percentage.toFixed(2) + "%"
-      : "0%";
-  };
-
   const cardData = [
     {
       title: "Total Lowongan Kerja",
       total: data.totalRekrutmen,
       icon: <FaPeopleLine />,
-      percent: formatPercentage(data.rekrutmenPercentage),
+      available: data.totalRekrutmen > 0,
     },
     {
-      title: "Total Akun User",
-      total: data.totalUser,
+      title: "Total Mutasi",
+      total: data.totalMutasi,
       icon: <MdPeople />,
-      percent: formatPercentage(data.userPercentage),
+      available: data.totalMutasi > 0,
     },
     {
-      title: "Total Penugasan",
-      total: formatPrice(data.totalPenugasan),
+      title: "Data Pegawai",
+      total: data.totalPegawai,
       icon: <FaTasks />,
-      percent: formatPercentage(data.penugasanPercentage),
+      available: data.totalPegawai > 0,
     },
     {
-      title: "Total Cuti",
+      title: "Total Pengajuan Cuti",
       total: data.totalCuti,
       icon: <FaUserSecret />,
-      percent: formatPercentage(data.cutiPercentage),
+      available: data.totalCuti > 0,
     },
   ];
 
@@ -127,18 +110,16 @@ export function TotalCards() {
                   paragraph={{ rows: 1 }}
                 >
                   <h6 id="total-card-percent" className="text-grey-200">
+                    Data
                     <span
-                      className={`me-2 place-content-center rounded px-2 font-semibold ${
-                        item.percent[0] === "+"
+                      className={`ms-2 place-content-center rounded px-2 font-semibold ${
+                        item.available
                           ? "bg-green-50 text-positive"
-                          : item.percent[0] === "-"
-                            ? "bg-red-50 text-negative"
-                            : "bg-grey-50 text-grey-500"
+                          : "bg-grey-50 text-negative"
                       }`}
                     >
-                      {item.percent}
+                      {item.available ? "Tersedia" : "Belum Tersedia"}
                     </span>
-                    Sejak periode terakhir
                   </h6>
                 </Skeleton>
               </div>
