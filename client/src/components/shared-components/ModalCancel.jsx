@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Modal, Button } from "antd";
 import { IoIosWarning } from "react-icons/io";
 import { useState } from "react";
@@ -25,7 +24,7 @@ export function ModalCancel({ closeModal }) {
               border: "transparent",
             }}
           >
-            <Link to="/dashboard">Ya, Saya Yakin</Link>
+            <a href="/dashboard">Ya, Saya Yakin</a>
           </Button>
           <Button
             id="button-article-cancel"
