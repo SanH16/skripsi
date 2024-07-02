@@ -1,7 +1,7 @@
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import "react-quill/dist/quill.snow.css";
 import * as yup from "yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Flex, Col, Row, Button, Space, Select, DatePicker } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -18,14 +18,18 @@ import {
 } from "@/components/shared-components/Toast";
 import { APIcuti } from "@/apis/APIcuti";
 
+import moment from "moment";
+
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
-export default function AddCuti() {
-  useDocumentTitle("Pengajuan Cuti");
+export default function UpdateCuti() {
+  useDocumentTitle("Ubah Data Cuti");
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
+  const { cutiId } = useParams();
 
   const userState = useSelector(selectGetUserLogin);
   const isAuthenticated = userState?.data?.role === "admin";
@@ -50,19 +54,39 @@ export default function AddCuti() {
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const createCuti = async (data) => {
+  useEffect(() => {
+    const fetchCutiById = async () => {
+      try {
+        const result = await APIcuti.getCutiById(cutiId);
+        console.log("cuti rekrutmen fetch", result);
+        setInputData(result);
+
+        setValue("alasan_cuti", result.alasan_cuti);
+        setValue("start_cuti", moment(result.start_cuti));
+        setValue("end_cuti", moment(result.end_cuti));
+        setValue("keterangan", result.keterangan);
+        setValue("status", result.status);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCutiById();
+  }, [cutiId, setValue]);
+
+  const updateCuti = async () => {
     try {
-      const result = await APIcuti.createCuti(data);
-      showSuccessToast("Pengajuan Cuti berhasil dibuat", "top-center", "large");
+      const result = await APIcuti.updateCuti(cutiId, inputData);
+      showSuccessToast("Pengajuan Cuti berhasil diubah", "top-center", "large");
       globalRoute.navigate && globalRoute.navigate(`/cuti`);
-      console.log("post cuti", result);
+      console.log("update cuti", result);
     } catch (err) {
       console.error(err);
-      showErrorToast("Pengajuan Cuti gagal dibuat", "top-center", "large");
+      showErrorToast("Pengajuan Cuti gagal diubah", "top-center", "large");
     }
   };
 
@@ -290,7 +314,7 @@ export default function AddCuti() {
           closeModal={handleOpenModalConfirm}
           modalTitle="Buat User"
           inputData={inputData}
-          action={createCuti}
+          action={updateCuti}
         >
           <>
             <p>Apakah anda yakin ingin mengajukan cuti?</p>
