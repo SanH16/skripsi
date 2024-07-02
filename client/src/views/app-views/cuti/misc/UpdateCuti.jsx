@@ -1,8 +1,8 @@
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import "react-quill/dist/quill.snow.css";
 import * as yup from "yup";
-import { useState } from "react";
-import { Flex, Col, Row, Button, Space, Select } from "antd";
+import { useEffect, useState } from "react";
+import { Flex, Col, Row, Button, Space, Select, DatePicker } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -10,57 +10,83 @@ import { ModalConfirm } from "@/components/shared-components/ModalConfirm";
 import { ModalCancelLowongan } from "@/components/shared-components/ModalCancelLowongan";
 import { globalRoute } from "@/utils/GlobalRoute";
 
+import imagePrev from "@/assets/content-pages.png";
+
 import {
   showErrorToast,
   showSuccessToast,
 } from "@/components/shared-components/Toast";
-import { APIuser } from "@/apis/APIuser";
+import { APIcuti } from "@/apis/APIcuti";
 
-import imagePrev from "@/assets/content-pages.png";
+import moment from "moment";
 
-export default function AddUser() {
-  useDocumentTitle("Add User");
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+
+export default function UpdateCuti() {
+  useDocumentTitle("Ubah Data Cuti");
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
+  const { cutiId } = useParams();
+
+  const userState = useSelector(selectGetUserLogin);
+  const isAuthenticated = userState?.data?.role === "admin";
 
   const schema = yup.object().shape({
-    name: yup
+    alasan_cuti: yup
       .string()
       .trim()
-      .min(3, "Nama minimal 3 karakter")
-      .required("Nama harus diisi"),
-    email: yup.string().trim().required("Email harus diisi"),
-    password: yup
+      .min(10, "Alasan minimal 10 karakter")
+      .required("Alasam harus diisi"),
+    start_cuti: yup.date().required("Mulai cuti harus diisi").nullable(),
+    end_cuti: yup.date().required("Berakhir cuti harus diisi").nullable(),
+    keterangan: yup
       .string()
       .trim()
-      .min(6, "Password minimal 6 karakter")
-      .required("Password harus diisi"),
-    confPassword: yup
-      .string()
-      .trim()
-      .min(6, "Password minimal 6 karakter")
-      .required("Password harus diisi"),
-    role: yup.string().required("Role harus diisi"),
+      .min(10, "Keterangan minimal 10 karakter")
+      .required("Keterangan harus diisi"),
+    status: yup.string().required("Role harus diisi"),
   });
   const {
     register,
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const createUser = async (data) => {
+  useEffect(() => {
+    const fetchCutiById = async () => {
+      try {
+        const result = await APIcuti.getCutiById(cutiId);
+        console.log("cuti rekrutmen fetch", result);
+        setInputData(result);
+
+        setValue("alasan_cuti", result.alasan_cuti);
+        setValue("start_cuti", moment(result.start_cuti));
+        setValue("end_cuti", moment(result.end_cuti));
+        setValue("keterangan", result.keterangan);
+        setValue("status", result.status);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCutiById();
+  }, [cutiId, setValue]);
+
+  const updateCuti = async () => {
     try {
-      const result = await APIuser.createUser(data);
-      showSuccessToast("Akun User berhasil dibuat", "top-center", "large");
-      globalRoute.navigate && globalRoute.navigate(`/profil`);
-      console.log("post user", result);
+      const result = await APIcuti.updateCuti(cutiId, inputData);
+      showSuccessToast("Pengajuan Cuti berhasil diubah", "top-center", "large");
+      globalRoute.navigate && globalRoute.navigate(`/cuti`);
+      console.log("update cuti", result);
     } catch (err) {
       console.error(err);
-      showErrorToast("Akun User gagal dibuat", "top-center", "large");
+      showErrorToast("Pengajuan Cuti gagal diubah", "top-center", "large");
     }
   };
 
@@ -80,14 +106,14 @@ export default function AddUser() {
   };
 
   return (
-    <section id="unggah-user" className="mb-5 py-5">
+    <section id="unggah-cuti" className="mb-5 py-5">
       <form
         onSubmit={handleSubmit(onSubmitArticle)}
         className="flex flex-col gap-6"
       >
         {/* Title */}
         <Flex justify="space-between" align="center">
-          <h3 className="font-bold">Buat Akun User</h3>
+          <h3 className="font-bold">Buat Cuti</h3>
           <div>
             <Space size="middle">
               <Button
@@ -119,71 +145,82 @@ export default function AddUser() {
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="name"
+                  htmlFor="alasan_cuti"
                 >
-                  Nama
+                  Alasan Mengajukan Cuti
                 </label>
                 <input
-                  id="name"
-                  {...register("name")}
+                  id="alasan_cuti"
+                  {...register("alasan_cuti")}
                   className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.name
+                    errors.alasan_cuti
                       ? "border-negative text-negative"
                       : "border-grey-100 text-grey-900"
                   }`}
                   type="text"
-                  placeholder="Masukkan nama disini"
+                  placeholder="Masukkan alasan cuti disini"
                 />
                 <span className="pt-1 text-xs text-negative">
-                  {errors.name?.message}
+                  {errors.alasan_cuti?.message}
                 </span>
               </Row>
 
-              {/* Email */}
+              {/* Date start */}
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="name"
+                  htmlFor="start_cuti"
                 >
-                  Email
+                  Tanggal Mulai
                 </label>
-                <input
-                  id="email"
-                  {...register("email")}
-                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.email
-                      ? "border-negative text-negative"
-                      : "border-grey-100 text-grey-900"
-                  }`}
-                  type="text"
-                  placeholder="Masukkan email disini"
+                <Controller
+                  name="start_cuti"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      format="YYYY-MM-DD"
+                      className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
+                        errors.start_cuti
+                          ? "border-negative text-negative"
+                          : "border-grey-100 text-grey-900"
+                      }`}
+                      placeholder="Pilih tanggal mulai"
+                    />
+                  )}
                 />
+
                 <span className="pt-1 text-xs text-negative">
-                  {errors.email?.message}
+                  {errors.start_cuti?.message}
                 </span>
               </Row>
 
-              {/* Pw */}
+              {/* Date End */}
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="password"
+                  htmlFor="end_cuti"
                 >
-                  Password
+                  Tanggal Berakhir
                 </label>
-                <input
-                  id="password"
-                  {...register("password")}
-                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.password
-                      ? "border-negative text-negative"
-                      : "border-grey-100 text-grey-900"
-                  }`}
-                  type="text"
-                  placeholder="Masukkan password disini"
+                <Controller
+                  name="end_cuti"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      format="YYYY-MM-DD"
+                      className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
+                        errors.end_cuti
+                          ? "border-negative text-negative"
+                          : "border-grey-100 text-grey-900"
+                      }`}
+                      placeholder="Pilih tanggal berakhir"
+                    />
+                  )}
                 />
                 <span className="pt-1 text-xs text-negative">
-                  {errors.password?.message}
+                  {errors.end_cuti?.message}
                 </span>
               </Row>
 
@@ -191,23 +228,23 @@ export default function AddUser() {
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="confPassword"
+                  htmlFor="keterangan"
                 >
-                  Confirm Password
+                  Keterangan
                 </label>
                 <input
-                  id="confPassword"
-                  {...register("confPassword")}
+                  id="keterangan"
+                  {...register("keterangan")}
                   className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.password
+                    errors.keterangan
                       ? "border-negative text-negative"
                       : "border-grey-100 text-grey-900"
                   }`}
                   type="text"
-                  placeholder="Konfirmasi Password anda"
+                  placeholder="Konfirmasi keterangan anda"
                 />
                 <span className="pt-1 text-xs text-negative">
-                  {errors.confPassword?.message}
+                  {errors.keterangan?.message}
                 </span>
               </Row>
 
@@ -215,36 +252,46 @@ export default function AddUser() {
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="role"
+                  htmlFor="status"
                 >
-                  Role
+                  Status
                 </label>
                 <Controller
-                  name="role"
+                  name="status"
                   control={control}
                   render={({ field }) => (
                     <Select
                       variant="borderless"
                       {...field}
                       options={[
-                        { value: "user", label: "User" },
-                        { value: "admin", label: "Admin" },
+                        { value: "waiting", label: "Menunggu" },
+                        {
+                          value: "processed",
+                          label: "Diproses",
+                          disabled: !isAuthenticated,
+                        },
+                        {
+                          value: "done",
+                          label: "Selesai",
+                          disabled: !isAuthenticated,
+                        },
+                        {
+                          value: "cancelled",
+                          label: "Dibatalkan",
+                          disabled: !isAuthenticated,
+                        },
                       ]}
                       className={`mt-2 block w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
-                        errors.role
+                        errors.status
                           ? "border-negative text-negative"
                           : "border-grey-100 text-grey-900"
                       }`}
-                      placeholder="Pilih role"
+                      placeholder="Pilih status"
                     />
                   )}
                 />
                 <span className="pt-1 text-xs text-negative">
-                  {errors.role?.message}
-                </span>
-
-                <span className="pt-1 text-xs text-negative">
-                  {errors.role?.message}
+                  {errors.status?.message}
                 </span>
               </Row>
             </Flex>
@@ -267,10 +314,10 @@ export default function AddUser() {
           closeModal={handleOpenModalConfirm}
           modalTitle="Buat User"
           inputData={inputData}
-          action={createUser}
+          action={updateCuti}
         >
           <>
-            <p>Apakah anda yakin ingin membuat akun ini?</p>
+            <p>Apakah anda yakin ingin mengajukan cuti?</p>
           </>
         </ModalConfirm>
       )}
