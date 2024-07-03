@@ -21,8 +21,9 @@ import PemutusanHubunganKerja from "@/views/app-views/phk";
 import RewardAndPunishment from "@/views/app-views/reward-punishment";
 import AddUser from "@/views/app-views/profile/components/AddUser";
 import UpdateUser from "@/views/app-views/profile/components/UpdateUser";
-import AddCuti from "../views/app-views/cuti/misc/AddCuti";
-import UpdateCuti from "../views/app-views/cuti/misc/UpdateCuti";
+import AddCuti from "@/views/app-views/cuti/misc/AddCuti";
+import UpdateCuti from "@/views/app-views/cuti/misc/UpdateCuti";
+import AddPegawai from "@/views/app-views/profile/components/AddPegawai";
 
 export default function SetupRoutes() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ export default function SetupRoutes() {
         <Route path="/profil" element={<Profile />} />
         <Route path="/add-user" element={<AddUser />} />
         <Route path="/update-user/:userId" element={<UpdateUser />} />
+        <Route path="/add-pegawai" element={<AddPegawai />} />
         <Route path="/absensi" element={<Absensi />} />
         <Route path="/cuti" element={<Cuti />} />
         <Route path="/pengajuan-cuti" element={<AddCuti />} />
