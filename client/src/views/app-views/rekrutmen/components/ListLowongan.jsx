@@ -1,7 +1,5 @@
 import { BsSearch } from "react-icons/bs";
 
-// import { ListingLowongan } from "@/components/shared-components/ListingLowongan";
-
 import {
   Avatar,
   Button,
@@ -12,6 +10,7 @@ import {
   Image,
   Pagination,
   Row,
+  Skeleton,
   Tag,
 } from "antd";
 import { MdOutlineFileUpload } from "react-icons/md";
@@ -23,7 +22,7 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { APIrekrutmen } from "@/apis/APIrekrutmen";
 import { Link } from "react-router-dom";
 
@@ -31,6 +30,7 @@ dayjs.locale("id");
 import parse from "html-react-parser";
 
 import { authService } from "@/configs/auth";
+import { useQuery } from "@tanstack/react-query";
 
 export function ListLowongan() {
   return (
@@ -61,10 +61,6 @@ const SearchLowongan = () => (
 
 export function ListingLowongan() {
   const isAuthenticated = authService.isAuthorized();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [dataLowongan, setDataLowongan] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const sizePage = 6;
 
@@ -73,22 +69,15 @@ export function ListingLowongan() {
   useDocumentTitle("List Lowongan");
   useScrollToTop();
 
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchListLowongan = async () => {
-      try {
-        const result = await APIrekrutmen.getAllRekrutmens(currentPage);
+  const { data, isLoading } = useQuery({
+    queryKey: ["rekrutmenList", currentPage],
+    queryFn: async () => {
+      const result = await APIrekrutmen.getAllRekrutmens(currentPage);
+      return result;
+    },
+  });
 
-        // console.log("data rek", result);
-        setDataLowongan(result);
-        setIsLoading(false);
-      } catch (error) {
-        console.error(error);
-        setIsLoading(false);
-      }
-    };
-    fetchListLowongan();
-  }, [currentPage]);
+  const dataLowongan = data || [];
 
   const handleLamarClick = (event) => {
     event.preventDefault();
@@ -117,14 +106,21 @@ export function ListingLowongan() {
                     hoverable
                     cover={
                       <>
-                        <Image
-                          alt={item.image_desc}
-                          src={item?.image.data}
-                          className="h-[200px] md:h-[190px] lg:h-[200px] xl:h-[250px]"
-                          preview={true}
-                          onClick={handleLamarClick}
-                          fallback={dataConstant[0].image}
-                        />
+                        {isLoading ? (
+                          <Skeleton.Image
+                            active
+                            className="h-[200px] w-full md:w-full"
+                          />
+                        ) : (
+                          <Image
+                            alt={item.image_desc}
+                            src={item?.image.data}
+                            className="h-[200px] md:h-[190px] lg:h-[200px] xl:h-[250px]"
+                            preview={true}
+                            onClick={handleLamarClick}
+                            fallback={dataConstant[0].image}
+                          />
+                        )}
                       </>
                     }
                   >

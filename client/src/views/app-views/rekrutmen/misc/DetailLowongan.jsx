@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { APIrekrutmen } from "@/apis/APIrekrutmen";
 import { splitString } from "@/utils/SplitString";
@@ -36,43 +36,33 @@ import { ModalDeleteRekrutmen } from "@/components/shared-components/ModalDelete
 import { authService } from "@/configs/auth";
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+import { useQuery } from "@tanstack/react-query";
 
 export default function DetailLowongan() {
   const isAuthenticated = authService.isAuthorized();
   const userState = useSelector(selectGetUserLogin);
   const verifRole = userState?.data?.role === "admin";
 
-  const [isError, setIsError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [detailRekrutmen, setDetailRekrutmen] = useState([]);
   const { rekrutmenId } = useParams();
   const [isShowDelete, setIsShowDelete] = useState(false);
 
   useDocumentTitle("Detail Lowongan");
   useScrollToTop();
 
-  const tags = splitString(detailRekrutmen?.tags);
-
   const handleOpenModalDelete = () => {
     setIsShowDelete((prev) => !prev);
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchRekrutmenById = async () => {
-      try {
-        const result = await APIrekrutmen.getRekrutmenById(rekrutmenId);
-        console.log("detail rekrutmen fetch", result);
-        setDetailRekrutmen(result);
-        setIsLoading(false);
-      } catch (error) {
-        console.error(error);
-        setIsError(error);
-        setIsLoading(false);
-      }
-    };
-    fetchRekrutmenById();
-  }, [rekrutmenId]);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["rekrutmenData", rekrutmenId],
+    queryFn: async () => {
+      const result = await APIrekrutmen.getRekrutmenById(rekrutmenId);
+      return result;
+    },
+  });
+
+  const detailRekrutmen = data || [];
+  const tags = splitString(detailRekrutmen?.tags);
 
   return (
     <>
@@ -246,37 +236,56 @@ export default function DetailLowongan() {
               />
             )}
 
-            <section id="tags">
-              <h4 className="my-4 text-base text-[#4B4B4B] sm:text-xl">
-                Kategori
-              </h4>
-              {tags &&
-                tags?.map((tag, index) => (
-                  <Tag
-                    key={index}
-                    className="mb-2 me-2 text-justify text-xs font-semibold capitalize text-[#4B4B4B] hover:bg-green-100 sm:text-sm md:text-base"
-                    rootClassName="h-7 sm:h-10 px-5 py-2.5 rounded-lg border-[#4B4B4B] justify-center items-center inline-flex"
-                  >
-                    {tag}
-                  </Tag>
-                ))}
-            </section>
+            {isLoading ? (
+              <>
+                <Skeleton.Input
+                  active
+                  className="mb-3 mt-5 block h-[15px] w-[250px]"
+                />
+                <Skeleton.Input
+                  active
+                  className="mb-3 mt-5 block h-[45px] w-[50px] rounded-2xl"
+                />
+                <Skeleton.Input
+                  active
+                  className="mb-3 mt-5 block h-[15px] w-[250px]"
+                />
+              </>
+            ) : (
+              <>
+                <section id="tags">
+                  <h4 className="my-4 text-base text-[#4B4B4B] sm:text-xl">
+                    Kategori
+                  </h4>
+                  {tags &&
+                    tags?.map((tag, index) => (
+                      <Tag
+                        key={index}
+                        className="mb-2 me-2 text-justify text-xs font-semibold capitalize text-[#4B4B4B] hover:bg-green-100 sm:text-sm md:text-base"
+                        rootClassName="h-7 sm:h-10 px-5 py-2.5 rounded-lg border-[#4B4B4B] justify-center items-center inline-flex"
+                      >
+                        {tag}
+                      </Tag>
+                    ))}
+                </section>
 
-            <section
-              id="content-lowongan"
-              className="menu my-5 w-full text-justify"
-            >
-              {parse(`${detailRekrutmen?.text_desc}`)}
+                <section
+                  id="content-lowongan"
+                  className="menu my-5 w-full text-justify"
+                >
+                  {parse(`${detailRekrutmen?.text_desc}`)}
 
-              <div className="mt-5">
-                <h5 className="mb-2 text-xs font-semibold text-[#151515] sm:text-base">
-                  Referensi
-                </h5>
-                <p className="text-start text-[10px] font-[300] italic text-[#151515] sm:text-sm">
-                  {detailRekrutmen?.reference}
-                </p>
-              </div>
-            </section>
+                  <div className="mt-5">
+                    <h5 className="mb-2 text-xs font-semibold text-[#151515] sm:text-base">
+                      Referensi
+                    </h5>
+                    <p className="text-start text-[10px] font-[300] italic text-[#151515] sm:text-sm">
+                      {detailRekrutmen?.reference}
+                    </p>
+                  </div>
+                </section>
+              </>
+            )}
           </>
         </Card>
         {isError && (

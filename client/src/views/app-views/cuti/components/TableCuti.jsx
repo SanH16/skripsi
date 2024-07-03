@@ -1,24 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, Table, ConfigProvider, Button, Flex, Space } from "antd";
 
 // import { ListFilter } from "./ListFilter";
+// import { useDebounce } from "@/hooks/useDebounce";
 import { ColumnCuti } from "../constant/column-cuti";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
-// import { useDebounce } from "@/hooks/useDebounce";
 import { APIcuti } from "@/apis/APIcuti";
 import { Link } from "react-router-dom";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 import { ModalDeleteCuti } from "@/components/shared-components/ModalDeleteCuti";
 import { CardCuti } from "../misc/CardCuti";
+import { useQuery } from "@tanstack/react-query";
 
 export function TableCuti() {
   useDocumentTitle("Cuti Pegawai");
   useScrollToTop();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [dataCuti, setDataCuti] = useState([]);
   //   const [searchValue, setSearchValue] = useState("");
   //   const [filterStatus, setFilterStatus] = useState("");
 
@@ -33,21 +31,15 @@ export function TableCuti() {
     setIsShowDelete((prev) => !prev);
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchData = async () => {
-      try {
-        const result = await APIcuti.getAllCuti();
-        setDataCuti(result);
-        setIsLoading(false);
-      } catch (err) {
-        console.error(err);
-        setIsLoading(false);
-        setIsError(err);
-      }
-    };
-    fetchData();
-  }, []);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["cutiData"],
+    queryFn: async () => {
+      const result = await APIcuti.getAllCuti();
+      return result;
+    },
+  });
+  const dataCuti = data || [];
+  console.log("cuti query", dataCuti);
 
   return (
     <>
@@ -118,15 +110,13 @@ export function TableCuti() {
                 `Menampilkan ${range[0]}-${range[1]} dari ${total} data`,
             }}
             summary={() =>
-              isError.message !== null && !isLoading && isError ? (
+              isError !== null && !isLoading && isError ? (
                 <Table.Summary.Row>
                   <Table.Summary.Cell colSpan={10}>
                     <p className="text-center">
                       Terjadi kesalahan! silahkan kembali beberapa saat lagi.
                     </p>
-                    <p className="text-center text-negative">
-                      {isError.message}
-                    </p>
+                    <p className="text-center text-negative">{isError}</p>
                   </Table.Summary.Cell>
                 </Table.Summary.Row>
               ) : (

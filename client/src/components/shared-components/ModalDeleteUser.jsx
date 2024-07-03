@@ -15,6 +15,7 @@ export function ModalDeleteUser({ closeModal, stateModal }) {
         setIsSubmitting(true);
         closeModal();
         globalRoute.navigate("/profil");
+        window.location.reload();
       });
     } catch (error) {
       console.error(error);

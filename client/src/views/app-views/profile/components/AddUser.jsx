@@ -40,7 +40,11 @@ export default function AddUser() {
       .string()
       .trim()
       .min(6, "Password minimal 6 karakter")
-      .required("Password harus diisi"),
+      .required("Password harus diisi")
+      .oneOf(
+        [yup.ref("password"), null],
+        "Password dan konfirmasi password harus sama",
+      ),
     role: yup.string().required("Role harus diisi"),
   });
   const {

@@ -71,7 +71,6 @@ const UploadLowongan = () => {
       .array()
       .min(1, "Minimal 1 tag yang diisi")
       .required("Setiap tag harus diisi"),
-    // tags: yup.string().required("Tag harus diisi"),
     reference: yup
       .string()
       .trim()
@@ -79,11 +78,6 @@ const UploadLowongan = () => {
       .required("Referensi harus diisi"),
     image: yup
       .mixed()
-      // .required("Gambar harus diisi Bro!")
-      // .test("required", "Gambar harus diisi", (value) => {
-      //   if (value.length === 0) return false;
-      //   return true;
-      // })
       .test(
         "fileSize",
         "Ukuran file terlalu besar, maksimal 20 MB",

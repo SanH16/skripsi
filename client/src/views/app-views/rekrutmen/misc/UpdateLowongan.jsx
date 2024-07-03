@@ -53,8 +53,6 @@ const UpdateLowongan = () => {
   const [inputData, setInputData] = useState(null);
 
   const { rekrutmenId } = useParams();
-  //   const MAX_IMAGE_SIZE = 25000000;
-  //   const ALLOWED_IMAGE_TYPE = ["image/jpeg", "image/png"];
 
   const module = {
     toolbar: [
@@ -76,32 +74,12 @@ const UpdateLowongan = () => {
       .array()
       .min(1, "Minimal 1 tag yang diisi")
       .required("Setiap tag harus diisi"),
-    // tags: yup.string().required("Tag harus diisi"),
     reference: yup
       .string()
       .trim()
       .min(3, "Referensi minimal 3 karakter")
       .required("Referensi harus diisi"),
     image: yup.mixed(),
-    // .required("Gambar harus diisi Bro!")
-    // .test("required", "Gambar harus diisi", (value) => {
-    //   if (value.length === 0) return false;
-    //   return true;
-    // })
-    //   .test(
-    //     "fileSize",
-    //     "Ukuran file terlalu besar, maksimal 20 MB",
-    //     (value) => {
-    //       return value.size >= MAX_IMAGE_SIZE;
-    //     },
-    //   )
-    //   .test(
-    //     "fileType",
-    //     "Format file tidak valid, hanya file gambar yang diperbolehkan",
-    //     (value) => {
-    //       return ALLOWED_IMAGE_TYPE.includes(value.type);
-    //     },
-    //   ),
     image_desc: yup
       .string()
       .trim()
