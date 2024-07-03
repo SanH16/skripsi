@@ -58,14 +58,13 @@ export const ColumnCuti = (handleOpenModalDelete) => {
       title: "Keterangan",
       dataIndex: "keterangan",
       key: "keterangan",
-      width: 100,
-      sorter: (a, b) => a.keterangan.localeCompare(b.keterangan),
+      width: 200,
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      width: 150,
+      width: 100,
       render: (_, { status }) => {
         let text;
         let color;
@@ -92,6 +91,7 @@ export const ColumnCuti = (handleOpenModalDelete) => {
     {
       title: "Action",
       width: 200,
+      className: "text-center",
       render: (record) => {
         return (
           <>

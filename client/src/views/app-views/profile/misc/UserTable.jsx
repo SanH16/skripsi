@@ -88,7 +88,6 @@ export default function UserTable() {
           <ModalDeleteUser
             closeModal={handleOpenModalDelete}
             stateModal={userToDelete}
-            // deleteUser={deleteUser} // Fungsi untuk menghapus pengguna
           />
         )}
       </Card>

@@ -16,6 +16,7 @@ export const ColumnUser = (handleOpenModalDelete) => [
     dataIndex: "name",
     key: "id",
     width: 150,
+    sorter: (a, b) => a.name.localeCompare(b.name),
   },
   {
     title: "Email",
@@ -34,6 +35,7 @@ export const ColumnUser = (handleOpenModalDelete) => [
     dataIndex: "createdAt",
     key: "createdAt",
     width: 150,
+    sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
     render: (val) => {
       return dayjs(val).format("DD/MM/YYYY");
     },
@@ -41,6 +43,7 @@ export const ColumnUser = (handleOpenModalDelete) => [
   {
     title: "Action",
     width: 100,
+    className: "text-center",
     render: (record) => {
       return (
         <>

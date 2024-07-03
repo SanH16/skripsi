@@ -14,7 +14,8 @@ export function ModalDeleteCuti({ closeModal, stateModal }) {
         setIsOpen(false);
         setIsSubmitting(true);
         closeModal();
-        globalRoute.navigate("/dashboard");
+        globalRoute.navigate("/cuti");
+        window.location.reload();
       });
     } catch (error) {
       console.error(error);
