@@ -1,13 +1,11 @@
-import { Card, Table } from "antd";
-import { useEffect, useState } from "react";
+import { Card, ConfigProvider, Table } from "antd";
+import { useState } from "react";
 import { APIuser } from "@/apis/APIuser";
 import { ColumnUser } from "../constant/column-user";
 import { ModalDeleteUser } from "@/components/shared-components/ModalDeleteUser";
+import { useQuery } from "@tanstack/react-query";
 
 export default function UserTable() {
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
   const [isShowDelete, setIsShowDelete] = useState(false);
@@ -18,28 +16,19 @@ export default function UserTable() {
     setIsShowDelete((prev) => !prev);
   };
 
-  const DataSource = showAll ? data : data.slice(0, 3);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["userData"],
+    queryFn: async () => {
+      const result = await APIuser.getAllUsers();
+      return result;
+    },
+  });
+
+  const DataSource = data ? (showAll ? data : data.slice(0, 3)) : [];
 
   const handleClick = () => {
     setShowAll(!showAll);
   };
-
-  useEffect(() => {
-    const fetchDataUser = async () => {
-      try {
-        const result = await APIuser.getAllUsers();
-
-        setData(result);
-        setIsLoading(false);
-      } catch (error) {
-        console.error(error);
-        setIsLoading(false);
-        setIsError(error);
-      }
-    };
-    setIsLoading(true);
-    fetchDataUser();
-  }, []);
 
   return (
     <>
@@ -58,29 +47,40 @@ export default function UserTable() {
             </button>
           </div>
         </div>
-        <Table
-          id="table-appointment"
-          loading={isLoading}
-          columns={ColumnUser(handleOpenModalDelete)}
-          dataSource={DataSource}
-          pagination={false}
-          scroll={{ x: true }}
-          style={{ maxWidth: "100vw" }}
-          summary={() =>
-            isError.message !== null && !isLoading && isError ? (
-              <Table.Summary.Row>
-                <Table.Summary.Cell colSpan={10}>
-                  <p className="text-center">
-                    Terjadi kesalahan! silahkan kembali beberapa saat lagi.
-                  </p>
-                  <p className="text-center text-negative">{isError.message}</p>
-                </Table.Summary.Cell>
-              </Table.Summary.Row>
-            ) : (
-              <></>
-            )
-          }
-        />
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: "#17c6a3",
+            },
+          }}
+        >
+          <Table
+            id="table-user"
+            loading={isLoading}
+            columns={ColumnUser(handleOpenModalDelete)}
+            dataSource={DataSource}
+            pagination={false}
+            scroll={{ x: true }}
+            style={{ maxWidth: "100vw" }}
+            summary={() =>
+              isError.message !== null && !isLoading && isError ? (
+                <Table.Summary.Row>
+                  <Table.Summary.Cell colSpan={10}>
+                    <p className="text-center">
+                      Terjadi kesalahan! silahkan kembali beberapa saat lagi.
+                    </p>
+                    <p className="text-center text-negative">
+                      {isError.message}
+                    </p>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+              ) : (
+                <></>
+              )
+            }
+          />
+        </ConfigProvider>
+
         <h6 id="more-appointment-footer" className="mt-5 text-grey-200">
           {showAll ? "" : "Menampilkan 3 data Teratas"}
         </h6>
