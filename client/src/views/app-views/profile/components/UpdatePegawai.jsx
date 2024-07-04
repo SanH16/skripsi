@@ -1,8 +1,8 @@
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import "react-quill/dist/quill.snow.css";
 import * as yup from "yup";
-import { useState } from "react";
-import { Flex, Col, Row, Button, Space, Select } from "antd";
+import { useEffect, useState } from "react";
+import { Flex, Col, Row, Button, Space, Select, DatePicker } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -14,57 +14,78 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "@/components/shared-components/Toast";
-import { APIuser } from "@/apis/APIuser";
+import { APIpegawai } from "@/apis/APIpegawai";
 
 import imagePrev from "@/assets/content-pages.png";
+import { useParams } from "react-router-dom";
+import moment from "moment";
 
-export default function AddUser() {
-  useDocumentTitle("Add User");
+export default function UpdatePegawai() {
+  useDocumentTitle("Ubah Data Pegawai");
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
+  const { pegawaiId } = useParams();
 
   const schema = yup.object().shape({
-    name: yup
+    nik: yup
       .string()
       .trim()
-      .min(3, "Nama minimal 3 karakter")
-      .required("Nama harus diisi"),
-    email: yup.string().trim().required("Email harus diisi"),
-    password: yup
+      .min(16, "NIK minimal 16 karakter")
+      .required("Data NIK harus diisi"),
+    jabatan: yup.string().trim().required("Jabatan harus diisi"),
+    phone: yup
       .string()
       .trim()
-      .min(6, "Password minimal 6 karakter")
-      .required("Password harus diisi"),
-    confPassword: yup
+      .min(10, "Nomor HP minimal 10 karakter")
+      .required("Nomor HP harus diisi"),
+    tanggal_lahir: yup.date().required("Tanggal lahir harus diisi"),
+    gender: yup.string().required("Jenis Kelamin harus diisi"),
+    address: yup
       .string()
       .trim()
-      .min(6, "Password minimal 6 karakter")
-      .required("Password harus diisi")
-      .oneOf(
-        [yup.ref("password"), null],
-        "Password dan konfirmasi password harus sama",
-      ),
-    role: yup.string().required("Role harus diisi"),
+      .min(5, "Alamat minimal 5 karakter")
+      .required("Data NIK harus diisi"),
   });
   const {
     register,
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const createUser = async (data) => {
+  useEffect(() => {
+    const fetchPegawaiById = async () => {
+      try {
+        const result = await APIpegawai.getPegawaiById(pegawaiId);
+        console.log("update pegawai fetch", result);
+        setInputData(result);
+
+        setValue("nik", result.nik);
+        setValue("jabatan", result.jabatan);
+        setValue("phone", result.phone);
+        setValue("tanggal_lahir", moment(result.tanggal_lahir));
+        setValue("gender", result.gender);
+        setValue("address", result.address);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchPegawaiById();
+  }, [pegawaiId, setValue]);
+
+  const updatePegawai = async () => {
     try {
-      const result = await APIuser.createUser(data);
-      showSuccessToast("Akun User berhasil dibuat", "top-center", "large");
+      const result = await APIpegawai.updatePegawai(pegawaiId, inputData);
+      showSuccessToast("Data Pegawai berhasil diubah", "top-center", "large");
       globalRoute.navigate && globalRoute.navigate(`/profil`);
-      console.log("post user", result);
+      console.log("update pegawai", result);
     } catch (err) {
       console.error(err);
-      showErrorToast("Akun User gagal dibuat", "top-center", "large");
+      showErrorToast("Data Pegawai gagal diubah", "top-center", "large");
     }
   };
 
@@ -91,7 +112,7 @@ export default function AddUser() {
       >
         {/* Title */}
         <Flex justify="space-between" align="center">
-          <h3 className="font-bold">Buat Akun User</h3>
+          <h3 className="font-bold">Ubah Data Pegawai</h3>
           <div>
             <Space size="middle">
               <Button
@@ -107,7 +128,7 @@ export default function AddUser() {
                 htmlType="submit"
                 disabled={isSubmitting}
               >
-                Buat
+                Ubah
               </Button>
             </Space>
           </div>
@@ -123,23 +144,23 @@ export default function AddUser() {
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="name"
+                  htmlFor="nik"
                 >
-                  Nama Lengkap
+                  Nomor Induk Kependudukan
                 </label>
                 <input
-                  id="name"
-                  {...register("name")}
+                  id="nik"
+                  {...register("nik")}
                   className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.name
+                    errors.nik
                       ? "border-negative text-negative"
                       : "border-grey-100 text-grey-900"
                   }`}
                   type="text"
-                  placeholder="Masukkan nama disini"
+                  placeholder="Masukkan NIK anda disini"
                 />
                 <span className="pt-1 text-xs text-negative">
-                  {errors.name?.message}
+                  {errors.nik?.message}
                 </span>
               </Row>
 
@@ -147,15 +168,15 @@ export default function AddUser() {
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="name"
+                  htmlFor="jabatan"
                 >
-                  Email
+                  Jabatan Pegawai
                 </label>
                 <input
-                  id="email"
-                  {...register("email")}
+                  id="jabatan"
+                  {...register("jabatan")}
                   className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.email
+                    errors.jabatan
                       ? "border-negative text-negative"
                       : "border-grey-100 text-grey-900"
                   }`}
@@ -163,7 +184,7 @@ export default function AddUser() {
                   placeholder="Masukkan email disini"
                 />
                 <span className="pt-1 text-xs text-negative">
-                  {errors.email?.message}
+                  {errors.jabatan?.message}
                 </span>
               </Row>
 
@@ -171,47 +192,53 @@ export default function AddUser() {
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="password"
+                  htmlFor="phone"
                 >
-                  Password
+                  Nomor HP Pengguna
                 </label>
                 <input
-                  id="password"
-                  {...register("password")}
+                  id="phone"
+                  {...register("phone")}
                   className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.password
+                    errors.phone
                       ? "border-negative text-negative"
                       : "border-grey-100 text-grey-900"
                   }`}
-                  type="text"
+                  type="number"
                   placeholder="Masukkan password disini"
                 />
                 <span className="pt-1 text-xs text-negative">
-                  {errors.password?.message}
+                  {errors.phone?.message}
                 </span>
               </Row>
 
-              {/* Conf Pw */}
+              {/* Date start */}
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="confPassword"
+                  htmlFor="tanggal_lahir"
                 >
-                  Confirm Password
+                  Tanggal Lahir
                 </label>
-                <input
-                  id="confPassword"
-                  {...register("confPassword")}
-                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.password
-                      ? "border-negative text-negative"
-                      : "border-grey-100 text-grey-900"
-                  }`}
-                  type="text"
-                  placeholder="Konfirmasi Password anda"
+                <Controller
+                  name="tanggal_lahir"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      {...field}
+                      format="YYYY-MM-DD"
+                      className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
+                        errors.tanggal_lahir
+                          ? "border-negative text-negative"
+                          : "border-grey-100 text-grey-900"
+                      }`}
+                      placeholder="Pilih tanggal lahir"
+                    />
+                  )}
                 />
+
                 <span className="pt-1 text-xs text-negative">
-                  {errors.confPassword?.message}
+                  {errors.tanggal_lahir?.message}
                 </span>
               </Row>
 
@@ -219,36 +246,56 @@ export default function AddUser() {
               <Row>
                 <label
                   className="block text-xl font-semibold text-grey-400"
-                  htmlFor="role"
+                  htmlFor="gender"
                 >
-                  Role
+                  Jenis Kelamin
                 </label>
                 <Controller
-                  name="role"
+                  name="gender"
                   control={control}
                   render={({ field }) => (
                     <Select
                       variant="borderless"
                       {...field}
                       options={[
-                        { value: "user", label: "User" },
-                        { value: "admin", label: "Admin" },
+                        { value: "Laki - Laki", label: "Laki - Laki" },
+                        { value: "Perempuan", label: "Perempuan" },
                       ]}
                       className={`mt-2 block w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
-                        errors.role
+                        errors.gender
                           ? "border-negative text-negative"
                           : "border-grey-100 text-grey-900"
                       }`}
-                      placeholder="Pilih role"
+                      placeholder="Pilih Jenis Kelamin anda"
                     />
                   )}
                 />
                 <span className="pt-1 text-xs text-negative">
-                  {errors.role?.message}
+                  {errors.gender?.message}
                 </span>
+              </Row>
 
+              {/* Email */}
+              <Row>
+                <label
+                  className="block text-xl font-semibold text-grey-400"
+                  htmlFor="address"
+                >
+                  Alamat
+                </label>
+                <input
+                  id="address"
+                  {...register("address")}
+                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
+                    errors.address
+                      ? "border-negative text-negative"
+                      : "border-grey-100 text-grey-900"
+                  }`}
+                  type="text"
+                  placeholder="Masukkan alamat disini"
+                />
                 <span className="pt-1 text-xs text-negative">
-                  {errors.role?.message}
+                  {errors.address?.message}
                 </span>
               </Row>
             </Flex>
@@ -267,12 +314,12 @@ export default function AddUser() {
       {isShowConfirm && (
         <ModalConfirm
           closeModal={handleOpenModalConfirm}
-          modalTitle="Buat User"
+          modalTitle="Ubah Data Pegawai"
           inputData={inputData}
-          action={createUser}
+          action={updatePegawai}
         >
           <>
-            <p>Apakah anda yakin ingin membuat akun ini?</p>
+            <p>Apakah anda yakin ingin menambah Data Pegawai?</p>
           </>
         </ModalConfirm>
       )}

@@ -1,7 +1,11 @@
-import { Button } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/id";
+
+import { Button } from "antd";
 import { Link } from "react-router-dom";
+
+import { MdOutlineDeleteSweep } from "react-icons/md";
+import { FaRegEdit } from "react-icons/fa";
 
 export const ColumnUser = (handleOpenModalDelete) => [
   {
@@ -48,16 +52,16 @@ export const ColumnUser = (handleOpenModalDelete) => [
       return (
         <>
           <Link to={`/update-user/${record.uuid}`}>
-            <Button type="primary" className="me-2">
-              <span className="font-medium">Update</span>
+            <Button type="primary" className="me-2 h-[25px] w-auto">
+              <FaRegEdit className="p-[2px] text-[25px]" />
             </Button>
           </Link>
 
           <Button
             onClick={() => handleOpenModalDelete(record)}
-            className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+            className="h-[25px] w-auto border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
           >
-            <span className="font-medium">Delete</span>
+            <MdOutlineDeleteSweep className="text-[25px]" />
           </Button>
         </>
       );

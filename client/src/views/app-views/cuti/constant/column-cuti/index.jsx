@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+import { FaRegEdit } from "react-icons/fa";
+import { MdOutlineDeleteSweep } from "react-icons/md";
 
 export const ColumnCuti = (handleOpenModalDelete) => {
   const userState = useSelector(selectGetUserLogin);
-  const isAuthenticated = userState?.data?.role === "admin";
+  const verifRole = userState?.data?.role === "admin";
 
   return [
     {
@@ -93,20 +95,26 @@ export const ColumnCuti = (handleOpenModalDelete) => {
       width: 200,
       className: "text-center",
       render: (record) => {
+        const isCutiDisabled =
+          record.status === "processed" || record.status === "done";
         return (
           <>
             <Link to={`/update-cuti/${record.uuid}`}>
-              <Button type="primary" className="me-1 w-[80px]">
-                <span className="font-medium">Update</span>
+              <Button
+                type="primary"
+                className="me-1 h-[30px] w-auto"
+                disabled={!verifRole && isCutiDisabled}
+              >
+                <FaRegEdit className="p-[2px] text-[25px]" />
               </Button>
             </Link>
 
-            {isAuthenticated && (
+            {verifRole && (
               <Button
                 onClick={() => handleOpenModalDelete(record)}
-                className="mt-2 w-[80px] border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                className="h-[30px] w-auto border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
               >
-                <span className="font-medium">Delete</span>
+                <MdOutlineDeleteSweep className="text-[25px]" />
               </Button>
             )}
           </>
