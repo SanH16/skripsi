@@ -35,7 +35,7 @@ export default function UserTable() {
       <Card id="user-table-section">
         <div className="flex justify-between">
           <p id="user-table-title" className="mb-4 text-2xl font-semibold">
-            Data User
+            Data Akun User
           </p>
 
           <div>

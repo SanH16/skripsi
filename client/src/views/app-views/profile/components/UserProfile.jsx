@@ -15,17 +15,21 @@ export default function UserProfile() {
   const stateDataUser = useSelector(selectGetUserLogin);
   const dataUser = stateDataUser?.data;
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["repoData"],
+  const {
+    data: pegawaiData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["pegawaiData"],
     queryFn: async () => {
       const result = await APIpegawai.getDataPegawai();
       return result;
     },
   });
-  const pegawaiData = data;
+  // const pegawaiData = data;
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  if (isError) {
+    return <div>Error: {isError.message}</div>;
   }
 
   return (
@@ -41,17 +45,33 @@ export default function UserProfile() {
                     Add New Account
                   </Button>
                 </Link>
-                <Link to={pegawaiData ? `/update-pegawai` : "/add-pegawai"}>
+                <Link
+                  to={
+                    pegawaiData && pegawaiData.length > 0
+                      ? `/update-pegawai/${pegawaiData?.[0]?.uuid}`
+                      : "/add-pegawai"
+                  }
+                >
                   <Button className="border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
-                    {pegawaiData ? "Ubah Data" : "Tambah Data"}
+                    {pegawaiData && pegawaiData.length > 0
+                      ? "Ubah Data"
+                      : "Tambah Data"}
                   </Button>
                 </Link>
               </div>
             </>
           ) : (
-            <Link to={pegawaiData ? `/update-pegawai` : "/add-pegawai"}>
+            <Link
+              to={
+                pegawaiData && pegawaiData.length > 0
+                  ? `/update-pegawai/${pegawaiData?.[0]?.uuid}`
+                  : "/add-pegawai"
+              }
+            >
               <Button className="block border-green-500 text-green-500 hover:bg-green-700 hover:text-white">
-                {pegawaiData ? "Ubah Data" : "Tambah Data"}
+                {pegawaiData && pegawaiData.length > 0
+                  ? "Ubah Data"
+                  : "Tambah Data"}
               </Button>
             </Link>
           )}
@@ -101,11 +121,11 @@ export default function UserProfile() {
                   Tanggal Lahir
                 </p>
                 <p className="text-sm md:text-base">
-                  {(pegawaiData &&
-                    moment(pegawaiData?.[0].tanggal_lahir).format(
-                      "DD MMMM YYYY",
-                    )) ||
-                    "unavailable"}
+                  {pegawaiData && pegawaiData[0]?.tanggal_lahir
+                    ? moment(pegawaiData[0].tanggal_lahir).format(
+                        "DD MMMM YYYY",
+                      )
+                    : "unavailable"}
                 </p>
               </div>
             </div>

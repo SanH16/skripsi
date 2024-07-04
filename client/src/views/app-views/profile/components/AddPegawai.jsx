@@ -159,7 +159,7 @@ export default function AddPegawai() {
                       : "border-grey-100 text-grey-900"
                   }`}
                   type="text"
-                  placeholder="Masukkan email disini"
+                  placeholder="Masukkan jabatan disini"
                 />
                 <span className="pt-1 text-xs text-negative">
                   {errors.jabatan?.message}

@@ -16,16 +16,16 @@ export default function Profile() {
 
   const stateDataUser = useSelector(selectGetUserLogin);
   const dataUser = stateDataUser?.data;
+  const verifRole = dataUser?.role === "admin";
 
   return (
     <section className="mb-5 py-5">
       <Row gutter={[16, 24]}>
         <Col span={24}>
           <UserProfile />
+          <button>Ganti Table</button>
         </Col>
-        <Col span={24}>
-          {dataUser?.role === "admin" ? <UserTable /> : <TabsUser />}
-        </Col>
+        <Col span={24}>{verifRole ? <UserTable /> : <TabsUser />}</Col>
       </Row>
     </section>
   );
