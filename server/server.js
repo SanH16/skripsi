@@ -22,7 +22,8 @@ const store = new sessionStore({
 
 // (async () => {
 //   // Generate table di db
-//   await db.sync();
+//   // await db.sync();
+//   await db.sync({ alter: true }); // sinkronisasi schema table to db
 //   // await store.sync(); // Sinkronisasi tabel sessions
 // })();
 

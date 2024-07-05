@@ -55,6 +55,20 @@ const Pegawai = db.define(
         notEmpty: true,
       },
     },
+    pendidikan: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    status_menikah: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
