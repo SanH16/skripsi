@@ -17,6 +17,8 @@ import {
 import { APIuser } from "@/apis/APIuser";
 import { useParams } from "react-router-dom";
 
+import imagePrev from "@/assets/content-pages.png";
+
 export default function UpdateUser() {
   useDocumentTitle("Update User");
   const [isShowCancel, setIsShowCancel] = useState(false);
@@ -264,6 +266,14 @@ export default function UpdateUser() {
                   {errors.role?.message}
                 </span>
               </Row>
+            </Flex>
+
+            <Flex vertical className="gap-6 rounded-lg p-6">
+              <img
+                src={imagePrev}
+                alt="Preview"
+                className="ms-5 rounded-lg lg:h-[460px] lg:w-[500px]"
+              />
             </Flex>
           </div>
         </Col>

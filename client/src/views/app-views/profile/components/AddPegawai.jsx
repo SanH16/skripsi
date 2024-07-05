@@ -26,15 +26,19 @@ export default function AddPegawai() {
 
   const schema = yup.object().shape({
     nik: yup
-      .number()
+      .string()
+      .trim()
       .min(16, "NIK minimal 16 karakter")
       .required("Data NIK harus diisi"),
     jabatan: yup.string().trim().required("Jabatan harus diisi"),
+    pendidikan: yup.string().trim().required("Pendidikan Terakhir harus diisi"),
     phone: yup
-      .number()
+      .string()
+      .trim()
       .min(10, "Nomor HP minimal 10 karakter")
       .required("Nomor HP harus diisi"),
     tanggal_lahir: yup.date().required("Tanggal lahir harus diisi"),
+    status_menikah: yup.string().required("Status Pernikahan harus diisi"),
     gender: yup.string().required("Jenis Kelamin harus diisi"),
     address: yup
       .string()
@@ -106,7 +110,7 @@ export default function AddPegawai() {
                 htmlType="submit"
                 disabled={isSubmitting}
               >
-                Buat
+                Simpan
               </Button>
             </Space>
           </div>
@@ -143,27 +147,84 @@ export default function AddPegawai() {
               </Row>
 
               {/* Email */}
-              <Row>
-                <label
-                  className="block text-xl font-semibold text-grey-400"
-                  htmlFor="jabatan"
-                >
-                  Jabatan Pegawai
-                </label>
-                <input
-                  id="jabatan"
-                  {...register("jabatan")}
-                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.jabatan
-                      ? "border-negative text-negative"
-                      : "border-grey-100 text-grey-900"
-                  }`}
-                  type="text"
-                  placeholder="Masukkan jabatan disini"
-                />
-                <span className="pt-1 text-xs text-negative">
-                  {errors.jabatan?.message}
-                </span>
+              <Row className="grid grid-cols-2 gap-4">
+                <div>
+                  <label
+                    className="block text-xl font-semibold text-grey-400"
+                    htmlFor="jabatan"
+                  >
+                    Jabatan Pegawai
+                  </label>
+                  <Controller
+                    name="jabatan"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        variant="borderless"
+                        {...field}
+                        options={[
+                          {
+                            value: "Kepala Produksi",
+                            label: "Kepala Produksi",
+                          },
+                          {
+                            value: "Quality Control",
+                            label: "Quality Control",
+                          },
+                          {
+                            value: "Bagian Keuangan",
+                            label: "Bagian Keuangan",
+                          },
+                          { value: "Bagian SDM", label: "Bagian SDM" },
+                          { value: "Admin", label: "Admin" },
+                          { value: "Penjahit", label: "Penjahit" },
+                        ]}
+                        className={`mt-2 block h-[40px] w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
+                          errors.jabatan
+                            ? "border-negative text-negative"
+                            : "border-grey-100 text-grey-900"
+                        }`}
+                        placeholder="Pilih Jabatan Pegawai"
+                      />
+                    )}
+                  />
+                  <span className="pt-1 text-xs text-negative">
+                    {errors.jabatan?.message}
+                  </span>
+                </div>
+                <div>
+                  <label
+                    className="block text-xl font-semibold text-grey-400"
+                    htmlFor="pendidikan"
+                  >
+                    Pendidikan Terakhir
+                  </label>
+                  <Controller
+                    name="pendidikan"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        variant="borderless"
+                        {...field}
+                        options={[
+                          { value: "Sarjana S1", label: "Sarjana S1" },
+                          { value: "Diploma 3", label: "Diploma 3" },
+                          { value: "SMA", label: "SMA" },
+                          { value: "SMP", label: "SMP" },
+                        ]}
+                        className={`mt-2 block h-[40px] w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
+                          errors.pendidikan
+                            ? "border-negative text-negative"
+                            : "border-grey-100 text-grey-900"
+                        }`}
+                        placeholder="Pilih Status anda"
+                      />
+                    )}
+                  />
+                  <span className="pt-1 text-xs text-negative">
+                    {errors.pendidikan?.message}
+                  </span>
+                </div>
               </Row>
 
               {/* Pw */}
@@ -183,7 +244,7 @@ export default function AddPegawai() {
                       : "border-grey-100 text-grey-900"
                   }`}
                   type="number"
-                  placeholder="Masukkan password disini"
+                  placeholder="Masukkan nomor hp disini"
                 />
                 <span className="pt-1 text-xs text-negative">
                   {errors.phone?.message}
@@ -221,36 +282,69 @@ export default function AddPegawai() {
               </Row>
 
               {/* Role */}
-              <Row>
-                <label
-                  className="block text-xl font-semibold text-grey-400"
-                  htmlFor="gender"
-                >
-                  Jenis Kelamin
-                </label>
-                <Controller
-                  name="gender"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      variant="borderless"
-                      {...field}
-                      options={[
-                        { value: "Laki - Laki", label: "Laki - Laki" },
-                        { value: "Perempuan", label: "Perempuan" },
-                      ]}
-                      className={`mt-2 block w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
-                        errors.gender
-                          ? "border-negative text-negative"
-                          : "border-grey-100 text-grey-900"
-                      }`}
-                      placeholder="Pilih Jenis Kelamin anda"
-                    />
-                  )}
-                />
-                <span className="pt-1 text-xs text-negative">
-                  {errors.gender?.message}
-                </span>
+              <Row className="grid grid-cols-2 gap-4">
+                <div>
+                  <label
+                    className="block text-xl font-semibold text-grey-400"
+                    htmlFor="gender"
+                  >
+                    Jenis Kelamin
+                  </label>
+                  <Controller
+                    name="gender"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        variant="borderless"
+                        {...field}
+                        options={[
+                          { value: "Laki - Laki", label: "Laki - Laki" },
+                          { value: "Perempuan", label: "Perempuan" },
+                        ]}
+                        className={`mt-2 block h-[40px] w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
+                          errors.gender
+                            ? "border-negative text-negative"
+                            : "border-grey-100 text-grey-900"
+                        }`}
+                        placeholder="Pilih Jenis Kelamin anda"
+                      />
+                    )}
+                  />
+                  <span className="pt-1 text-xs text-negative">
+                    {errors.gender?.message}
+                  </span>
+                </div>
+                <div>
+                  <label
+                    className="block text-xl font-semibold text-grey-400"
+                    htmlFor="status_menikah"
+                  >
+                    Status Pernikahan
+                  </label>
+                  <Controller
+                    name="status_menikah"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        variant="borderless"
+                        {...field}
+                        options={[
+                          { value: "Menikah", label: "Menikah" },
+                          { value: "Belum Menikah", label: "Belum Menikah" },
+                        ]}
+                        className={`mt-2 block h-[40px] w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
+                          errors.status_menikah
+                            ? "border-negative text-negative"
+                            : "border-grey-100 text-grey-900"
+                        }`}
+                        placeholder="Pilih Status anda"
+                      />
+                    )}
+                  />
+                  <span className="pt-1 text-xs text-negative">
+                    {errors.status_menikah?.message}
+                  </span>
+                </div>
               </Row>
 
               {/* Email */}

@@ -7,7 +7,17 @@ export const getDataPegawai = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Pegawai.findAll({
-        attributes: ["uuid", "nik", "jabatan", "phone", "tanggal_lahir", "gender", "address"],
+        attributes: [
+          "uuid",
+          "nik",
+          "jabatan",
+          "phone",
+          "tanggal_lahir",
+          "gender",
+          "address",
+          "pendidikan",
+          "status_menikah",
+        ],
         include: [
           {
             model: User,
@@ -17,7 +27,17 @@ export const getDataPegawai = async (req, res) => {
       });
     } else {
       response = await Pegawai.findAll({
-        attributes: ["uuid", "nik", "jabatan", "phone", "tanggal_lahir", "gender", "address"],
+        attributes: [
+          "uuid",
+          "nik",
+          "jabatan",
+          "phone",
+          "tanggal_lahir",
+          "gender",
+          "address",
+          "pendidikan",
+          "status_menikah",
+        ],
         where: {
           userId: req.userId, // melihat data yg diinput oleh user itu sendiri
         },
@@ -48,7 +68,17 @@ export const getPegawaiById = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Pegawai.findOne({
-        attributes: ["uuid", "nik", "jabatan", "phone", "tanggal_lahir", "gender", "address"],
+        attributes: [
+          "uuid",
+          "nik",
+          "jabatan",
+          "phone",
+          "tanggal_lahir",
+          "gender",
+          "address",
+          "pendidikan",
+          "status_menikah",
+        ],
         where: {
           id: pegawai.id,
         },
@@ -61,7 +91,17 @@ export const getPegawaiById = async (req, res) => {
       });
     } else {
       response = await Pegawai.findOne({
-        attributes: ["uuid", "nik", "jabatan", "phone", "tanggal_lahir", "gender", "address"],
+        attributes: [
+          "uuid",
+          "nik",
+          "jabatan",
+          "phone",
+          "tanggal_lahir",
+          "gender",
+          "address",
+          "pendidikan",
+          "status_menikah",
+        ],
         where: {
           [Op.and]: [{ id: pegawai.id }, { userId: req.userId }],
         },
@@ -81,7 +121,7 @@ export const getPegawaiById = async (req, res) => {
 };
 
 export const createPegawai = async (req, res) => {
-  const { nik, jabatan, phone, tanggal_lahir, gender, address } = req.body;
+  const { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah } = req.body;
   try {
     const existingPegawai = await Pegawai.findOne({ where: { userId: req.userId } });
     if (existingPegawai || !req.role === "admin") {
@@ -95,6 +135,8 @@ export const createPegawai = async (req, res) => {
       tanggal_lahir: tanggal_lahir,
       gender: gender,
       address: address,
+      pendidikan: pendidikan,
+      status_menikah: status_menikah,
       userId: req.userId,
     });
     res.status(201).json({ msg: "Pegawai Created Successfuly" });
@@ -113,10 +155,10 @@ export const updatePegawai = async (req, res) => {
 
     if (!pegawai) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
-    const { nik, jabatan, phone, tanggal_lahir, gender, address } = req.body;
+    const { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah } = req.body;
     if (req.role === "admin") {
       await Pegawai.update(
-        { nik, jabatan, phone, tanggal_lahir, gender, address },
+        { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah },
         {
           where: {
             id: pegawai.id,
@@ -126,7 +168,7 @@ export const updatePegawai = async (req, res) => {
     } else {
       if (req.userId !== pegawai.userId) return res.status(403).json({ msg: "Akses terlarang" });
       await Pegawai.update(
-        { nik, jabatan, phone, tanggal_lahir, gender, address },
+        { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah },
         {
           where: {
             [Op.and]: [{ id: pegawai.id }, { userId: req.userId }],

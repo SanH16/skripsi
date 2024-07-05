@@ -108,12 +108,24 @@ export default function UserProfile() {
                 </p>
                 <p className="text-sm md:text-base">{dataUser?.role}</p>
               </div>
-              <div id="user-role" className="xl:flex xl:w-[100%] xl:space-x-3">
+              <div
+                id="user-role"
+                className="pb-5 xl:flex xl:w-[100%] xl:space-x-3"
+              >
                 <p className="text-sm font-semibold text-grey-900 md:text-base">
                   Address
                 </p>
                 <p className="text-sm md:text-base">
                   {pegawaiData?.[0]?.address || "unavailable"}
+                </p>
+              </div>
+
+              <div id="user-role" className="xl:flex xl:w-[100%] xl:space-x-3">
+                <p className="text-sm font-semibold text-grey-900 md:text-base">
+                  Pendidikan
+                </p>
+                <p className="text-sm md:text-base">
+                  {pegawaiData?.[0]?.pendidikan || "unavailable"}
                 </p>
               </div>
               <div id="user-role" className="xl:flex xl:w-[100%] xl:space-x-3">
@@ -135,8 +147,11 @@ export default function UserProfile() {
                   <p className="text-sm font-semibold text-grey-900 md:text-base">
                     Email
                   </p>
-                  <p className="text-sm font-semibold text-grey-900 md:text-base">
+                  <p className="mb-3 text-sm font-semibold text-grey-900 md:text-base">
                     Phone
+                  </p>
+                  <p className="text-sm font-semibold text-grey-900 md:text-base">
+                    Status
                   </p>
                   <p className="text-sm font-semibold text-grey-900 md:text-base">
                     Gender
@@ -147,8 +162,11 @@ export default function UserProfile() {
                 </div>
                 <div className="flex-col">
                   <p className="text-sm md:text-base">{dataUser?.email}</p>
-                  <p className="text-sm md:text-base">
+                  <p className="mb-3 text-sm md:text-base">
                     {pegawaiData?.[0]?.phone || "unavailable"}
+                  </p>
+                  <p className="text-sm md:text-base">
+                    {pegawaiData?.[0]?.status_menikah || "unavailable"}
                   </p>
                   <p className="text-sm md:text-base">
                     {pegawaiData?.[0]?.gender || "unavailable"}
