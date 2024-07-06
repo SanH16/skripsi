@@ -25,10 +25,11 @@ const Pegawai = db.define(
     },
     jabatan: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      allowNull: true,
+    },
+    gaji_pegawai: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     phone: {
       type: DataTypes.STRING,
@@ -39,7 +40,10 @@ const Pegawai = db.define(
     },
     tanggal_lahir: {
       type: DataTypes.DATE,
-      allowNull: true,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     gender: {
       type: DataTypes.STRING,

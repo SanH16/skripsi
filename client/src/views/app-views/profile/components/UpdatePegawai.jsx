@@ -20,6 +20,9 @@ import imagePrev from "@/assets/content-pages.png";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 
+import { useSelector } from "react-redux";
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+
 export default function UpdatePegawai() {
   useDocumentTitle("Ubah Data Pegawai");
   const [isShowCancel, setIsShowCancel] = useState(false);
@@ -27,13 +30,24 @@ export default function UpdatePegawai() {
   const [inputData, setInputData] = useState(null);
   const { pegawaiId } = useParams();
 
+  const userState = useSelector(selectGetUserLogin);
+  const verifRole = userState?.data?.role === "admin";
+
   const schema = yup.object().shape({
     nik: yup
       .string()
       .trim()
       .min(16, "NIK minimal 16 karakter")
       .required("Data NIK harus diisi"),
-    jabatan: yup.string().required("Jabatan harus diisi"),
+    jabatan: !verifRole
+      ? yup.string().trim().notRequired()
+      : yup.string().trim().required("Jabatan harus diisi"),
+    gaji_pegawai: !verifRole
+      ? yup.number().integer("Gaji harus berupa angka bulat").nullable() // Allow null values
+      : yup
+          .number()
+          .integer("Gaji harus berupa angka bulat")
+          .required("Gaji harus diisi"),
     pendidikan: yup.string().trim().required("Pendidikan Terakhir harus diisi"),
     phone: yup
       .string()
@@ -76,6 +90,7 @@ export default function UpdatePegawai() {
         setValue("pendidikan", result.pendidikan);
         setValue("status_menikah", result.status_menikah);
         setValue("status_bekerja", result.status_bekerja);
+        setValue("gaji_pegawai", result.gaji_pegawai);
       } catch (error) {
         console.error(error);
       }
@@ -190,18 +205,33 @@ export default function UpdatePegawai() {
                           {
                             value: "Kepala Produksi",
                             label: "Kepala Produksi",
+                            disabled: !verifRole,
                           },
                           {
                             value: "Quality Control",
                             label: "Quality Control",
+                            disabled: !verifRole,
                           },
                           {
                             value: "Bagian Keuangan",
                             label: "Bagian Keuangan",
+                            disabled: !verifRole,
                           },
-                          { value: "Bagian SDM", label: "Bagian SDM" },
-                          { value: "Admin", label: "Admin" },
-                          { value: "Penjahit", label: "Penjahit" },
+                          {
+                            value: "Bagian SDM",
+                            label: "Bagian SDM",
+                            disabled: !verifRole,
+                          },
+                          {
+                            value: "Admin",
+                            label: "Admin",
+                            disabled: !verifRole,
+                          },
+                          {
+                            value: "Penjahit",
+                            label: "Penjahit",
+                            disabled: !verifRole,
+                          },
                         ]}
                         className={`mt-2 block h-[40px] w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
                           errors.jabatan
@@ -251,6 +281,67 @@ export default function UpdatePegawai() {
                 </div>
               </Row>
 
+              {/* Email */}
+              <Row>
+                <label
+                  className="block text-xl font-semibold text-grey-400"
+                  htmlFor="gaji_pegawai"
+                >
+                  Gaji Pegawai
+                </label>
+                <Controller
+                  name="gaji_pegawai"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      variant="borderless"
+                      {...field}
+                      options={[
+                        {
+                          value: 3000000,
+                          label: "Rp. 4.500.000",
+                          disabled: !verifRole,
+                        },
+                        {
+                          value: 4000000,
+                          label: "Rp. 4.000.000",
+                          disabled: !verifRole,
+                        },
+                        {
+                          value: 3500000,
+                          label: "Rp. 3.500.000",
+                          disabled: !verifRole,
+                        },
+                        {
+                          value: 3000000,
+                          label: "Rp. 3.000.000",
+                          disabled: !verifRole,
+                        },
+                        {
+                          value: 3200000,
+                          label: "Rp. 3.200.000",
+                          disabled: !verifRole,
+                        },
+                        {
+                          value: 2800000,
+                          label: "Rp. 2.800.000",
+                          disabled: !verifRole,
+                        },
+                      ]}
+                      className={`mt-2 block h-[40px] w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
+                        errors.gaji_pegawai
+                          ? "border-negative text-negative"
+                          : "border-grey-100 text-grey-900"
+                      }`}
+                      placeholder="Pilih Gaji pegawai.."
+                    />
+                  )}
+                />
+                <span className="pt-1 text-xs text-negative">
+                  {errors.gaji_pegawai?.message}
+                </span>
+              </Row>
+
               {/* Pw */}
               <Row className="grid grid-cols-2 gap-4">
                 <div>
@@ -292,9 +383,21 @@ export default function UpdatePegawai() {
                         {...field}
                         options={[
                           { value: "active", label: "Aktif" },
-                          { value: "cuti", label: "Cuti" },
-                          { value: "stop", label: "Berhenti" },
-                          { value: "move", label: "Pindah" },
+                          {
+                            value: "cuti",
+                            label: "Cuti",
+                            disabled: !verifRole,
+                          },
+                          {
+                            value: "stop",
+                            label: "Berhenti",
+                            disabled: !verifRole,
+                          },
+                          {
+                            value: "move",
+                            label: "Pindah",
+                            disabled: !verifRole,
+                          },
                         ]}
                         className={`mt-2 block h-[40px] w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
                           errors.status_bekerja

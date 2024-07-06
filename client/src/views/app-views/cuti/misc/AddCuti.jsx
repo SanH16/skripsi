@@ -28,7 +28,7 @@ export default function AddCuti() {
   const [inputData, setInputData] = useState(null);
 
   const userState = useSelector(selectGetUserLogin);
-  const isAuthenticated = userState?.data?.role === "admin";
+  const verifRole = userState?.data?.role === "admin";
 
   const schema = yup.object().shape({
     alasan_cuti: yup
@@ -244,17 +244,17 @@ export default function AddCuti() {
                         {
                           value: "processed",
                           label: "Diproses",
-                          disabled: !isAuthenticated,
+                          disabled: !verifRole,
                         },
                         {
                           value: "done",
                           label: "Selesai",
-                          disabled: !isAuthenticated,
+                          disabled: !verifRole,
                         },
                         {
                           value: "cancelled",
                           label: "Dibatalkan",
-                          disabled: !isAuthenticated,
+                          disabled: !verifRole,
                         },
                       ]}
                       className={`mt-2 block w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
