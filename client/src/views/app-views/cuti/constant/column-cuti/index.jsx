@@ -67,6 +67,25 @@ export const ColumnCuti = (handleOpenModalDelete) => {
       dataIndex: "status",
       key: "status",
       width: 100,
+      filters: [
+        {
+          text: "Berjalan",
+          value: "processed",
+        },
+        {
+          text: "Menunggu",
+          value: "waiting",
+        },
+        {
+          text: "Selesai",
+          value: "done",
+        },
+        {
+          text: "Dibatalkan",
+          value: "cancelled",
+        },
+      ],
+      onFilter: (value, record) => record.status.indexOf(value) === 0,
       render: (_, { status }) => {
         let text;
         let color;

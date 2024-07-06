@@ -69,6 +69,13 @@ const Pegawai = db.define(
         notEmpty: true,
       },
     },
+    status_bekerja: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

@@ -42,6 +42,7 @@ export default function UpdatePegawai() {
       .required("Nomor HP harus diisi"),
     tanggal_lahir: yup.date().required("Tanggal lahir harus diisi"),
     status_menikah: yup.string().required("Status Pernikahan harus diisi"),
+    status_bekerja: yup.string().required("Status Bekerja harus diisi"),
     gender: yup.string().required("Jenis Kelamin harus diisi"),
     address: yup
       .string()
@@ -74,6 +75,7 @@ export default function UpdatePegawai() {
         setValue("address", result.address);
         setValue("pendidikan", result.pendidikan);
         setValue("status_menikah", result.status_menikah);
+        setValue("status_bekerja", result.status_bekerja);
       } catch (error) {
         console.error(error);
       }
@@ -250,27 +252,63 @@ export default function UpdatePegawai() {
               </Row>
 
               {/* Pw */}
-              <Row>
-                <label
-                  className="block text-xl font-semibold text-grey-400"
-                  htmlFor="phone"
-                >
-                  Nomor HP Pengguna
-                </label>
-                <input
-                  id="phone"
-                  {...register("phone")}
-                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.phone
-                      ? "border-negative text-negative"
-                      : "border-grey-100 text-grey-900"
-                  }`}
-                  type="number"
-                  placeholder="Masukkan password disini"
-                />
-                <span className="pt-1 text-xs text-negative">
-                  {errors.phone?.message}
-                </span>
+              <Row className="grid grid-cols-2 gap-4">
+                <div>
+                  <label
+                    className="block text-xl font-semibold text-grey-400"
+                    htmlFor="phone"
+                  >
+                    Nomor HP Pengguna
+                  </label>
+                  <input
+                    id="phone"
+                    {...register("phone")}
+                    className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
+                      errors.phone
+                        ? "border-negative text-negative"
+                        : "border-grey-100 text-grey-900"
+                    }`}
+                    type="number"
+                    placeholder="Masukkan password disini"
+                  />
+                  <span className="pt-1 text-xs text-negative">
+                    {errors.phone?.message}
+                  </span>
+                </div>
+
+                <div>
+                  <label
+                    className="block text-xl font-semibold text-grey-400"
+                    htmlFor="status_bekerja"
+                  >
+                    Status Bekerja
+                  </label>
+                  <Controller
+                    name="status_bekerja"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        variant="borderless"
+                        {...field}
+                        options={[
+                          { value: "active", label: "Aktif" },
+                          { value: "cuti", label: "Cuti" },
+                          { value: "stop", label: "Berhenti" },
+                          { value: "move", label: "Pindah" },
+                        ]}
+                        className={`mt-2 block h-[40px] w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
+                          errors.status_bekerja
+                            ? "border-negative text-negative"
+                            : "border-grey-100 text-grey-900"
+                        }`}
+                        placeholder="Pilih Status saat ini..."
+                      />
+                    )}
+                  />
+                  <span className="pt-1 text-xs text-negative">
+                    {errors.status_bekerja?.message}
+                  </span>
+                </div>
               </Row>
 
               {/* Date start */}

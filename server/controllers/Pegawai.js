@@ -17,6 +17,7 @@ export const getDataPegawai = async (req, res) => {
           "address",
           "pendidikan",
           "status_menikah",
+          "status_bekerja",
         ],
         include: [
           {
@@ -37,6 +38,7 @@ export const getDataPegawai = async (req, res) => {
           "address",
           "pendidikan",
           "status_menikah",
+          "status_bekerja",
         ],
         where: {
           userId: req.userId, // melihat data yg diinput oleh user itu sendiri
@@ -78,6 +80,7 @@ export const getPegawaiById = async (req, res) => {
           "address",
           "pendidikan",
           "status_menikah",
+          "status_bekerja",
         ],
         where: {
           id: pegawai.id,
@@ -101,6 +104,7 @@ export const getPegawaiById = async (req, res) => {
           "address",
           "pendidikan",
           "status_menikah",
+          "status_bekerja",
         ],
         where: {
           [Op.and]: [{ id: pegawai.id }, { userId: req.userId }],
@@ -121,7 +125,7 @@ export const getPegawaiById = async (req, res) => {
 };
 
 export const createPegawai = async (req, res) => {
-  const { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah } = req.body;
+  const { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah, status_bekerja } = req.body;
   try {
     const existingPegawai = await Pegawai.findOne({ where: { userId: req.userId } });
     if (existingPegawai || !req.role === "admin") {
@@ -137,6 +141,7 @@ export const createPegawai = async (req, res) => {
       address: address,
       pendidikan: pendidikan,
       status_menikah: status_menikah,
+      status_bekerja: status_bekerja,
       userId: req.userId,
     });
     res.status(201).json({ msg: "Pegawai Created Successfuly" });
@@ -155,10 +160,11 @@ export const updatePegawai = async (req, res) => {
 
     if (!pegawai) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
-    const { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah } = req.body;
+    const { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah, status_bekerja } =
+      req.body;
     if (req.role === "admin") {
       await Pegawai.update(
-        { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah },
+        { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah, status_bekerja },
         {
           where: {
             id: pegawai.id,
@@ -168,7 +174,7 @@ export const updatePegawai = async (req, res) => {
     } else {
       if (req.userId !== pegawai.userId) return res.status(403).json({ msg: "Akses terlarang" });
       await Pegawai.update(
-        { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah },
+        { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah, status_bekerja },
         {
           where: {
             [Op.and]: [{ id: pegawai.id }, { userId: req.userId }],

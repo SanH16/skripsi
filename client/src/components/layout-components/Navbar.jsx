@@ -6,8 +6,11 @@ import { Button } from "antd";
 import { IoCloseSharp } from "react-icons/io5";
 import { GiHamburgerMenu } from "react-icons/gi";
 
+import { authService } from "@/configs/auth";
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const isAuthenticated = authService.isAuthorized();
 
   const handleOpen = () => {
     setIsOpen((prev) => !prev);
@@ -88,13 +91,13 @@ export function Navbar() {
             </a>
           </li>
           <li className="md:text-md ms-16 mt-6 text-sm text-grey-10 hover:bg-green-50 md:my-0 md:ms-0 md:hover:bg-transparent">
-            <Link to="/login">
+            <Link to={isAuthenticated ? "/profil" : "/login"}>
               <Button
                 id="download-app"
                 type="primary"
                 className="flex items-center px-6 py-4 font-semibold"
               >
-                Gabung Sekarang
+                {isAuthenticated ? "Dashboard" : "Gabung Sekarang"}
               </Button>
             </Link>
           </li>
