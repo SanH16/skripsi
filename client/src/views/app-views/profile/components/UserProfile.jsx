@@ -32,6 +32,8 @@ export default function UserProfile() {
     return <div>Error: {isError.message}</div>;
   }
 
+  const stats = pegawaiData?.[0]?.status_bekerja;
+
   return (
     <>
       <Card>
@@ -91,8 +93,31 @@ export default function UserProfile() {
               <div id="doctor-information" className="flex flex-col">
                 <p className="text-sm font-semibold text-grey-900 md:text-base">
                   {dataUser?.name}
+                  <span
+                    className={
+                      stats === "active"
+                        ? "m-2 rounded-lg border border-positive p-[3px] text-xs text-positive"
+                        : stats === "cuti"
+                          ? "m-2 rounded-lg border border-warning p-[3px] text-xs text-warning"
+                          : stats === "stop"
+                            ? "m-2 rounded-lg border border-negative p-[3px] text-xs text-negative"
+                            : stats === "move"
+                              ? "m-2 rounded-lg border border-link p-[3px] text-xs text-link"
+                              : null
+                    }
+                  >
+                    {stats === "active"
+                      ? "aktif"
+                      : stats === "cuti"
+                        ? "sedang cuti"
+                        : stats === "stop"
+                          ? "berhenti"
+                          : stats === "move"
+                            ? "pindah"
+                            : stats}
+                  </span>
                 </p>
-                <p className="text-sm font-medium text-grey-300 md:text-base">
+                <p className="mt-1 text-sm font-medium text-grey-300 md:text-base">
                   Jabatan ({pegawaiData?.[0]?.jabatan || "unavailable"})
                 </p>
                 <p className="mt-2">10 tahun pengalaman</p>

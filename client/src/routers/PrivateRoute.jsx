@@ -17,7 +17,7 @@ export default function PrivateRoute() {
     path += `?return_to=${pathname.slice(1, pathname.length)}`;
   }
 
-  console.log("isAuthenticated:", isAuthenticated);
+  // console.log("isAuthenticated:", isAuthenticated);
 
   if (isAuthenticated && isOnline) {
     return (
