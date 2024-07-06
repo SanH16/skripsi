@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 import { MdOutlineDeleteSweep } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
+import { thousandSeparator } from "@/utils/ThousandSeparator";
 
 export const ColumnPegawai = (handleOpenModalDelete) => [
   {
@@ -34,6 +35,13 @@ export const ColumnPegawai = (handleOpenModalDelete) => [
     dataIndex: "jabatan",
     key: "jabatan",
     width: 150,
+  },
+  {
+    title: "Gaji Pegawai",
+    dataIndex: "gaji_pegawai",
+    key: "gaji_pegawai",
+    width: 150,
+    render: (values) => <span>{thousandSeparator(values)} jt</span>,
   },
   {
     title: "Status Bekerja",

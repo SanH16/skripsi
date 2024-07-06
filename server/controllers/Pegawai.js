@@ -1,3 +1,4 @@
+import Cuti from "../models/CutiModel.js";
 import Pegawai from "../models/PegawaiModel.js";
 import User from "../models/UserModel.js";
 import { Op } from "sequelize";
@@ -11,6 +12,7 @@ export const getDataPegawai = async (req, res) => {
           "uuid",
           "nik",
           "jabatan",
+          "gaji_pegawai",
           "phone",
           "tanggal_lahir",
           "gender",
@@ -23,6 +25,12 @@ export const getDataPegawai = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email", "role"],
+            include: [
+              {
+                model: Cuti,
+                attributes: ["status"],
+              },
+            ],
           },
         ],
       });
@@ -32,6 +40,7 @@ export const getDataPegawai = async (req, res) => {
           "uuid",
           "nik",
           "jabatan",
+          "gaji_pegawai",
           "phone",
           "tanggal_lahir",
           "gender",
@@ -47,6 +56,12 @@ export const getDataPegawai = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email", "role"],
+            include: [
+              {
+                model: Cuti,
+                attributes: ["status"],
+              },
+            ],
           },
         ],
       });
@@ -74,6 +89,7 @@ export const getPegawaiById = async (req, res) => {
           "uuid",
           "nik",
           "jabatan",
+          "gaji_pegawai",
           "phone",
           "tanggal_lahir",
           "gender",
@@ -98,6 +114,7 @@ export const getPegawaiById = async (req, res) => {
           "uuid",
           "nik",
           "jabatan",
+          "gaji_pegawai",
           "phone",
           "tanggal_lahir",
           "gender",
@@ -125,7 +142,18 @@ export const getPegawaiById = async (req, res) => {
 };
 
 export const createPegawai = async (req, res) => {
-  const { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah, status_bekerja } = req.body;
+  const {
+    nik,
+    jabatan,
+    gaji_pegawai,
+    phone,
+    tanggal_lahir,
+    gender,
+    address,
+    pendidikan,
+    status_menikah,
+    status_bekerja,
+  } = req.body;
   try {
     const existingPegawai = await Pegawai.findOne({ where: { userId: req.userId } });
     if (existingPegawai || !req.role === "admin") {
@@ -135,6 +163,7 @@ export const createPegawai = async (req, res) => {
     await Pegawai.create({
       nik: nik,
       jabatan: jabatan,
+      gaji_pegawai: gaji_pegawai,
       phone: phone,
       tanggal_lahir: tanggal_lahir,
       gender: gender,
@@ -160,11 +189,32 @@ export const updatePegawai = async (req, res) => {
 
     if (!pegawai) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
-    const { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah, status_bekerja } =
-      req.body;
+    const {
+      nik,
+      jabatan,
+      gaji_pegawai,
+      phone,
+      tanggal_lahir,
+      gender,
+      address,
+      pendidikan,
+      status_menikah,
+      status_bekerja,
+    } = req.body;
     if (req.role === "admin") {
       await Pegawai.update(
-        { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah, status_bekerja },
+        {
+          nik,
+          jabatan,
+          gaji_pegawai,
+          phone,
+          tanggal_lahir,
+          gender,
+          address,
+          pendidikan,
+          status_menikah,
+          status_bekerja,
+        },
         {
           where: {
             id: pegawai.id,
@@ -174,7 +224,18 @@ export const updatePegawai = async (req, res) => {
     } else {
       if (req.userId !== pegawai.userId) return res.status(403).json({ msg: "Akses terlarang" });
       await Pegawai.update(
-        { nik, jabatan, phone, tanggal_lahir, gender, address, pendidikan, status_menikah, status_bekerja },
+        {
+          nik,
+          jabatan,
+          gaji_pegawai,
+          phone,
+          tanggal_lahir,
+          gender,
+          address,
+          pendidikan,
+          status_menikah,
+          status_bekerja,
+        },
         {
           where: {
             [Op.and]: [{ id: pegawai.id }, { userId: req.userId }],
