@@ -133,13 +133,24 @@ export const ColumnPegawai = (handleOpenModalDelete) => [
     title: "Status Menikah",
     dataIndex: "status_menikah",
     key: "status_menikah",
-    width: 150,
+    width: 200,
+    filters: [
+      {
+        text: "Menikah",
+        value: "Menikah",
+      },
+      {
+        text: "Belum Menikah",
+        value: "Belum Menikah",
+      },
+    ],
+    onFilter: (value, record) => record.status_menikah.indexOf(value) === 0,
   },
   {
     title: "Alamat",
     dataIndex: "address",
     key: "address",
-    width: 150,
+    width: 250,
     render: (val) => <span className="line-clamp-1">{val}</span>,
   },
   {
