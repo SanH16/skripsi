@@ -1,5 +1,6 @@
 import Cuti from "../models/CutiModel.js";
 import User from "../models/UserModel.js";
+import Pegawai from "../models/PegawaiModel.js";
 import { Op } from "sequelize";
 
 export const getAllCuti = async (req, res) => {
@@ -56,6 +57,12 @@ export const getCutiById = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email", "role"],
+            include: [
+              {
+                model: Pegawai,
+                attributes: ["jabatan"],
+              },
+            ],
           },
         ],
       });
