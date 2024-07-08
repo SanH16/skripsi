@@ -88,6 +88,18 @@ export default function UserTable({ isUserTable }) {
                 colorPrimary: "#17c6a3",
                 rowHoverBg: "#e8f9f6",
               },
+              Dropdown: {
+                colorPrimary: "#17c6a3",
+              },
+              Checkbox: {
+                colorPrimary: "#17c6a3",
+                colorPrimaryHover: "#15b494",
+              },
+              Button: {
+                colorLink: "#15b494",
+                colorLinkHover: "#108d74",
+                colorLinkActive: "#15b494",
+              },
             },
           }}
         >

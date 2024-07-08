@@ -99,7 +99,7 @@ export function TableCuti() {
         >
           <Table
             id="cuti-table-list"
-            rowClassName={"hover:bg-green-50 hover:cursor-pointer"}
+            rowClassName={"hover:cursor-pointer"}
             loading={isLoading}
             onRow={(record) => ({
               onClick: () => {
