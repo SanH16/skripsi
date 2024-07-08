@@ -83,16 +83,36 @@ export default function UserTable({ isUserTable }) {
             token: {
               colorPrimary: "#17c6a3",
             },
+            components: {
+              Table: {
+                colorPrimary: "#17c6a3",
+                rowHoverBg: "#e8f9f6",
+              },
+              Dropdown: {
+                colorPrimary: "#17c6a3",
+              },
+              Checkbox: {
+                colorPrimary: "#17c6a3",
+                colorPrimaryHover: "#15b494",
+              },
+              Button: {
+                colorLink: "#15b494",
+                colorLinkHover: "#108d74",
+                colorLinkActive: "#15b494",
+              },
+            },
           }}
         >
           <Table
             id="table-user"
+            rowClassName={"hover:cursor-pointer"}
             loading={isLoadingUser || isLoadingPegawai}
             columns={Columns}
             dataSource={DataSource}
             pagination={false}
             scroll={{ x: 1300 }}
-            // style={{ maxWidth: "100vw" }}
+            // scroll={{ x: true }}
+            style={{ maxWidth: "100%" }}
             summary={() =>
               ((isUserTable && isErrorUser) ||
                 (!isUserTable && isErrorPegawai)) &&

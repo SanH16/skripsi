@@ -25,7 +25,6 @@ import AddCuti from "@/views/app-views/cuti/misc/AddCuti";
 import UpdateCuti from "@/views/app-views/cuti/misc/UpdateCuti";
 import AddPegawai from "@/views/app-views/profile/components/AddPegawai";
 import UpdatePegawai from "@/views/app-views/profile/components/UpdatePegawai";
-// import PDFcuti from "../views/app-views/cuti/misc/PDFcuti";
 
 export default function SetupRoutes() {
   const navigate = useNavigate();
@@ -72,7 +71,6 @@ export default function SetupRoutes() {
       <Route path="/" element={<PublicRoute />}>
         <Route index element={<LandingPage />} />
         <Route path="/lowongan/:rekrutmenId" element={<DetailLowongan />} />
-        {/* <Route path="/cuti-pdf" element={<PDFcuti />} /> */}
       </Route>
       <Route>
         <Route path="/404" element={<Notfound />} />
