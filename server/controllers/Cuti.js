@@ -76,6 +76,12 @@ export const getCutiById = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email"],
+            include: [
+              {
+                model: Pegawai,
+                attributes: ["jabatan"],
+              },
+            ],
           },
         ],
       });

@@ -35,6 +35,7 @@ export const ColumnCuti = (handleOpenModalDelete) => {
       dataIndex: "alasan_cuti",
       key: "alasan_cuti",
       width: 250,
+      render: (val) => <span className="line-clamp-1">{val}</span>,
     },
     {
       title: "Tanggal Mulai",
@@ -61,6 +62,7 @@ export const ColumnCuti = (handleOpenModalDelete) => {
       dataIndex: "keterangan",
       key: "keterangan",
       width: 200,
+      render: (val) => <span className="line-clamp-1">{val}</span>,
     },
     {
       title: "Status",

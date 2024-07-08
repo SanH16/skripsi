@@ -19,14 +19,14 @@ import moment from "moment";
 import { Button } from "antd";
 import { MdOutlineFileUpload } from "react-icons/md";
 
-export default function PDFcuti() {
+export default function PDFcuti({ cutiData }) {
   const [data, setData] = useState([]);
 
-  const cutiId = "918d3aa5-bf71-48c2-9e7c-bb58f965ccf7";
+  // const cutiId = "918d3aa5-bf71-48c2-9e7c-bb58f965ccf7";
   useEffect(() => {
     const fetchCutiById = async () => {
       try {
-        const result = await APIcuti.getCutiById(cutiId);
+        const result = await APIcuti.getCutiById(cutiData.uuid);
         console.log("cuti pdf fetch", result);
         setData(result);
       } catch (error) {
@@ -34,23 +34,24 @@ export default function PDFcuti() {
       }
     };
     fetchCutiById();
-  }, [cutiId]);
+  }, [cutiData]);
+
   return (
     <>
-      <PDFViewer className="m-auto h-[600px] w-[800px]">
-        <Pdf data={data} />
-      </PDFViewer>
       <PDFDownloadLink
         document={<Pdf data={data} />}
         fileName={`pengajuan-cuti-${data?.user?.name}`}
       >
-        <Button className="border-green-500 font-semibold text-green-500 hover:bg-green-500 hover:text-white">
+        <Button className="m-3 border-green-500 font-semibold text-green-500 hover:bg-green-500 hover:text-white">
           <span className="text-lg">
             <MdOutlineFileUpload />
           </span>
           PDF
         </Button>
       </PDFDownloadLink>
+      <PDFViewer className="m-auto h-[600px] w-[650px]">
+        <Pdf data={data} />
+      </PDFViewer>
     </>
   );
 }
@@ -90,8 +91,8 @@ const Pdf = ({ data }) => {
         <View style={styles.text}>
           <Text>
             Selama {jumlahHari} hari terhitung mulai tanggal{" "}
-            {startCuti.format("DD MMMM YYYY")}
-            s/d tanggal {endCuti.format("DD MMMM YYYY")}.
+            {startCuti.format("DD MMMM YYYY")} s/d tanggal{" "}
+            {endCuti.format("DD MMMM YYYY")}.
           </Text>
           <Text>
             Selama menjalankan cuti, dimohon kesediannya untuk selalu siap

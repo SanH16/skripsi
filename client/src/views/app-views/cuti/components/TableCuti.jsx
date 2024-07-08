@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { Card, Table, ConfigProvider, Button, Flex, Space } from "antd";
+import { Card, Table, ConfigProvider, Button, Flex, Space, Drawer } from "antd";
 
-// import { ListFilter } from "./ListFilter";
-// import { useDebounce } from "@/hooks/useDebounce";
 import { ColumnCuti } from "../constant/column-cuti";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
@@ -13,18 +11,27 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { ModalDeleteCuti } from "@/components/shared-components/ModalDeleteCuti";
 import { CardCuti } from "../misc/CardCuti";
 import { useQuery } from "@tanstack/react-query";
+import PDFcuti from "../misc/PDFcuti";
 
 export function TableCuti() {
   useDocumentTitle("Cuti Pegawai");
   useScrollToTop();
-  //   const [searchValue, setSearchValue] = useState("");
-  //   const [filterStatus, setFilterStatus] = useState("");
-
-  //   const searchQuery = useDebounce(searchValue, 800);
-  //   const filterQuery = useDebounce(filterStatus, 800);
 
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [selectedCuti, setSelectedCuti] = useState(null);
+
+  const handleRowClick = (record) => {
+    setSelectedCuti(record); // Set data cuti terpilih
+    setIsDrawerVisible(true); // Buka Drawer
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerVisible(false);
+    setSelectedCuti(null);
+  };
 
   const handleOpenModalDelete = (user) => {
     setUserToDelete(user);
@@ -64,10 +71,6 @@ export function TableCuti() {
       </Flex>
       <CardCuti data={dataCuti} />
       <Card>
-        {/* <ListFilter
-          setSearchValue={setSearchValue}
-          setFilterStatus={setFilterStatus}
-        /> */}
         <ConfigProvider
           theme={{
             components: {
@@ -95,9 +98,16 @@ export function TableCuti() {
           }}
         >
           <Table
+            id="cuti-table-list"
             rowClassName={"hover:bg-green-50 hover:cursor-pointer"}
             loading={isLoading}
-            id="appointment-table-list"
+            onRow={(record) => ({
+              onClick: () => {
+                if (record.status === "processed" || record.status === "done") {
+                  handleRowClick(record);
+                }
+              },
+            })}
             columns={ColumnCuti(handleOpenModalDelete)}
             dataSource={dataCuti}
             scroll={{ x: true }}
@@ -126,13 +136,23 @@ export function TableCuti() {
           />
         </ConfigProvider>
       </Card>
-      {/* drawer detail pasien */}
+      {/* drawer & modal */}
       {isShowDelete && (
         <ModalDeleteCuti
           closeModal={handleOpenModalDelete}
           stateModal={userToDelete}
         />
       )}
+
+      <Drawer
+        title="Dokumen Pengajuan Cuti"
+        placement="right"
+        size="large"
+        onClose={handleCloseDrawer}
+        open={isDrawerVisible}
+      >
+        {selectedCuti && <PDFcuti cutiData={selectedCuti} />}
+      </Drawer>
     </>
   );
 }

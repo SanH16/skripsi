@@ -83,16 +83,24 @@ export default function UserTable({ isUserTable }) {
             token: {
               colorPrimary: "#17c6a3",
             },
+            components: {
+              Table: {
+                colorPrimary: "#17c6a3",
+                rowHoverBg: "#e8f9f6",
+              },
+            },
           }}
         >
           <Table
             id="table-user"
+            rowClassName={"hover:cursor-pointer"}
             loading={isLoadingUser || isLoadingPegawai}
             columns={Columns}
             dataSource={DataSource}
             pagination={false}
             scroll={{ x: 1300 }}
-            // style={{ maxWidth: "100vw" }}
+            // scroll={{ x: true }}
+            style={{ maxWidth: "100%" }}
             summary={() =>
               ((isUserTable && isErrorUser) ||
                 (!isUserTable && isErrorPegawai)) &&
