@@ -1,3 +1,5 @@
+import multer from "multer";
+import path from "path";
 import Rekrutmen from "../models/RekrutmenModel.js";
 import User from "../models/UserModel.js";
 import { Op } from "sequelize";
@@ -8,7 +10,7 @@ export const getRekrutmens = async (req, res) => {
     if (req.role === "admin") {
       // jika login as admin
       response = await Rekrutmen.findAll({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc"],
+        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "image_rekrutmen"],
         include: [
           {
             model: User,
@@ -18,7 +20,7 @@ export const getRekrutmens = async (req, res) => {
       });
     } else if (req.role === "user") {
       response = await Rekrutmen.findAll({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc"],
+        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "image_rekrutmen"],
         // jika login as user
         where: {
           userId: req.userId, // melihat data yg diinput oleh user itu sendiri
@@ -32,7 +34,7 @@ export const getRekrutmens = async (req, res) => {
       });
     } else {
       response = await Rekrutmen.findAll({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc"],
+        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "image_rekrutmen"],
         include: [
           {
             model: User,
@@ -61,7 +63,17 @@ export const getRekrutmenById = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Rekrutmen.findOne({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "createdAt"],
+        attributes: [
+          "uuid",
+          "title",
+          "tags",
+          "reference",
+          "image",
+          "image_desc",
+          "image_rekrutmen",
+          "text_desc",
+          "createdAt",
+        ],
         where: {
           id: rekrutmen.id,
         },
@@ -74,7 +86,7 @@ export const getRekrutmenById = async (req, res) => {
       });
     } else if (req.role === "user") {
       response = await Rekrutmen.findOne({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc"],
+        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "image_rekrutmen", "text_desc"],
         where: {
           [Op.and]: [{ id: rekrutmen.id }, { userId: req.userId }],
         },
@@ -87,7 +99,17 @@ export const getRekrutmenById = async (req, res) => {
       });
     } else {
       response = await Rekrutmen.findOne({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "createdAt"],
+        attributes: [
+          "uuid",
+          "title",
+          "tags",
+          "reference",
+          "image",
+          "image_desc",
+          "image_rekrutmen",
+          "text_desc",
+          "createdAt",
+        ],
         where: {
           id: rekrutmen.id,
         },
@@ -108,12 +130,19 @@ export const getRekrutmenById = async (req, res) => {
 
 export const createRekrutmen = async (req, res) => {
   const { title, tags, reference, image, image_desc, text_desc } = req.body;
+
+  if (!req.file) {
+    return res.status(400).json({ msg: "No file uploaded" });
+  }
+  const image_rekrutmen = req.file.filename;
+
   try {
     await Rekrutmen.create({
       title: title,
       tags: tags,
       reference: reference,
       image: image,
+      image_rekrutmen: image_rekrutmen,
       image_desc: image_desc,
       text_desc: text_desc,
       userId: req.userId,
@@ -192,3 +221,27 @@ export const deleteRekrutmen = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-rekrutmen" + path.extname(file.originalname));
+  },
+});
+
+export const upload = multer({
+  storage: storage,
+  limits: { fileSize: "1000000" }, // 1 MB
+  fileFilter: (req, file, cb) => {
+    const fileTypes = /jpeg|jpg|png|gif/;
+    const mimeType = fileTypes.test(file.mimetype);
+    const extname = fileTypes.test(path.extname(file.originalname).toLocaleLowerCase());
+
+    if (mimeType && extname) {
+      return cb(null, true);
+    }
+    cb("Give proper files formate to upload");
+  },
+}).single("image_rekrutmen");
