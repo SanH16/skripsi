@@ -33,7 +33,11 @@ export const APIrekrutmen = {
 
   updateRekrutmen: async (id, data) => {
     try {
-      const result = await axiosInstance.patch(`/rekrutmens/${id}`, data);
+      const result = await axiosInstance.patch(`/rekrutmens/${id}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log("update rekrutmen", result);
       return result.data;
     } catch (err) {
@@ -49,7 +53,7 @@ export const APIrekrutmen = {
     try {
       const result = await axiosInstance.post("/rekrutmens", data, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
       console.log("rekrutmen dibuat", result);

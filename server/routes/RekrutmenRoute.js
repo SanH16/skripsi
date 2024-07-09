@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/rekrutmens", getRekrutmens);
 router.get("/rekrutmens/:id", getRekrutmenById);
 router.post("/rekrutmens", verifyUser, adminOnly, upload, createRekrutmen); // login first
-router.patch("/rekrutmens/:id", verifyUser, adminOnly, updateRekrutmen); // login first
+router.patch("/rekrutmens/:id", verifyUser, adminOnly, upload, updateRekrutmen); // login first
 router.delete("/rekrutmens/:id", verifyUser, adminOnly, deleteRekrutmen); // login first
 
 export default router;
