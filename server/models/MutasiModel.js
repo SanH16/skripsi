@@ -15,7 +15,7 @@ const Mutasi = db.define(
         notEmpty: true,
       },
     },
-    alasan_mutasi: {
+    keterangan_mutasi: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
@@ -30,7 +30,7 @@ const Mutasi = db.define(
         notEmpty: true,
       },
     },
-    cabang_setelah: {
+    cabang_tujuan: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {

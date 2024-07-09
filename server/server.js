@@ -9,6 +9,7 @@ import RekrutmenRoute from "./routes/RekrutmenRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 import CutiRoute from "./routes/CutiRoute.js";
 import PegawaiRoute from "./routes/PegawaiRoute.js";
+import MutasiRoute from "./routes/MutasiRoute.js";
 
 dotenv.config();
 const port = process.env.APP_PORT;
@@ -57,6 +58,7 @@ app.use(RekrutmenRoute);
 app.use(AuthRoute);
 app.use(CutiRoute);
 app.use(PegawaiRoute);
+app.use(MutasiRoute);
 
 // store.sync(); // sinkronisasi table session di db
 // store.sync({force: true}); // sinkronisasi table session di db dan menghapus data lama
