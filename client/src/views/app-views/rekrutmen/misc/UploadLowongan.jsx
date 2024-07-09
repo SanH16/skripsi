@@ -48,7 +48,7 @@ const UploadLowongan = () => {
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
-  const MAX_IMAGE_SIZE = 25000000;
+  const MAX_IMAGE_SIZE = 1000000;
   const ALLOWED_IMAGE_TYPE = ["image/jpeg", "image/png"];
 
   const module = {
@@ -76,21 +76,18 @@ const UploadLowongan = () => {
       .trim()
       .min(3, "Referensi minimal 3 karakter")
       .required("Referensi harus diisi"),
-    image: yup
+    image_rekrutmen: yup
       .mixed()
+      .required("Gambar harus diisi Bro!")
       .test(
         "fileSize",
-        "Ukuran file terlalu besar, maksimal 20 MB",
-        (value) => {
-          return value.size <= MAX_IMAGE_SIZE;
-        },
+        "Ukuran file terlalu besar, maksimal 1 MB",
+        (value) => value && value.size <= MAX_IMAGE_SIZE,
       )
       .test(
         "fileType",
         "Format file tidak valid, hanya file gambar yang diperbolehkan",
-        (value) => {
-          return ALLOWED_IMAGE_TYPE.includes(value.type);
-        },
+        (value) => value && ALLOWED_IMAGE_TYPE.includes(value.type),
       ),
     image_desc: yup
       .string()
@@ -118,7 +115,7 @@ const UploadLowongan = () => {
     try {
       const result = await APIrekrutmen.createRekrutmen(data);
       showSuccessToast("Lowongan berhasil dibuat", "top-center", "large");
-      globalRoute.navigate && globalRoute.navigate(`/rekrutmen`);
+      globalRoute.navigate(`/rekrutmen`);
       console.log("post rekrutmen", result);
     } catch (err) {
       console.error(err);
@@ -148,6 +145,7 @@ const UploadLowongan = () => {
         <form
           onSubmit={handleSubmit(onSubmitArticle)}
           className="flex flex-col gap-6"
+          encType="multipart/form-data"
         >
           {/* Title */}
           <Flex justify="space-between" align="center">
@@ -218,7 +216,7 @@ const UploadLowongan = () => {
                       <Select
                         id="tags"
                         mode="tags"
-                        bordered={false}
+                        variant="borderless"
                         {...field}
                         options={optionTags}
                         tokenSeparators={[",", " ", "."]}
@@ -272,11 +270,11 @@ const UploadLowongan = () => {
                 {/* Gambar */}
                 <div>
                   <label
-                    htmlFor="image"
+                    htmlFor="image_rekrutmen"
                     className={`flex cursor-pointer flex-col items-center justify-center rounded-lg lg:h-[260px] lg:w-[390px] ${
                       imagePreview
                         ? ""
-                        : errors.image
+                        : errors.image_rekrutmen
                           ? "border-2 border-dashed border-negative"
                           : "border-2 border-dashed border-green-500"
                     }`}
@@ -302,25 +300,25 @@ const UploadLowongan = () => {
                       </div>
                     )}
                     <input
-                      id="image"
-                      {...register("image")}
+                      id="image_rekrutmen"
+                      {...register("image_rekrutmen")}
                       type="file"
                       className="hidden"
                       accept=".jpg,.jpeg,.png"
                       onChange={(e) => {
                         const file = e.target.files[0];
                         setImagePreview(URL.createObjectURL(file));
-                        setValue("image", file);
-                        clearErrors("image");
+                        setValue("image_rekrutmen", file);
+                        clearErrors("image_rekrutmen");
                       }}
                     />
                   </label>
                   <div className="flex flex-col pt-2">
                     <p className="text-sm text-grey-200">
-                      Maksimum ukuran file: 20MB
+                      Maksimum ukuran file: 1MB
                     </p>
                     <span className="pt-1 text-xs text-negative">
-                      {errors.image?.message}
+                      {errors.image_rekrutmen?.message}
                     </span>
                   </div>
                 </div>

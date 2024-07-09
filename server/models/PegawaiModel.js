@@ -15,6 +15,10 @@ const Pegawai = db.define(
         notEmpty: true,
       },
     },
+    photo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     nik: {
       type: DataTypes.STRING,
       allowNull: false,

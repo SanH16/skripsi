@@ -20,17 +20,35 @@ import imagePrev from "@/assets/content-pages.png";
 
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+import { IoImageOutline } from "react-icons/io5";
+import { MdOutlineFileUpload } from "react-icons/md";
 
 export default function AddPegawai() {
   useDocumentTitle("Add Data Pegawai");
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const MAX_IMAGE_SIZE = 1000000;
+  const ALLOWED_IMAGE_TYPE = ["image/jpeg", "image/png"];
 
   const userState = useSelector(selectGetUserLogin);
   const verifRole = userState?.data?.role === "admin";
 
   const schema = yup.object().shape({
+    photo: yup
+      .mixed()
+      .required("Isi Profile kece kamu..")
+      .test(
+        "fileSize",
+        "Ukuran file terlalu besar, maksimal 1 MB",
+        (value) => value && value.size <= MAX_IMAGE_SIZE,
+      )
+      .test(
+        "fileType",
+        "Format file tidak valid, hanya file gambar yang diperbolehkan",
+        (value) => value && ALLOWED_IMAGE_TYPE.includes(value.type),
+      ),
     nik: yup
       .string()
       .trim()
@@ -67,6 +85,8 @@ export default function AddPegawai() {
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
+    setValue,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -79,7 +99,7 @@ export default function AddPegawai() {
         "top-center",
         "large",
       );
-      globalRoute.navigate && globalRoute.navigate(`/profil`);
+      globalRoute.navigate(`/profil`);
       console.log("post pegawai", result);
     } catch (err) {
       console.error(err);
@@ -107,6 +127,7 @@ export default function AddPegawai() {
       <form
         onSubmit={handleSubmit(onSubmitArticle)}
         className="flex flex-col gap-6"
+        encType="multipart/form-data"
       >
         {/* Title */}
         <Flex justify="space-between" align="center">
@@ -138,6 +159,63 @@ export default function AddPegawai() {
               vertical
               className="gap-6 rounded-lg border border-grey-50 p-6"
             >
+              {/*Photo */}
+              <Row>
+                <div>
+                  <label
+                    htmlFor="photo"
+                    className={`flex cursor-pointer flex-col items-center justify-center rounded-lg lg:h-[260px] lg:w-[390px] ${
+                      imagePreview
+                        ? ""
+                        : errors.photo
+                          ? "border-2 border-dashed border-negative"
+                          : "border-2 border-dashed border-green-500"
+                    }`}
+                  >
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="rounded-lg lg:h-[260px] lg:w-[390px]"
+                      />
+                    ) : (
+                      <div className="mx-auto flex flex-col items-center justify-center gap-4 pb-6 pt-5">
+                        <IoImageOutline size={100} color="#989898" />
+                        <div className="flex flex-col gap-1">
+                          <div className="mx-auto flex gap-2 text-green-500">
+                            <MdOutlineFileUpload size={20} />
+                            <p className="text-sm font-bold">Pilih Gambar</p>
+                          </div>
+                          <p className="text-xs text-grey-200">
+                            Format File: JPG dan PNG
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    <input
+                      id="photo"
+                      {...register("photo")}
+                      type="file"
+                      className="hidden"
+                      accept=".jpg,.jpeg,.png"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        setImagePreview(URL.createObjectURL(file));
+                        setValue("photo", file);
+                        clearErrors("photo");
+                      }}
+                    />
+                  </label>
+                  <div className="flex flex-col pt-2">
+                    <p className="text-sm text-grey-200">
+                      Maksimum ukuran file: 1MB
+                    </p>
+                    <span className="pt-1 text-xs text-negative">
+                      {errors.photo?.message}
+                    </span>
+                  </div>
+                </div>
+              </Row>
               {/* Nama */}
               <Row>
                 <label

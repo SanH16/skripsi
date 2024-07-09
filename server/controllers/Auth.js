@@ -1,3 +1,4 @@
+import Pegawai from "../models/PegawaiModel.js";
 import User from "../models/UserModel.js";
 import argon2 from "argon2";
 
@@ -32,6 +33,12 @@ export const GetUserLogin = async (req, res) => {
     where: {
       uuid: req.session.userId,
     },
+    include: [
+      {
+        model: Pegawai,
+        attributes: ["photo"],
+      },
+    ],
   });
 
   if (!user) return res.status(404).json({ msg: "Akun User tidak ditemukan" });

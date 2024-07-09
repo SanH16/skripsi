@@ -21,7 +21,7 @@ export const APIauth = {
   getUserLogin: async () => {
     try {
       const result = await axiosInstance.get("/get-user-login");
-      console.log("data: ", result.data);
+      console.log("data user login: ", result.data);
       return result.data;
     } catch (err) {
       if (err instanceof AxiosError) {

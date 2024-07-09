@@ -13,7 +13,7 @@ import { ModalCancel } from "@/components/shared-components/ModalCancel";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { globalRoute } from "@/utils/GlobalRoute";
 
-import prevImage from "@/assets/job-vacancy.jpg";
+// import prevImage from "@/assets/job-vacancy.jpg";
 
 import {
   showErrorToast,
@@ -51,6 +51,8 @@ const UpdateLowongan = () => {
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
+  const MAX_IMAGE_SIZE = 1000000;
+  const ALLOWED_IMAGE_TYPE = ["image/jpeg", "image/png"];
 
   const { rekrutmenId } = useParams();
 
@@ -79,7 +81,19 @@ const UpdateLowongan = () => {
       .trim()
       .min(3, "Referensi minimal 3 karakter")
       .required("Referensi harus diisi"),
-    image: yup.mixed(),
+    image_rekrutmen: yup
+      .mixed()
+      .required("Gambar harus diisi Bro!")
+      .test(
+        "fileSize",
+        "Ukuran file terlalu besar, maksimal 1 MB",
+        (value) => value && value.size <= MAX_IMAGE_SIZE,
+      )
+      .test(
+        "fileType",
+        "Format file tidak valid, hanya file gambar yang diperbolehkan",
+        (value) => value && ALLOWED_IMAGE_TYPE.includes(value.type),
+      ),
     image_desc: yup
       .string()
       .trim()
@@ -106,7 +120,7 @@ const UpdateLowongan = () => {
     try {
       const result = await APIrekrutmen.updateRekrutmen(rekrutmenId, inputData);
       showSuccessToast("Lowongan berhasil diupdate", "top-center", "large");
-      globalRoute.navigate && globalRoute.navigate(`/rekrutmen`);
+      globalRoute.navigate(`/rekrutmen`);
       console.log("updating rekrutmen", result);
     } catch (err) {
       console.error(err);
@@ -121,14 +135,18 @@ const UpdateLowongan = () => {
         console.log("update rekrutmen fetch", result);
         setInputData(result);
         setValue("title", result.title);
-        setValue(
-          "tags",
-          result.tags.split(", ").map((tag) => ({ value: tag, label: tag })),
-        );
+        const tags = result.tags
+          .split(", ")
+          .map((tag) => ({ value: tag, label: tag }));
+        // console.log("Fetched tags:", tags);
+        setValue("tags", tags);
         setValue("reference", result.reference);
-        setValue("image", result.image); // assuming result contains imageUrl
+        setValue("image_rekrutmen", result.image_rekrutmen); // gmbr
+        // console.log("Fetched img:", result.image_rekrutmen);
         setValue("image_desc", result.image_desc);
-        setImagePreview(prevImage);
+        setImagePreview(
+          `http://localhost:5000/images/${result.image_rekrutmen}`,
+        );
         setValue("text_desc", result.text_desc);
       } catch (error) {
         console.error(error);
@@ -159,6 +177,7 @@ const UpdateLowongan = () => {
         <form
           onSubmit={handleSubmit(onSubmitArticle)}
           className="flex flex-col gap-6"
+          encType="multipart/form-data"
         >
           {/* Title */}
           <Flex justify="space-between" align="center">
@@ -283,11 +302,11 @@ const UpdateLowongan = () => {
                 {/* Gambar */}
                 <div>
                   <label
-                    htmlFor="image"
+                    htmlFor="image_rekrutmen"
                     className={`flex cursor-pointer flex-col items-center justify-center rounded-lg lg:h-[260px] lg:w-[390px] ${
                       imagePreview
                         ? ""
-                        : errors.image
+                        : errors.image_rekrutmen
                           ? "border-2 border-dashed border-negative"
                           : "border-2 border-dashed border-green-500"
                     }`}
@@ -313,25 +332,25 @@ const UpdateLowongan = () => {
                       </div>
                     )}
                     <input
-                      id="image"
-                      {...register("image")}
+                      id="image_rekrutmen"
+                      {...register("image_rekrutmen")}
                       type="file"
                       className="hidden"
                       accept=".jpg,.jpeg,.png"
                       onChange={(e) => {
                         const file = e.target.files[0];
                         setImagePreview(URL.createObjectURL(file));
-                        setValue("image", file);
-                        clearErrors("image");
+                        setValue("image_rekrutmen", file);
+                        clearErrors("image_rekrutmen");
                       }}
                     />
                   </label>
                   <div className="flex flex-col pt-2">
                     <p className="text-sm text-grey-200">
-                      Maksimum ukuran file: 20MB
+                      Maksimum ukuran file: 1MB
                     </p>
                     <span className="pt-1 text-xs text-negative">
-                      {errors.image?.message}
+                      {errors.image_rekrutmen?.message}
                     </span>
                   </div>
                 </div>
@@ -408,9 +427,9 @@ const UpdateLowongan = () => {
           >
             <>
               <p>
-                Lowongan yang telah dibuat
-                <span className="font-semibold"> tidak dapat diubah </span>
-                kembali. Apakah anda yakin ingin mengupdate lowongan ini?
+                Pastikan Lowongan yang telah diubah
+                <span className="font-semibold"> sudah benar</span>. Apakah anda
+                yakin ingin mengubah lowongan ini?
               </p>
             </>
           </ModalConfirm>

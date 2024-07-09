@@ -10,7 +10,7 @@ export const getRekrutmens = async (req, res) => {
     if (req.role === "admin") {
       // jika login as admin
       response = await Rekrutmen.findAll({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "image_rekrutmen"],
+        attributes: ["uuid", "title", "tags", "reference", "image_desc", "text_desc", "image_rekrutmen"],
         include: [
           {
             model: User,
@@ -20,7 +20,7 @@ export const getRekrutmens = async (req, res) => {
       });
     } else if (req.role === "user") {
       response = await Rekrutmen.findAll({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "image_rekrutmen"],
+        attributes: ["uuid", "title", "tags", "reference", "image_desc", "text_desc", "image_rekrutmen"],
         // jika login as user
         where: {
           userId: req.userId, // melihat data yg diinput oleh user itu sendiri
@@ -34,7 +34,7 @@ export const getRekrutmens = async (req, res) => {
       });
     } else {
       response = await Rekrutmen.findAll({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "text_desc", "image_rekrutmen"],
+        attributes: ["uuid", "title", "tags", "reference", "image_desc", "text_desc", "image_rekrutmen"],
         include: [
           {
             model: User,
@@ -63,17 +63,7 @@ export const getRekrutmenById = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Rekrutmen.findOne({
-        attributes: [
-          "uuid",
-          "title",
-          "tags",
-          "reference",
-          "image",
-          "image_desc",
-          "image_rekrutmen",
-          "text_desc",
-          "createdAt",
-        ],
+        attributes: ["uuid", "title", "tags", "reference", "image_desc", "image_rekrutmen", "text_desc", "createdAt"],
         where: {
           id: rekrutmen.id,
         },
@@ -86,7 +76,7 @@ export const getRekrutmenById = async (req, res) => {
       });
     } else if (req.role === "user") {
       response = await Rekrutmen.findOne({
-        attributes: ["uuid", "title", "tags", "reference", "image", "image_desc", "image_rekrutmen", "text_desc"],
+        attributes: ["uuid", "title", "tags", "reference", "image_desc", "image_rekrutmen", "text_desc"],
         where: {
           [Op.and]: [{ id: rekrutmen.id }, { userId: req.userId }],
         },
@@ -99,17 +89,7 @@ export const getRekrutmenById = async (req, res) => {
       });
     } else {
       response = await Rekrutmen.findOne({
-        attributes: [
-          "uuid",
-          "title",
-          "tags",
-          "reference",
-          "image",
-          "image_desc",
-          "image_rekrutmen",
-          "text_desc",
-          "createdAt",
-        ],
+        attributes: ["uuid", "title", "tags", "reference", "image_desc", "image_rekrutmen", "text_desc", "createdAt"],
         where: {
           id: rekrutmen.id,
         },
@@ -129,7 +109,7 @@ export const getRekrutmenById = async (req, res) => {
 };
 
 export const createRekrutmen = async (req, res) => {
-  const { title, tags, reference, image, image_desc, text_desc } = req.body;
+  const { title, tags, reference, image_desc, text_desc } = req.body;
 
   if (!req.file) {
     return res.status(400).json({ msg: "No file uploaded" });
@@ -141,7 +121,6 @@ export const createRekrutmen = async (req, res) => {
       title: title,
       tags: tags,
       reference: reference,
-      image: image,
       image_rekrutmen: image_rekrutmen,
       image_desc: image_desc,
       text_desc: text_desc,
@@ -163,10 +142,16 @@ export const updateRekrutmen = async (req, res) => {
 
     if (!rekrutmen) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
-    const { title, tags, reference, image, image_desc, text_desc } = req.body;
+    const { title, tags, reference, image_desc, text_desc } = req.body;
+
+    let image_rekrutmen = rekrutmen.image_rekrutmen; // Default to current image
+    if (req.file) {
+      image_rekrutmen = req.file.filename; // Isi new image if uploaded
+    }
+
     if (req.role === "admin") {
       await Rekrutmen.update(
-        { title, tags, reference, image, image_desc, text_desc },
+        { title, tags, reference, image_rekrutmen, image_desc, text_desc },
         {
           where: {
             id: rekrutmen.id,
@@ -176,7 +161,7 @@ export const updateRekrutmen = async (req, res) => {
     } else {
       if (req.userId !== rekrutmen.userId) return res.status(403).json({ msg: "Akses terlarang" });
       await Rekrutmen.update(
-        { title, tags, reference, image, image_desc, text_desc },
+        { title, tags, reference, image_rekrutmen, image_desc, text_desc },
         {
           where: {
             [Op.and]: [{ id: rekrutmen.id }, { userId: req.userId }],

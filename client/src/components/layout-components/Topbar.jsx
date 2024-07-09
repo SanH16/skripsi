@@ -12,7 +12,7 @@ import {
   selectGetUserLogin,
 } from "@/store/auth-get-user-slice";
 import { useEffect } from "react";
-import { Flex, Skeleton } from "antd";
+import { Flex, Image, Skeleton } from "antd";
 
 export default function Topbar() {
   const dispatch = useDispatch();
@@ -42,14 +42,6 @@ export default function Topbar() {
         </div>
 
         <div id="profile-user-topbar" className="flex items-center gap-3">
-          {/* <div
-            id="bot-icon-topbar"
-            className="flex items-center justify-center text-xl md:text-2xl"
-          >
-            <Link to="/asisten-dokter" className="hover:text-green-500">
-              <PiRobot />
-            </Link>
-          </div> */}
           <div id="notification-icon-topbar" className="text-xl md:text-2xl">
             <Link to="/notifikasi" className="hover:text-green-500">
               <IoNotificationsOutline />
@@ -58,9 +50,11 @@ export default function Topbar() {
           <div id="profile-user-topbar" className="flex items-center">
             <div>
               <a href="/profil">
-                <img
+                <Image
                   id="profile-user-topbar"
-                  src={anonymousPict}
+                  src={`http://localhost:5000/images/${dataUser?.pegawai?.photo}`}
+                  fallback={anonymousPict}
+                  preview={false}
                   alt="profile-user"
                   className="h-8 w-8 rounded-full md:h-11 md:w-11"
                 />
@@ -68,21 +62,6 @@ export default function Topbar() {
             </div>
             <a href="/profil" className="hover:text-green-500">
               <div className="ml-2">
-                {/* <>
-                  <h6
-                    id="user-name-topbar"
-                    className="text-xs leading-none sm:text-sm md:text-base"
-                  >
-                    User name
-                  </h6>
-                  <span
-                    id="user-specialist-topbar"
-                    className="text-xs font-medium leading-none md:text-sm"
-                  >
-                    Jabatan (divisi)
-                  </span>
-                </> */}
-
                 {stateDataUser.status === "loading" && (
                   <Flex className="flex-col" gap={2}>
                     <div>

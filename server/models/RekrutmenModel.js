@@ -37,10 +37,6 @@ const Rekrutmens = db.define(
         notEmpty: true,
       },
     },
-    image: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     image_rekrutmen: {
       type: DataTypes.STRING,
       allowNull: true,
