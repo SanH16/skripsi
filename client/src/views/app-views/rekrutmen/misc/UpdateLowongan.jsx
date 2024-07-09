@@ -427,9 +427,9 @@ const UpdateLowongan = () => {
           >
             <>
               <p>
-                Lowongan yang telah dibuat
-                <span className="font-semibold"> tidak dapat diubah </span>
-                kembali. Apakah anda yakin ingin mengupdate lowongan ini?
+                Pastikan Lowongan yang telah diubah
+                <span className="font-semibold"> sudah benar</span>. Apakah anda
+                yakin ingin mengubah lowongan ini?
               </p>
             </>
           </ModalConfirm>
