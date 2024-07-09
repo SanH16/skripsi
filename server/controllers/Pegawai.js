@@ -1,3 +1,5 @@
+import multer from "multer";
+import path from "path";
 import Cuti from "../models/CutiModel.js";
 import Pegawai from "../models/PegawaiModel.js";
 import User from "../models/UserModel.js";
@@ -10,6 +12,7 @@ export const getDataPegawai = async (req, res) => {
       response = await Pegawai.findAll({
         attributes: [
           "uuid",
+          "photo",
           "nik",
           "jabatan",
           "gaji_pegawai",
@@ -38,6 +41,7 @@ export const getDataPegawai = async (req, res) => {
       response = await Pegawai.findAll({
         attributes: [
           "uuid",
+          "photo",
           "nik",
           "jabatan",
           "gaji_pegawai",
@@ -87,6 +91,7 @@ export const getPegawaiById = async (req, res) => {
       response = await Pegawai.findOne({
         attributes: [
           "uuid",
+          "photo",
           "nik",
           "jabatan",
           "gaji_pegawai",
@@ -112,6 +117,7 @@ export const getPegawaiById = async (req, res) => {
       response = await Pegawai.findOne({
         attributes: [
           "uuid",
+          "photo",
           "nik",
           "jabatan",
           "gaji_pegawai",
@@ -154,6 +160,12 @@ export const createPegawai = async (req, res) => {
     status_menikah,
     status_bekerja,
   } = req.body;
+
+  if (!req.file) {
+    return res.status(400).json({ msg: "No file uploaded" });
+  }
+  const photo = req.file.filename;
+
   try {
     const existingPegawai = await Pegawai.findOne({ where: { userId: req.userId } });
     if (existingPegawai || !req.role === "admin") {
@@ -161,6 +173,7 @@ export const createPegawai = async (req, res) => {
     }
 
     await Pegawai.create({
+      photo: photo,
       nik: nik,
       jabatan: jabatan,
       gaji_pegawai: gaji_pegawai,
@@ -201,9 +214,15 @@ export const updatePegawai = async (req, res) => {
       status_menikah,
       status_bekerja,
     } = req.body;
+
+    let photo = pegawai.photo; // Default to current image
+    if (req.file) {
+      photo = req.file.filename; // Isi new image if uploaded
+    }
     if (req.role === "admin") {
       await Pegawai.update(
         {
+          photo,
           nik,
           jabatan,
           gaji_pegawai,
@@ -225,6 +244,7 @@ export const updatePegawai = async (req, res) => {
       if (req.userId !== pegawai.userId) return res.status(403).json({ msg: "Akses terlarang" });
       await Pegawai.update(
         {
+          photo,
           nik,
           jabatan,
           gaji_pegawai,
@@ -280,3 +300,27 @@ export const deletePegawai = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-pegawai" + path.extname(file.originalname));
+  },
+});
+
+export const upload = multer({
+  storage: storage,
+  limits: { fileSize: "1000000" }, // 1 MB
+  fileFilter: (req, file, cb) => {
+    const fileTypes = /jpeg|jpg|png|gif/;
+    const mimeType = fileTypes.test(file.mimetype);
+    const extname = fileTypes.test(path.extname(file.originalname).toLocaleLowerCase());
+
+    if (mimeType && extname) {
+      return cb(null, true);
+    }
+    cb("Give proper files formate to upload");
+  },
+}).single("photo");

@@ -138,11 +138,11 @@ const UpdateLowongan = () => {
         const tags = result.tags
           .split(", ")
           .map((tag) => ({ value: tag, label: tag }));
-        console.log("Fetched tags:", tags);
+        // console.log("Fetched tags:", tags);
         setValue("tags", tags);
         setValue("reference", result.reference);
         setValue("image_rekrutmen", result.image_rekrutmen); // gmbr
-        console.log("Fetched img:", result.image_rekrutmen);
+        // console.log("Fetched img:", result.image_rekrutmen);
         setValue("image_desc", result.image_desc);
         setImagePreview(
           `http://localhost:5000/images/${result.image_rekrutmen}`,

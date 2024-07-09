@@ -1,4 +1,4 @@
-import { Button, Card, ConfigProvider, Flex, Spin } from "antd";
+import { Button, Card, ConfigProvider, Flex, Image, Spin } from "antd";
 import { BiSolidErrorCircle } from "react-icons/bi";
 
 import anonymousPict from "@/assets/anonymous profile.jpg";
@@ -82,9 +82,11 @@ export default function UserProfile() {
           <div className="my-4 items-center space-y-4 md:grid md:grid-cols-2 lg:grid-cols-12">
             <div className="flex justify-center md:col-span-1 lg:col-span-3 xl:col-span-2">
               <div id="doctor-image">
-                <img
-                  src={anonymousPict}
+                <Image
+                  src={`http://localhost:5000/images/${pegawaiData?.[0]?.photo}`}
                   alt="profile-doctor"
+                  fallback={anonymousPict}
+                  preview={true}
                   className="my-5 h-32 w-32 rounded-full md:my-0 md:h-36 md:w-36"
                 />
               </div>

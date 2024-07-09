@@ -1,12 +1,13 @@
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 
-import { Button } from "antd";
+import { Button, Image } from "antd";
 import { Link } from "react-router-dom";
 
 import { MdOutlineDeleteSweep } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import { thousandSeparator } from "@/utils/ThousandSeparator";
+import anonymousPict from "@/assets/anonymous profile.jpg";
 
 export const ColumnPegawai = (handleOpenModalDelete) => [
   {
@@ -15,6 +16,21 @@ export const ColumnPegawai = (handleOpenModalDelete) => [
     key: "uuid",
     width: 100,
     render: (val) => <span>{val.slice(0, 5)}</span>,
+  },
+  {
+    title: "Photo",
+    dataIndex: ["photo"],
+    key: "photo",
+    width: 100,
+    fixed: "left",
+    render: (val) => (
+      <Image
+        src={`http://localhost:5000/images/${val}`}
+        preview={true}
+        fallback={anonymousPict}
+        className="h-10 w-10 rounded-full"
+      />
+    ),
   },
   {
     title: "Nama Pegawai",
