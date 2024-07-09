@@ -233,6 +233,7 @@ export default function DetailLowongan() {
                 // src={dataConstant[1].image}
                 src={`http://localhost:5000/images/${detailRekrutmen?.image_rekrutmen}`}
                 alt={detailRekrutmen?.image_desc}
+                fallback={dataConstant[1].image}
                 preview={true}
               />
             )}
