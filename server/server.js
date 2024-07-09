@@ -44,6 +44,7 @@ app.use(
   })
 );
 
+app.use("/images", express.static("./images"));
 app.use(
   cors({
     credentials: true, // allow pengiriman cookie di CORS
