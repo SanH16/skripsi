@@ -27,7 +27,7 @@ export const ColumnCuti = (handleOpenModalDelete) => {
       dataIndex: ["user", "name"],
       // render: (user) => user.map((item) => item.name).join(),
       key: "user",
-      width: 150,
+      width: 200,
       sorter: (a, b) => a.user.name.localeCompare(b.user.name),
     },
     {

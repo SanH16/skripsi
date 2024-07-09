@@ -1,36 +1,38 @@
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
+
 import { useState } from "react";
 import { Card, Table, ConfigProvider, Button, Flex, Space, Drawer } from "antd";
 
-import { ColumnCuti } from "../constant/column-cuti";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useScrollToTop } from "@/hooks/useScrollToTop";
-import { APIcuti } from "@/apis/APIcuti";
 import { Link } from "react-router-dom";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 import { ModalDeleteCuti } from "@/components/shared-components/ModalDeleteCuti";
-import { CardCuti } from "../misc/CardCuti";
 import { useQuery } from "@tanstack/react-query";
-import PDFcuti from "../misc/PDFcuti";
+// import PDFcuti from "../misc/PDFcuti";
+import { APImutasi } from "@/apis/APImutasi";
+import { CardMutasi } from "../misc/CardMutasi";
+import { ColumnMutasi } from "../constant/column-mutasi";
+import PDFmutasi from "../misc/PDFmutasi";
 
-export function TableCuti() {
-  useDocumentTitle("Cuti Pegawai");
+export function TableMutasi() {
+  useDocumentTitle("Halaman Mutasi");
   useScrollToTop();
 
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-  const [selectedCuti, setSelectedCuti] = useState(null);
+  const [selectedMutasi, setSelectedMutasi] = useState(null);
 
   const handleRowClick = (record) => {
-    setSelectedCuti(record); // Set data cuti terpilih
+    setSelectedMutasi(record); // Set data cuti terpilih
     setIsDrawerVisible(true); // Buka Drawer
   };
 
   const handleCloseDrawer = () => {
     setIsDrawerVisible(false);
-    setSelectedCuti(null);
+    setSelectedMutasi(null);
   };
 
   const handleOpenModalDelete = (user) => {
@@ -39,37 +41,37 @@ export function TableCuti() {
   };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["cutiData"],
+    queryKey: ["mutasiData"],
     queryFn: async () => {
-      const result = await APIcuti.getAllCuti();
+      const result = await APImutasi.getAllMutasi();
       return result;
     },
   });
-  const dataCuti = data || [];
-  console.log("cuti query", dataCuti);
+  const dataMutasi = data || [];
+  console.log("mutasi query", dataMutasi);
 
   return (
     <>
       <Flex justify="space-between" className="mb-6">
         <Space size="middle">
-          <h3 className="mb-3 font-bold">Pengajuan Cuti</h3>
+          <h3 className="mb-3 font-bold">Mutasi Pegawai</h3>
         </Space>
 
         <Space size="middle">
-          <Link to={`/pengajuan-cuti`}>
+          <Link to={`/mutasi-pegawai`}>
             <Button
-              id="buat-cuti"
+              id="buat-mutasi"
               className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
             >
               <span className="me-2 text-lg">
                 <MdOutlineFileUpload />
               </span>
-              Buat Cuti
+              Tambah Mutasi
             </Button>
           </Link>
         </Space>
       </Flex>
-      <CardCuti data={dataCuti} />
+      <CardMutasi data={dataMutasi} />
       <Card>
         <ConfigProvider
           theme={{
@@ -98,24 +100,22 @@ export function TableCuti() {
           }}
         >
           <Table
-            id="cuti-table-list"
+            id="mutasi-table-list"
             rowClassName={"hover:cursor-pointer"}
             loading={isLoading}
             onRow={(record) => ({
               onClick: () => {
-                if (record.status === "processed" || record.status === "done") {
-                  handleRowClick(record);
-                }
+                handleRowClick(record);
               },
             })}
-            columns={ColumnCuti(handleOpenModalDelete)}
-            dataSource={dataCuti}
+            columns={ColumnMutasi(handleOpenModalDelete)}
+            dataSource={dataMutasi}
             scroll={{ x: true }}
             style={{ maxWidth: "100%" }}
             pagination={{
               defaultCurrent: 1,
               defaultPageSize: 10,
-              total: dataCuti.length,
+              total: dataMutasi.length,
               showTotal: (total, range) =>
                 `Menampilkan ${range[0]}-${range[1]} dari ${total} data`,
             }}
@@ -145,13 +145,13 @@ export function TableCuti() {
       )}
 
       <Drawer
-        title="Dokumen Pengajuan Cuti"
+        title="Dokumen Mutasi Pegawai"
         placement="right"
         size="large"
         onClose={handleCloseDrawer}
         open={isDrawerVisible}
       >
-        {selectedCuti && <PDFcuti cutiData={selectedCuti} />}
+        {selectedMutasi && <PDFmutasi mutasiData={selectedMutasi} />}
       </Drawer>
     </>
   );

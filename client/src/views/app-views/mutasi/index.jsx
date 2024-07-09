@@ -1,8 +1,10 @@
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { TableMutasi } from "./components/TableMutasi";
 
 export default function Mutasi() {
-  useDocumentTitle("Halaman Mutasi");
-  useScrollToTop();
-  return <div>Mutasi</div>;
+  return (
+    <section className="py-5">
+      <TableMutasi />
+      {/* halo */}
+    </section>
+  );
 }

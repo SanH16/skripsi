@@ -37,6 +37,13 @@ const Mutasi = db.define(
         notEmpty: true,
       },
     },
+    tanggal_mulai: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
