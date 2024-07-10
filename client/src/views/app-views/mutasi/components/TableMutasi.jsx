@@ -2,28 +2,44 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 import { useState } from "react";
-import { Card, Table, ConfigProvider, Button, Flex, Space, Drawer } from "antd";
+import {
+  Card,
+  Table,
+  ConfigProvider,
+  Button,
+  Flex,
+  Space,
+  Drawer,
+  Modal,
+} from "antd";
 
-import { Link } from "react-router-dom";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 import { useQuery } from "@tanstack/react-query";
-// import PDFcuti from "../misc/PDFcuti";
 import { APImutasi } from "@/apis/APImutasi";
 import { CardMutasi } from "../misc/CardMutasi";
 import { ColumnMutasi } from "../constant/column-mutasi";
 import PDFmutasi from "../misc/PDFmutasi";
-import { ModalDeleteMutasi } from "../../../../components/shared-components/ModalDeleteMutasi";
+import { ModalDeleteMutasi } from "@/components/shared-components/ModalDeleteMutasi";
+import AddMutasi from "../misc/AddMutasi";
+
+import { useSelector } from "react-redux";
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 
 export function TableMutasi() {
   useDocumentTitle("Halaman Mutasi");
   useScrollToTop();
+
+  const userState = useSelector(selectGetUserLogin);
+  const verifRole = userState?.data?.role === "admin";
 
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedMutasi, setSelectedMutasi] = useState(null);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleRowClick = (record) => {
     setSelectedMutasi(record); // Set data cuti terpilih
@@ -40,7 +56,15 @@ export function TableMutasi() {
     setIsShowDelete((prev) => !prev);
   };
 
-  const { data, isLoading, isError } = useQuery({
+  const handleOpenModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["mutasiData"],
     queryFn: async () => {
       const result = await APImutasi.getAllMutasi();
@@ -57,19 +81,20 @@ export function TableMutasi() {
           <h3 className="mb-3 font-bold">Mutasi Pegawai</h3>
         </Space>
 
-        <Space size="middle">
-          <Link to={`/mutasi-pegawai`}>
+        {verifRole ? (
+          <Space size="middle">
             <Button
               id="buat-mutasi"
               className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+              onClick={handleOpenModal}
             >
               <span className="me-2 text-lg">
                 <MdOutlineFileUpload />
               </span>
               Tambah Mutasi
             </Button>
-          </Link>
-        </Space>
+          </Space>
+        ) : null}
       </Flex>
       <CardMutasi data={dataMutasi} />
       <Card>
@@ -153,6 +178,16 @@ export function TableMutasi() {
       >
         {selectedMutasi && <PDFmutasi mutasiData={selectedMutasi} />}
       </Drawer>
+
+      <Modal
+        title="Tambah Mutasi"
+        open={isModalVisible}
+        onCancel={handleCloseModal}
+        footer={null}
+        width={900}
+      >
+        <AddMutasi onClose={handleCloseModal} refetchMutasi={refetch} />
+      </Modal>
     </>
   );
 }

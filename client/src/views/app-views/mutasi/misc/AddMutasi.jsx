@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { ModalConfirm } from "@/components/shared-components/ModalConfirm";
 import { ModalCancel } from "@/components/shared-components/ModalCancel";
-import { globalRoute } from "@/utils/GlobalRoute";
+// import { globalRoute } from "@/utils/GlobalRoute";
 
 import imagePrev from "@/assets/content-pages.png";
 
@@ -20,7 +20,7 @@ import { APImutasi } from "@/apis/APImutasi";
 import { APIuser } from "@/apis/APIuser";
 import { useQuery } from "@tanstack/react-query";
 
-export default function AddMutasi() {
+export default function AddMutasi({ onClose, refetchMutasi }) {
   useDocumentTitle("Mutasi Pegawai");
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
@@ -54,15 +54,16 @@ export default function AddMutasi() {
     },
   });
   const dataUser = data || [];
-  console.log("user mutasi query", dataUser);
+  // console.log("user mutasi query", dataUser);
 
   const createMutasi = async (data) => {
     try {
       const user = dataUser.find((user) => user.name === data.nama_pegawai);
       await APImutasi.createMutasi({ ...data, userId: user.id });
       showSuccessToast("Mutasi pegawai berhasil dibuat", "top-center", "large");
-      globalRoute.navigate(`/mutasi`);
-      //   console.log("post cuti", result);
+      // globalRoute.navigate(`/mutasi`);
+      refetchMutasi();
+      onClose();
     } catch (err) {
       console.error(err);
       showErrorToast("Mutasi pegawai gagal dibuat", "top-center", "large");
@@ -92,7 +93,7 @@ export default function AddMutasi() {
       >
         {/* Title */}
         <Flex justify="space-between" align="center">
-          <h3 className="font-bold">Mutasi Pegawai</h3>
+          <h3 className="font-bold">Form Mutasi</h3>
           <div>
             <Space size="middle">
               <Button
