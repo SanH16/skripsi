@@ -82,7 +82,7 @@ export default function UpdateCuti() {
     try {
       const result = await APIcuti.updateCuti(cutiId, inputData);
       showSuccessToast("Pengajuan Cuti berhasil diubah", "top-center", "large");
-      globalRoute.navigate && globalRoute.navigate(`/cuti`);
+      globalRoute.navigate(`/cuti`);
       console.log("update cuti", result);
     } catch (err) {
       console.error(err);

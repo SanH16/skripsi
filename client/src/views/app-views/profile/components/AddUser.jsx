@@ -60,7 +60,7 @@ export default function AddUser() {
     try {
       const result = await APIuser.createUser(data);
       showSuccessToast("Akun User berhasil dibuat", "top-center", "large");
-      globalRoute.navigate && globalRoute.navigate(`/profil`);
+      globalRoute.navigate(`/profil`);
       console.log("post user", result);
     } catch (err) {
       console.error(err);

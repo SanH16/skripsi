@@ -58,7 +58,7 @@ export default function AddCuti() {
     try {
       const result = await APIcuti.createCuti(data);
       showSuccessToast("Pengajuan Cuti berhasil dibuat", "top-center", "large");
-      globalRoute.navigate && globalRoute.navigate(`/cuti`);
+      globalRoute.navigate(`/cuti`);
       console.log("post cuti", result);
     } catch (err) {
       console.error(err);

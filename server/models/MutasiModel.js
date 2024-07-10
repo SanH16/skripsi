@@ -23,6 +23,13 @@ const Mutasi = db.define(
         len: [3, 100],
       },
     },
+    nama_pegawai: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     cabang_sebelum: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -37,11 +44,22 @@ const Mutasi = db.define(
         notEmpty: true,
       },
     },
+    tanggal_mulai: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
         notEmpty: true,
+      },
+      references: {
+        model: Users,
+        key: "id",
       },
     },
   },
@@ -50,7 +68,8 @@ const Mutasi = db.define(
   }
 );
 
-Users.hasMany(Mutasi);
+Users.hasMany(Mutasi, { foreignKey: "userId" });
 Mutasi.belongsTo(Users, { foreignKey: "userId" });
+// Mutasi.belongsTo(Users, { foreignKey: "nama_pegawai", targetKey: "name" });
 
 export default Mutasi;

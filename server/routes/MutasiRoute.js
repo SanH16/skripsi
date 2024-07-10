@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get("/mutasi", verifyUser, getDataMutasi);
 router.get("/mutasi/:id", verifyUser, getMutasiById);
-router.post("/create-mutasi", verifyUser, createMutasi); // login first
-router.patch("/mutasi/:id", verifyUser, updateMutasi); // login first
+router.post("/create-mutasi", verifyUser, adminOnly, createMutasi); // login first
+router.patch("/mutasi/:id", verifyUser, adminOnly, updateMutasi); // login first
 router.delete("/mutasi/:id", verifyUser, adminOnly, deleteMutasi); // login first
 
 export default router;
