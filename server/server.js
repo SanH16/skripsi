@@ -10,6 +10,7 @@ import AuthRoute from "./routes/AuthRoute.js";
 import CutiRoute from "./routes/CutiRoute.js";
 import PegawaiRoute from "./routes/PegawaiRoute.js";
 import MutasiRoute from "./routes/MutasiRoute.js";
+import AbsensiRoute from "./routes/AbsensiRoute.js";
 
 dotenv.config();
 const port = process.env.APP_PORT;
@@ -60,6 +61,7 @@ app.use(AuthRoute);
 app.use(CutiRoute);
 app.use(PegawaiRoute);
 app.use(MutasiRoute);
+app.use(AbsensiRoute);
 
 // store.sync(); // sinkronisasi table session di db
 // store.sync({force: true}); // sinkronisasi table session di db dan menghapus data lama
