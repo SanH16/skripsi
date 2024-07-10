@@ -13,21 +13,25 @@ import {
   Modal,
 } from "antd";
 
-// import { Link } from "react-router-dom";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 import { useQuery } from "@tanstack/react-query";
-// import PDFcuti from "../misc/PDFcuti";
 import { APImutasi } from "@/apis/APImutasi";
 import { CardMutasi } from "../misc/CardMutasi";
 import { ColumnMutasi } from "../constant/column-mutasi";
 import PDFmutasi from "../misc/PDFmutasi";
-import { ModalDeleteMutasi } from "../../../../components/shared-components/ModalDeleteMutasi";
+import { ModalDeleteMutasi } from "@/components/shared-components/ModalDeleteMutasi";
 import AddMutasi from "../misc/AddMutasi";
+
+import { useSelector } from "react-redux";
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 
 export function TableMutasi() {
   useDocumentTitle("Halaman Mutasi");
   useScrollToTop();
+
+  const userState = useSelector(selectGetUserLogin);
+  const verifRole = userState?.data?.role === "admin";
 
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -77,18 +81,20 @@ export function TableMutasi() {
           <h3 className="mb-3 font-bold">Mutasi Pegawai</h3>
         </Space>
 
-        <Space size="middle">
-          <Button
-            id="buat-mutasi"
-            className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
-            onClick={handleOpenModal}
-          >
-            <span className="me-2 text-lg">
-              <MdOutlineFileUpload />
-            </span>
-            Tambah Mutasi
-          </Button>
-        </Space>
+        {verifRole ? (
+          <Space size="middle">
+            <Button
+              id="buat-mutasi"
+              className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+              onClick={handleOpenModal}
+            >
+              <span className="me-2 text-lg">
+                <MdOutlineFileUpload />
+              </span>
+              Tambah Mutasi
+            </Button>
+          </Space>
+        ) : null}
       </Flex>
       <CardMutasi data={dataMutasi} />
       <Card>
