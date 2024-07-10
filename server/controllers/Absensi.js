@@ -10,17 +10,23 @@ export const getDataAbsensi = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Absensi.findAll({
-        attributes: ["uuid", "jam_masuk", "jam_keluar", "bukti_photo", "status", "createdAt"],
+        attributes: ["uuid", "jam_masuk", "jam_keluar", "bukti_photo", "status", "keterangan", "createdAt"],
         include: [
           {
             model: User,
             attributes: ["name", "email", "role"],
+            include: [
+              {
+                model: Pegawai,
+                attributes: ["jabatan"],
+              },
+            ],
           },
         ],
       });
     } else {
       response = await Absensi.findAll({
-        attributes: ["uuid", "jam_masuk", "jam_keluar", "bukti_photo", "status", "createdAt"],
+        attributes: ["uuid", "jam_masuk", "jam_keluar", "bukti_photo", "status", "keterangan", "createdAt"],
         where: {
           userId: req.userId, // melihat data yg diinput oleh user itu sendiri
         },
@@ -28,6 +34,12 @@ export const getDataAbsensi = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email", "role"],
+            include: [
+              {
+                model: Pegawai,
+                attributes: ["jabatan"],
+              },
+            ],
           },
         ],
       });
@@ -51,7 +63,7 @@ export const getAbsensiById = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Absensi.findOne({
-        attributes: ["uuid", "jam_masuk", "jam_keluar", "bukti_photo", "status", "createdAt"],
+        attributes: ["uuid", "jam_masuk", "jam_keluar", "bukti_photo", "status", "keterangan", "createdAt"],
         where: {
           id: absensi.id,
         },
@@ -59,18 +71,12 @@ export const getAbsensiById = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email", "role"],
-            include: [
-              {
-                model: Pegawai,
-                attributes: ["jabatan"],
-              },
-            ],
           },
         ],
       });
     } else {
       response = await Absensi.findOne({
-        attributes: ["uuid", "jam_masuk", "jam_keluar", "bukti_photo", "status", "createdAt"],
+        attributes: ["uuid", "jam_masuk", "jam_keluar", "bukti_photo", "status", "keterangan", "createdAt"],
         where: {
           [Op.and]: [{ id: absensi.id }, { userId: req.userId }],
         },
@@ -78,12 +84,6 @@ export const getAbsensiById = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email"],
-            include: [
-              {
-                model: Pegawai,
-                attributes: ["jabatan"],
-              },
-            ],
           },
         ],
       });
@@ -96,7 +96,7 @@ export const getAbsensiById = async (req, res) => {
 };
 
 export const createAbsensi = async (req, res) => {
-  const { jam_masuk, jam_keluar, status } = req.body;
+  const { jam_masuk, jam_keluar, status, keterangan } = req.body;
 
   if (!req.file) {
     return res.status(400).json({ msg: "No file uploaded" });
@@ -109,6 +109,7 @@ export const createAbsensi = async (req, res) => {
       jam_keluar: jam_keluar,
       bukti_photo: bukti_photo,
       status: status,
+      keterangan: keterangan,
       userId: req.userId,
     });
     res.status(201).json({ msg: "Absensi Created Successfuly" });
@@ -127,7 +128,7 @@ export const updateAbsensi = async (req, res) => {
 
     if (!absensi) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
-    const { jam_masuk, jam_keluar, status } = req.body;
+    const { jam_masuk, jam_keluar, status, keterangan } = req.body;
 
     let bukti_photo = absensi.bukti_photo; // Default to current image
     if (req.file) {
@@ -136,7 +137,7 @@ export const updateAbsensi = async (req, res) => {
 
     if (req.role === "admin") {
       await Absensi.update(
-        { jam_masuk, jam_keluar, bukti_photo, status },
+        { jam_masuk, jam_keluar, bukti_photo, status, keterangan },
         {
           where: {
             id: absensi.id,
@@ -146,7 +147,7 @@ export const updateAbsensi = async (req, res) => {
     } else {
       if (req.userId !== absensi.userId) return res.status(403).json({ msg: "Akses terlarang" });
       await Absensi.update(
-        { jam_masuk, jam_keluar, bukti_photo, status },
+        { jam_masuk, jam_keluar, bukti_photo, status, keterangan },
         {
           where: {
             [Op.and]: [{ id: absensi.id }, { userId: req.userId }],

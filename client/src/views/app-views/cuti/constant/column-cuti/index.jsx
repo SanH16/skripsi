@@ -123,19 +123,19 @@ export const ColumnCuti = (handleOpenModalDelete) => {
             <Link to={`/update-cuti/${record.uuid}`}>
               <Button
                 type="primary"
-                className="me-1 h-[30px] w-auto"
+                className="me-2 h-[30px] w-[32px] p-0"
                 disabled={!verifRole && isCutiDisabled}
               >
-                <FaRegEdit className="p-[2px] text-[25px]" />
+                <FaRegEdit className="p-[2px] text-[20px]" />
               </Button>
             </Link>
 
             {verifRole && (
               <Button
                 onClick={() => handleOpenModalDelete(record)}
-                className="h-[30px] w-auto border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                className="h-[30px] w-[32px] border-red-500 p-0 text-red-500 hover:bg-red-500 hover:text-white"
               >
-                <MdOutlineDeleteSweep className="text-[25px]" />
+                <MdOutlineDeleteSweep className="text-[20px]" />
               </Button>
             )}
           </>

@@ -1,0 +1,161 @@
+/* eslint-disable react-refresh/only-export-components */
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+import { Button, Image } from "antd";
+import anonymousPict from "@/assets/anonymous profile.jpg";
+import { MdOutlineDeleteSweep } from "react-icons/md";
+
+export const ColumnAbsensi = (handleOpenModalDelete) => {
+  return [
+    {
+      title: "ID",
+      dataIndex: "uuid",
+      key: "uuid",
+      render: (val) => <span>{val.slice(0, 5)}</span>,
+    },
+    {
+      title: "Nama Pegawai",
+      dataIndex: ["user", "name"],
+      key: "user",
+      width: 200,
+      sorter: (a, b) => a.user.name.localeCompare(b.user.name),
+    },
+    {
+      title: "Jabatan",
+      dataIndex: ["user", "pegawai", "jabatan"],
+      key: "user",
+      width: 100,
+    },
+    {
+      title: "Hari",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      width: 200,
+      sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
+      render: (val) => {
+        return dayjs(val).format(`dddd, DD MMMM YYYY`);
+      },
+    },
+    {
+      title: "Jam Masuk",
+      dataIndex: "jam_masuk",
+      key: "jam_masuk",
+      width: 200,
+      sorter: (a, b) => a.jam_masuk.localeCompare(b.jam_masuk),
+      render: (val) => {
+        return dayjs(val).format(`[Pukul] HH:mm:ss [WIB]`);
+      },
+    },
+    {
+      title: "Jam Keluar",
+      dataIndex: "jam_keluar",
+      key: "jam_keluar",
+      width: 200,
+      //   sorter: (a, b) => a.jam_keluar.localeCompare(b.jam_keluar),
+      render: (val) => {
+        return val ? (
+          dayjs(val).format(`[Pukul] HH:mm:ss [WIB]`)
+        ) : (
+          <span className="font-medium text-warning">belum keluar</span>
+        );
+      },
+    },
+    {
+      title: "Bukti Absen",
+      dataIndex: "bukti_photo",
+      key: "bukti_photo",
+      width: 150,
+      render: (val) =>
+        val ? (
+          <div className="flex justify-center">
+            <Image
+              src={`http://localhost:5000/images/${val}`}
+              preview={true}
+              fallback={anonymousPict}
+              className="h-10 w-10 rounded-lg"
+            />
+          </div>
+        ) : (
+          <span> - </span>
+        ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 100,
+      filters: [
+        {
+          text: "Hadir",
+          value: "hadir",
+        },
+        {
+          text: "Izin",
+          value: "izin",
+        },
+        {
+          text: "Sakit",
+          value: "sakit",
+        },
+        {
+          text: "Tidak Hadir",
+          value: "alfa",
+        },
+      ],
+      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      render: (_, { status }) => {
+        let text;
+        let color;
+        if (status === "hadir") {
+          (color = "text-positive bg-positive-25 w-28"), (text = "Hadir");
+        }
+        if (status === "izin") {
+          (color = "text-warning bg-warning-25 w-28"), (text = "Izin");
+        }
+        if (status === "sakit") {
+          (color = "text-link bg-link-25 w-28"), (text = "Sakit");
+        }
+        if (status === "alfa") {
+          (color = "text-negative bg-negative-25 w-28"), (text = "Tidak Hadir");
+        }
+
+        return (
+          <Button className={color} key={status} type="primary">
+            <span className="font-medium">{text}</span>
+          </Button>
+        );
+      },
+    },
+    {
+      title: "Keterangan",
+      dataIndex: "keterangan",
+      key: "keterangan",
+      width: 100,
+      render: (val) =>
+        val ? (
+          <span className="line-clamp-1">{val}</span>
+        ) : (
+          <span className="flex justify-center"> - </span>
+        ),
+    },
+    {
+      title: "Action",
+      width: 50,
+      className: "text-center",
+      render: (record) => {
+        return (
+          <>
+            <div className="flex items-center justify-center">
+              <Button
+                onClick={() => handleOpenModalDelete(record)}
+                className="h-[30px] w-[32px] rounded-lg border-red-500 p-0 text-red-500 hover:bg-red-500 hover:text-white"
+              >
+                <MdOutlineDeleteSweep className="text-[20px]" />
+              </Button>
+            </div>
+          </>
+        );
+      },
+    },
+  ];
+};
