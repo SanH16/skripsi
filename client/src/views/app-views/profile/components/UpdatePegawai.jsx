@@ -123,7 +123,7 @@ export default function UpdatePegawai() {
     try {
       const result = await APIpegawai.updatePegawai(pegawaiId, inputData);
       showSuccessToast("Data Pegawai berhasil diubah", "top-center", "large");
-      globalRoute.navigate && globalRoute.navigate(`/profil`);
+      globalRoute.navigate(`/profil`);
       console.log("update pegawai", result);
     } catch (err) {
       console.error(err);

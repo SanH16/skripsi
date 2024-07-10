@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDeleteSweep } from "react-icons/md";
+import { IoInformationCircleOutline } from "react-icons/io5";
 
 export const ColumnMutasi = (handleOpenModalDelete) => {
   const userState = useSelector(selectGetUserLogin);
@@ -24,11 +25,11 @@ export const ColumnMutasi = (handleOpenModalDelete) => {
     },
     {
       title: "Nama Pegawai",
-      dataIndex: ["user", "name"],
+      dataIndex: ["nama_pegawai"],
       // render: (user) => user.map((item) => item.name).join(),
-      key: "user",
+      key: "nama_pegawai",
       width: 150,
-      sorter: (a, b) => a.user.name.localeCompare(b.user.name),
+      sorter: (a, b) => a.nama_pegawai.name.localeCompare(b.nama_pegawai.name),
     },
     {
       title: "Keterangan Mutasi",
@@ -78,23 +79,32 @@ export const ColumnMutasi = (handleOpenModalDelete) => {
       render: (record) => {
         return (
           <>
-            <Link to={`/update-mutasi/${record.uuid}`}>
-              <Button
-                type="primary"
-                className="me-1 h-[30px] w-auto"
-                disabled={!verifRole}
-              >
-                <FaRegEdit className="p-[2px] text-[25px]" />
-              </Button>
-            </Link>
-
-            {verifRole && (
-              <Button
-                onClick={() => handleOpenModalDelete(record)}
-                className="h-[30px] w-auto border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
-              >
-                <MdOutlineDeleteSweep className="text-[25px]" />
-              </Button>
+            {verifRole ? (
+              <>
+                <Link to={`/update-mutasi/${record.uuid}`}>
+                  <Button
+                    type="primary"
+                    className="me-1 h-[30px] w-auto"
+                    disabled={!verifRole}
+                  >
+                    <FaRegEdit className="p-[2px] text-[25px]" />
+                  </Button>
+                </Link>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenModalDelete(record);
+                  }}
+                  className="h-[30px] w-auto border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                >
+                  <MdOutlineDeleteSweep className="text-[25px]" />
+                </Button>
+              </>
+            ) : (
+              <div className="flex items-center justify-center text-2xl font-semibold text-green-500 duration-100 hover:text-link">
+                {/* <IoEye /> */}
+                <IoInformationCircleOutline />
+              </div>
             )}
           </>
         );

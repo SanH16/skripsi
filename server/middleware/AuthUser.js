@@ -22,6 +22,7 @@ export const verifyUser = async (req, res, next) => {
     // tambahkan userId dan role ke object request
     req.userId = user.id;
     req.role = user.role;
+    req.userName = user.name;
 
     // lanjutkan ke middleware atau handler lainnya
     next();

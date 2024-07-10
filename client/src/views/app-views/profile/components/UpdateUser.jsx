@@ -75,7 +75,7 @@ export default function UpdateUser() {
     try {
       const result = await APIuser.updateUser(userId, inputData);
       showSuccessToast("Akun User berhasil diubah", "top-center", "large");
-      globalRoute.navigate && globalRoute.navigate(`/profil`);
+      globalRoute.navigate(`/profil`);
       console.log("post user", result);
     } catch (err) {
       console.error(err);

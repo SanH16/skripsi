@@ -25,6 +25,8 @@ import AddCuti from "@/views/app-views/cuti/misc/AddCuti";
 import UpdateCuti from "@/views/app-views/cuti/misc/UpdateCuti";
 import AddPegawai from "@/views/app-views/profile/components/AddPegawai";
 import UpdatePegawai from "@/views/app-views/profile/components/UpdatePegawai";
+import AddMutasi from "@/views/app-views/mutasi/misc/AddMutasi";
+import UpdateMutasi from "@/views/app-views/mutasi/misc/UpdateMutasi";
 
 export default function SetupRoutes() {
   const navigate = useNavigate();
@@ -40,9 +42,11 @@ export default function SetupRoutes() {
         <Route path="/update-pegawai/:pegawaiId" element={<UpdatePegawai />} />
         <Route path="/pengajuan-cuti" element={<AddCuti />} />
         <Route path="/update-cuti/:cutiId" element={<UpdateCuti />} />
+        <Route path="/mutasi" element={<Mutasi />} />
+        <Route path="/mutasi-pegawai" element={<AddMutasi />} />
+        <Route path="/update-mutasi/:mutasiId" element={<UpdateMutasi />} />
         <Route path="/absensi" element={<Absensi />} />
         <Route path="/cuti" element={<Cuti />} />
-        <Route path="/mutasi" element={<Mutasi />} />
         <Route path="/penugasan" element={<Penugasan />} />
         <Route
           path="/pemutusan-hubungan-kerja"

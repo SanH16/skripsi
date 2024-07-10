@@ -39,7 +39,7 @@ export default function PDFmutasi({ mutasiData }) {
     <>
       <PDFDownloadLink
         document={<Pdf data={data} />}
-        fileName={`pengajuan-cuti-${data?.user?.name}`}
+        fileName={`mutasi-pegawai-${data?.nama_pegawai}`}
       >
         <Button className="m-3 border-green-500 font-semibold text-green-500 hover:bg-green-500 hover:text-white">
           <span className="text-lg">
@@ -71,7 +71,7 @@ const Pdf = ({ data }) => {
         </View>
         <View style={styles.text}>
           <Text>Kepada Yth,</Text>
-          <Text>{data?.user?.name}</Text>
+          <Text>{data?.nama_pegawai}</Text>
         </View>
         <View style={styles.text}>
           <Text>Dengan hormat,</Text>
@@ -82,7 +82,7 @@ const Pdf = ({ data }) => {
         </View>
         <View style={styles.text}>
           <Text>Menyetujui permohonan cuti yang diajukan:</Text>
-          <Text>Nama : {data?.user?.name}</Text>
+          <Text>Nama : {data?.nama_pegawai}</Text>
           <Text>Jabatan : {data?.user?.pegawai?.jabatan}</Text>
           <Text>Alasan cuti :{data?.keterangan_mutasi}</Text>
         </View>

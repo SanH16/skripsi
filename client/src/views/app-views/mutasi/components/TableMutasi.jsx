@@ -7,13 +7,13 @@ import { Card, Table, ConfigProvider, Button, Flex, Space, Drawer } from "antd";
 import { Link } from "react-router-dom";
 import { MdOutlineFileUpload } from "react-icons/md";
 
-import { ModalDeleteCuti } from "@/components/shared-components/ModalDeleteCuti";
 import { useQuery } from "@tanstack/react-query";
 // import PDFcuti from "../misc/PDFcuti";
 import { APImutasi } from "@/apis/APImutasi";
 import { CardMutasi } from "../misc/CardMutasi";
 import { ColumnMutasi } from "../constant/column-mutasi";
 import PDFmutasi from "../misc/PDFmutasi";
+import { ModalDeleteMutasi } from "../../../../components/shared-components/ModalDeleteMutasi";
 
 export function TableMutasi() {
   useDocumentTitle("Halaman Mutasi");
@@ -138,7 +138,7 @@ export function TableMutasi() {
       </Card>
       {/* drawer & modal */}
       {isShowDelete && (
-        <ModalDeleteCuti
+        <ModalDeleteMutasi
           closeModal={handleOpenModalDelete}
           stateModal={userToDelete}
         />

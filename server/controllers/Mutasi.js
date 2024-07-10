@@ -8,7 +8,15 @@ export const getDataMutasi = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Mutasi.findAll({
-        attributes: ["uuid", "keterangan_mutasi", "cabang_sebelum", "cabang_tujuan", "createdAt", "tanggal_mulai"],
+        attributes: [
+          "uuid",
+          "nama_pegawai",
+          "keterangan_mutasi",
+          "cabang_sebelum",
+          "cabang_tujuan",
+          "createdAt",
+          "tanggal_mulai",
+        ],
         include: [
           {
             model: User,
@@ -18,9 +26,20 @@ export const getDataMutasi = async (req, res) => {
       });
     } else {
       response = await Mutasi.findAll({
-        attributes: ["uuid", "keterangan_mutasi", "cabang_sebelum", "cabang_tujuan", "createdAt", "tanggal_mulai"],
+        attributes: [
+          "uuid",
+          "nama_pegawai",
+          "keterangan_mutasi",
+          "cabang_sebelum",
+          "cabang_tujuan",
+          "createdAt",
+          "tanggal_mulai",
+        ],
+        // where: {
+        //   userId: req.userId,
+        // },
         where: {
-          userId: req.userId,
+          nama_pegawai: req.userName,
         },
         include: [
           {
@@ -48,7 +67,15 @@ export const getMutasiById = async (req, res) => {
     let response;
     if (req.role === "admin") {
       response = await Mutasi.findOne({
-        attributes: ["uuid", "keterangan_mutasi", "cabang_sebelum", "cabang_tujuan", "createdAt", "tanggal_mulai"],
+        attributes: [
+          "uuid",
+          "nama_pegawai",
+          "keterangan_mutasi",
+          "cabang_sebelum",
+          "cabang_tujuan",
+          "createdAt",
+          "tanggal_mulai",
+        ],
         where: {
           id: mutasi.id,
         },
@@ -67,9 +94,17 @@ export const getMutasiById = async (req, res) => {
       });
     } else {
       response = await Mutasi.findOne({
-        attributes: ["uuid", "keterangan_mutasi", "cabang_sebelum", "cabang_tujuan", "createdAt", "tanggal_mulai"],
+        attributes: [
+          "uuid",
+          "nama_pegawai",
+          "keterangan_mutasi",
+          "cabang_sebelum",
+          "cabang_tujuan",
+          "createdAt",
+          "tanggal_mulai",
+        ],
         where: {
-          [Op.and]: [{ id: mutasi.id }, { userId: req.userId }],
+          [Op.and]: [{ id: mutasi.id }, { nama_pegawai: req.userName }],
         },
         include: [
           {
@@ -92,13 +127,14 @@ export const getMutasiById = async (req, res) => {
 };
 
 export const createMutasi = async (req, res) => {
-  const { keterangan_mutasi, cabang_sebelum, cabang_tujuan, tanggal_mulai } = req.body;
+  const { keterangan_mutasi, nama_pegawai, cabang_sebelum, cabang_tujuan, tanggal_mulai } = req.body;
   try {
     await Mutasi.create({
       keterangan_mutasi: keterangan_mutasi,
       cabang_sebelum: cabang_sebelum,
       cabang_tujuan: cabang_tujuan,
       tanggal_mulai: tanggal_mulai,
+      nama_pegawai: nama_pegawai,
       userId: req.userId,
     });
     res.status(201).json({ msg: "Mutasi Created Successfuly" });
@@ -117,10 +153,10 @@ export const updateMutasi = async (req, res) => {
 
     if (!mutasi) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
-    const { keterangan_mutasi, cabang_sebelum, cabang_tujuan, tanggal_mulai } = req.body;
+    const { keterangan_mutasi, nama_pegawai, cabang_sebelum, cabang_tujuan, tanggal_mulai } = req.body;
     if (req.role === "admin") {
       await Mutasi.update(
-        { keterangan_mutasi, cabang_sebelum, cabang_tujuan, tanggal_mulai },
+        { keterangan_mutasi, nama_pegawai, cabang_sebelum, cabang_tujuan, tanggal_mulai },
         {
           where: {
             id: mutasi.id,
@@ -130,7 +166,7 @@ export const updateMutasi = async (req, res) => {
     } else {
       if (req.userId !== mutasi.userId) return res.status(403).json({ msg: "Akses terlarang" });
       await Mutasi.update(
-        { keterangan_mutasi, cabang_sebelum, cabang_tujuan, tanggal_mulai },
+        { keterangan_mutasi, nama_pegawai, cabang_sebelum, cabang_tujuan, tanggal_mulai },
         {
           where: {
             [Op.and]: [{ id: mutasi.id }, { userId: req.userId }],

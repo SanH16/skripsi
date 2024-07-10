@@ -7,6 +7,7 @@ import { FaPeopleLine } from "react-icons/fa6";
 import { MdPeople } from "react-icons/md";
 import { APIcuti } from "@/apis/APIcuti";
 import { APIpegawai } from "@/apis/APIpegawai";
+import { APImutasi } from "../../../../apis/APImutasi";
 
 export function TotalCards() {
   const [data, setData] = useState({
@@ -26,12 +27,14 @@ export function TotalCards() {
       const rekrutmenTotal = await APIrekrutmen.getAllRekrutmens();
       const cutiTotal = await APIcuti.getAllCuti();
       const pegawaiTotal = await APIpegawai.getDataPegawai();
+      const mutasiTotal = await APImutasi.getAllMutasi();
 
       setData((prevData) => ({
         ...prevData,
         totalRekrutmen: rekrutmenTotal.length,
         totalCuti: cutiTotal.length,
         totalPegawai: pegawaiTotal.length,
+        totalMutasi: mutasiTotal.length,
       }));
       setIsLoading(false);
     } catch (error) {
