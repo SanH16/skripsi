@@ -1,8 +1,10 @@
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { TableAbsensi } from "./components/TableAbsensi";
 
 export default function Absensi() {
-  useDocumentTitle("Halaman Absensi");
-  useScrollToTop();
-  return <div>Absensi</div>;
+  return (
+    <section className="py-5">
+      <TableAbsensi />
+      {/* halo */}
+    </section>
+  );
 }

@@ -29,7 +29,7 @@ export const ColumnMutasi = (handleOpenModalDelete) => {
       // render: (user) => user.map((item) => item.name).join(),
       key: "nama_pegawai",
       width: 150,
-      sorter: (a, b) => a.nama_pegawai.name.localeCompare(b.nama_pegawai.name),
+      sorter: (a, b) => a.nama_pegawai.localeCompare(b.nama_pegawai),
     },
     {
       title: "Keterangan Mutasi",
@@ -42,7 +42,7 @@ export const ColumnMutasi = (handleOpenModalDelete) => {
       title: "Cabang Asal",
       dataIndex: "cabang_sebelum",
       key: "cabang_sebelum",
-      width: 150,
+      width: 200,
       render: (val) => <span className="line-clamp-1">{val}</span>,
     },
     {
@@ -74,7 +74,7 @@ export const ColumnMutasi = (handleOpenModalDelete) => {
     },
     {
       title: "Action",
-      width: 200,
+      width: 100,
       className: "text-center",
       render: (record) => {
         return (
@@ -84,10 +84,10 @@ export const ColumnMutasi = (handleOpenModalDelete) => {
                 <Link to={`/update-mutasi/${record.uuid}`}>
                   <Button
                     type="primary"
-                    className="me-1 h-[30px] w-auto"
+                    className="me-2 h-[30px] w-[32px] p-0"
                     disabled={!verifRole}
                   >
-                    <FaRegEdit className="p-[2px] text-[25px]" />
+                    <FaRegEdit className="p-[2px] text-[20px]" />
                   </Button>
                 </Link>
                 <Button
@@ -95,9 +95,9 @@ export const ColumnMutasi = (handleOpenModalDelete) => {
                     e.stopPropagation();
                     handleOpenModalDelete(record);
                   }}
-                  className="h-[30px] w-auto border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                  className="h-[30px] w-[32px] border-red-500 p-0 text-red-500 hover:bg-red-500 hover:text-white"
                 >
-                  <MdOutlineDeleteSweep className="text-[25px]" />
+                  <MdOutlineDeleteSweep className="text-[20px]" />
                 </Button>
               </>
             ) : (

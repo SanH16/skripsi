@@ -17,23 +17,24 @@ const Absensi = db.define(
     },
     jam_masuk: {
       type: DataTypes.DATE,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      allowNull: true,
     },
     jam_keluar: {
       type: DataTypes.DATE,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      allowNull: true,
     },
     bukti_photo: {
       type: DataTypes.STRING,
       allowNull: true,
     },
     status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    keterangan: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
