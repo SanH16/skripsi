@@ -14,6 +14,9 @@ import { ModalDeleteMutasi } from "@/components/shared-components/ModalDeleteMut
 import { ColumnAbsensi } from "../constant/column-absensi";
 import AddAbsensi from "../misc/AddAbsensi";
 
+import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
+import { useDebounce } from "@/hooks/useDebounce";
+
 export function TableAbsensi() {
   useDocumentTitle("Halaman Presensi");
   useScrollToTop();
@@ -22,6 +25,9 @@ export function TableAbsensi() {
   const [userToDelete, setUserToDelete] = useState(null);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [searchValue, setSearchValue] = useState("");
+  const searchQuery = useDebounce(searchValue, 800);
 
   const handleOpenModalDelete = (user) => {
     setUserToDelete(user);
@@ -37,14 +43,31 @@ export function TableAbsensi() {
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["absensiData"],
+    queryKey: ["absensiData", searchQuery],
     queryFn: async () => {
+      console.log("Fetching data with searchQuery:", searchQuery);
       const result = await APIabsensi.getDataAbsensi();
-      return result;
+      // return result;
+
+      // Logika filter
+      let filteredData = result;
+      if (searchQuery) {
+        filteredData = result.filter((data) => {
+          const filterBy =
+            data.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            data.user.pegawai.jabatan
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
+          return filterBy;
+        });
+      }
+
+      return filteredData;
     },
   });
   const dataAbsensi = data || [];
-  console.log("absensi query", dataAbsensi);
+
+  // console.log("absensi query", dataAbsensi);
 
   return (
     <>
@@ -68,6 +91,11 @@ export function TableAbsensi() {
       </Flex>
       <CardAbsensi data={dataAbsensi} />
       <Card>
+        <FilterSearchTable
+          setSearchValue={setSearchValue}
+          title="Daftar Absensi"
+          placeholder="data absensi (nama/jabatan)"
+        />
         <ConfigProvider
           theme={{
             components: {
@@ -96,6 +124,7 @@ export function TableAbsensi() {
         >
           <Table
             id="absensi-table-list"
+            rowKey="uuid"
             rowClassName={"hover:cursor-pointer"}
             loading={isLoading}
             columns={ColumnAbsensi()}
@@ -105,7 +134,7 @@ export function TableAbsensi() {
             // pagination={false}
             pagination={{
               defaultCurrent: 1,
-              defaultPageSize: 10,
+              defaultPageSize: 3,
               total: dataAbsensi.length,
               showTotal: (total, range) =>
                 `Menampilkan ${range[0]}-${range[1]} dari ${total} data`,

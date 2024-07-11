@@ -26,6 +26,9 @@ import AddMutasi from "../misc/AddMutasi";
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 
+import { useDebounce } from "@/hooks/useDebounce";
+import { FilterSearchTable } from "../../../../components/shared-components/FilterSearchTable";
+
 export function TableMutasi() {
   useDocumentTitle("Halaman Mutasi");
   useScrollToTop();
@@ -40,6 +43,8 @@ export function TableMutasi() {
   const [selectedMutasi, setSelectedMutasi] = useState(null);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const searchQuery = useDebounce(searchValue, 800);
 
   const handleRowClick = (record) => {
     setSelectedMutasi(record); // Set data cuti terpilih
@@ -65,10 +70,27 @@ export function TableMutasi() {
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["mutasiData"],
+    queryKey: ["mutasiData", searchQuery],
     queryFn: async () => {
       const result = await APImutasi.getAllMutasi();
-      return result;
+      // return result;
+
+      // Logika filter
+      let filteredData = result;
+      if (searchQuery) {
+        filteredData = result.filter((data) => {
+          const filterBy =
+            data.nama_pegawai
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            data.cabang_tujuan
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
+          return filterBy;
+        });
+      }
+
+      return filteredData;
     },
   });
   const dataMutasi = data || [];
@@ -98,6 +120,11 @@ export function TableMutasi() {
       </Flex>
       <CardMutasi data={dataMutasi} />
       <Card>
+        <FilterSearchTable
+          setSearchValue={setSearchValue}
+          title="Daftar Mutasi"
+          placeholder="data mutasi (nama/cabang)"
+        />
         <ConfigProvider
           theme={{
             components: {
@@ -139,7 +166,7 @@ export function TableMutasi() {
             style={{ maxWidth: "100%" }}
             pagination={{
               defaultCurrent: 1,
-              defaultPageSize: 10,
+              defaultPageSize: 3,
               total: dataMutasi.length,
               showTotal: (total, range) =>
                 `Menampilkan ${range[0]}-${range[1]} dari ${total} data`,

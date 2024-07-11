@@ -1,11 +1,18 @@
 /* eslint-disable react-refresh/only-export-components */
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { Button, Image } from "antd";
+import { Button, Image, Tooltip } from "antd";
 import anonymousPict from "@/assets/anonymous profile.jpg";
 import { MdOutlineDeleteSweep } from "react-icons/md";
 
+import { useSelector } from "react-redux";
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+import { IoInformationCircleOutline } from "react-icons/io5";
+
 export const ColumnAbsensi = (handleOpenModalDelete) => {
+  const userState = useSelector(selectGetUserLogin);
+  const verifRole = userState?.data?.role === "admin";
+
   return [
     {
       title: "ID",
@@ -145,14 +152,23 @@ export const ColumnAbsensi = (handleOpenModalDelete) => {
       render: (record) => {
         return (
           <>
-            <div className="flex items-center justify-center">
-              <Button
-                onClick={() => handleOpenModalDelete(record)}
-                className="h-[30px] w-[32px] rounded-lg border-red-500 p-0 text-red-500 hover:bg-red-500 hover:text-white"
-              >
-                <MdOutlineDeleteSweep className="text-[20px]" />
-              </Button>
-            </div>
+            {verifRole ? (
+              <div className="flex items-center justify-center">
+                <Button
+                  onClick={() => handleOpenModalDelete(record)}
+                  className="h-[30px] w-[32px] rounded-lg border-red-500 p-0 text-red-500 hover:bg-red-500 hover:text-white"
+                >
+                  <MdOutlineDeleteSweep className="text-[20px]" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center">
+                {/* <IoEye /> */}
+                <Tooltip title="Click row">
+                  <IoInformationCircleOutline className="text-2xl font-semibold text-green-500 duration-100 hover:text-link" />
+                </Tooltip>
+              </div>
+            )}
           </>
         );
       },

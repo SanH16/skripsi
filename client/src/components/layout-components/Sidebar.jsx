@@ -81,7 +81,7 @@ export default function Sidebar() {
     ),
     getItem(
       "Absensi",
-      "absen",
+      "absensi",
       <Link to="/absensi" className="p-2">
         <MdOutlinePeopleAlt className={iconStyle} id="absensi-icon-sidebar" />
       </Link>,
