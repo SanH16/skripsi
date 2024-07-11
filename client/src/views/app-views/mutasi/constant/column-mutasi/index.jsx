@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 
 import { useSelector } from "react-redux";
@@ -103,7 +103,9 @@ export const ColumnMutasi = (handleOpenModalDelete) => {
             ) : (
               <div className="flex items-center justify-center text-2xl font-semibold text-green-500 duration-100 hover:text-link">
                 {/* <IoEye /> */}
-                <IoInformationCircleOutline />
+                <Tooltip title="Click row">
+                  <IoInformationCircleOutline className="text-2xl font-semibold text-green-500 duration-100 hover:text-link" />
+                </Tooltip>
               </div>
             )}
           </>

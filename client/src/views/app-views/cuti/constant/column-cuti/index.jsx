@@ -41,7 +41,7 @@ export const ColumnCuti = (handleOpenModalDelete) => {
       title: "Tanggal Mulai",
       dataIndex: "start_cuti",
       key: "start_cuti",
-      width: 150,
+      width: 200,
       sorter: (a, b) => a.start_cuti.localeCompare(b.start_cuti),
       render: (val) => {
         return dayjs(val).format("DD MMMM YYYY");

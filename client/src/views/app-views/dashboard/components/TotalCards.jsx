@@ -5,9 +5,12 @@ import { APIrekrutmen } from "@/apis/APIrekrutmen";
 import { FaTasks, FaUserSecret } from "react-icons/fa";
 import { FaPeopleLine } from "react-icons/fa6";
 import { MdPeople } from "react-icons/md";
+import { TbFaceId } from "react-icons/tb";
+
 import { APIcuti } from "@/apis/APIcuti";
 import { APIpegawai } from "@/apis/APIpegawai";
-import { APImutasi } from "../../../../apis/APImutasi";
+import { APImutasi } from "@/apis/APImutasi";
+import { APIabsensi } from "@/apis/APIabsensi";
 
 export function TotalCards() {
   const [data, setData] = useState({
@@ -15,6 +18,7 @@ export function TotalCards() {
     totalMutasi: 0,
     totalPegawai: 0,
     totalCuti: 0,
+    totalAbsensi: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,6 +32,7 @@ export function TotalCards() {
       const cutiTotal = await APIcuti.getAllCuti();
       const pegawaiTotal = await APIpegawai.getDataPegawai();
       const mutasiTotal = await APImutasi.getAllMutasi();
+      const absensiTotal = await APIabsensi.getDataAbsensi();
 
       setData((prevData) => ({
         ...prevData,
@@ -35,6 +40,7 @@ export function TotalCards() {
         totalCuti: cutiTotal.length,
         totalPegawai: pegawaiTotal.length,
         totalMutasi: mutasiTotal.length,
+        totalAbsensi: absensiTotal.length,
       }));
       setIsLoading(false);
     } catch (error) {
@@ -72,6 +78,13 @@ export function TotalCards() {
       available: data.totalCuti > 0,
       link: "/cuti",
     },
+    {
+      title: "Total Daftar Absensi",
+      total: data.totalAbsensi,
+      icon: <TbFaceId />,
+      available: data.totalAbsensi > 0,
+      link: "/absensi",
+    },
   ];
 
   return (
@@ -104,7 +117,7 @@ export function TotalCards() {
                     <div className="grid h-16 w-16 place-content-center rounded-lg bg-green-50">
                       <i
                         id="item-icon"
-                        className="text-[45px] text-green-400 duration-100 hover:text-[50px]"
+                        className="text-[40px] text-green-400 duration-100 hover:text-[50px]"
                         alt="item-icon"
                       >
                         {item.icon}

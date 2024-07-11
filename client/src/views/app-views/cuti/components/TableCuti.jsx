@@ -13,6 +13,9 @@ import { CardCuti } from "../misc/CardCuti";
 import { useQuery } from "@tanstack/react-query";
 import PDFcuti from "../misc/PDFcuti";
 
+import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
+import { useDebounce } from "@/hooks/useDebounce";
+
 export function TableCuti() {
   useDocumentTitle("Cuti Pegawai");
   useScrollToTop();
@@ -22,6 +25,9 @@ export function TableCuti() {
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedCuti, setSelectedCuti] = useState(null);
+
+  const [searchValue, setSearchValue] = useState("");
+  const searchQuery = useDebounce(searchValue, 800);
 
   const handleRowClick = (record) => {
     setSelectedCuti(record); // Set data cuti terpilih
@@ -39,14 +45,27 @@ export function TableCuti() {
   };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["cutiData"],
+    queryKey: ["cutiData", searchQuery],
     queryFn: async () => {
       const result = await APIcuti.getAllCuti();
-      return result;
+      // return result;
+
+      // Logika filter
+      let filteredData = result;
+      if (searchQuery) {
+        filteredData = result.filter((data) => {
+          const filterBy =
+            data.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            data.keterangan.toLowerCase().includes(searchQuery.toLowerCase());
+          return filterBy;
+        });
+      }
+
+      return filteredData;
     },
   });
   const dataCuti = data || [];
-  console.log("cuti query", dataCuti);
+  // console.log("cuti query", dataCuti);
 
   return (
     <>
@@ -71,6 +90,11 @@ export function TableCuti() {
       </Flex>
       <CardCuti data={dataCuti} />
       <Card>
+        <FilterSearchTable
+          setSearchValue={setSearchValue}
+          title="Daftar Pengajuan Cuti"
+          placeholder="data cuti (nama/keterangan)"
+        />
         <ConfigProvider
           theme={{
             components: {
@@ -114,7 +138,7 @@ export function TableCuti() {
             style={{ maxWidth: "100%" }}
             pagination={{
               defaultCurrent: 1,
-              defaultPageSize: 10,
+              defaultPageSize: 3,
               total: dataCuti.length,
               showTotal: (total, range) =>
                 `Menampilkan ${range[0]}-${range[1]} dari ${total} data`,
