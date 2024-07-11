@@ -22,6 +22,7 @@ export default function UserTable({ isUserTable }) {
     data: dataUser,
     isLoading: isLoadingUser,
     isError: isErrorUser,
+    refetch: refetchUser,
   } = useQuery({
     queryKey: ["userData"],
     queryFn: async () => {
@@ -34,6 +35,7 @@ export default function UserTable({ isUserTable }) {
     data: dataPegawai,
     isLoading: isLoadingPegawai,
     isError: isErrorPegawai,
+    refetch: refetchPegawai,
   } = useQuery({
     queryKey: ["pegawaiData"],
     queryFn: async () => {
@@ -143,12 +145,14 @@ export default function UserTable({ isUserTable }) {
           <ModalDeleteUser
             closeModal={handleOpenModalDelete}
             stateModal={userToDelete}
+            refetchDelete={refetchUser}
           />
         )}
         {isShowDelete && !isUserTable && (
           <ModalDeletePegawai
             closeModal={handleOpenModalDelete}
             stateModal={userToDelete}
+            refetchDelete={refetchPegawai}
           />
         )}
       </Card>

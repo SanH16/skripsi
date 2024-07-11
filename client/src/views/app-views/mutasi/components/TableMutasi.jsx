@@ -193,6 +193,7 @@ export function TableMutasi() {
         <ModalDeleteMutasi
           closeModal={handleOpenModalDelete}
           stateModal={userToDelete}
+          refetchDelete={refetch}
         />
       )}
 

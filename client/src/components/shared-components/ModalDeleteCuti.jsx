@@ -5,7 +5,7 @@ import { showErrorToast } from "./Toast";
 import { globalRoute } from "@/utils/GlobalRoute";
 import { APIcuti } from "@/apis/APIcuti";
 
-export function ModalDeleteCuti({ closeModal, stateModal }) {
+export function ModalDeleteCuti({ closeModal, stateModal, refetchDelete }) {
   const [isOpen, setIsOpen] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleOk = async () => {
@@ -15,7 +15,7 @@ export function ModalDeleteCuti({ closeModal, stateModal }) {
         setIsSubmitting(true);
         closeModal();
         globalRoute.navigate("/cuti");
-        window.location.reload();
+        refetchDelete();
       });
     } catch (error) {
       console.error(error);
