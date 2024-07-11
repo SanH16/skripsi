@@ -8,6 +8,7 @@ import { MdOutlineDeleteSweep } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { IoInformationCircleOutline } from "react-icons/io5";
+import { IoIosTimer } from "react-icons/io";
 
 export const ColumnAbsensi = (handleOpenModalDelete) => {
   const userState = useSelector(selectGetUserLogin);
@@ -49,8 +50,12 @@ export const ColumnAbsensi = (handleOpenModalDelete) => {
       key: "jam_masuk",
       width: 200,
       sorter: (a, b) => a.jam_masuk.localeCompare(b.jam_masuk),
-      render: (val) => {
-        return dayjs(val).format(`[Pukul] HH:mm:ss [WIB]`);
+      render: (val, record) => {
+        return record.status === "hadir" ? (
+          dayjs(val).format(`[Pukul] HH:mm:ss [WIB]`)
+        ) : (
+          <span className="font-medium text-negative">tidak masuk</span>
+        );
       },
     },
     {
@@ -58,13 +63,20 @@ export const ColumnAbsensi = (handleOpenModalDelete) => {
       dataIndex: "jam_keluar",
       key: "jam_keluar",
       width: 200,
-      //   sorter: (a, b) => a.jam_keluar.localeCompare(b.jam_keluar),
-      render: (val) => {
-        return val ? (
-          dayjs(val).format(`[Pukul] HH:mm:ss [WIB]`)
-        ) : (
-          <span className="font-medium text-warning">belum keluar</span>
-        );
+      render: (val, record) => {
+        if (record.status === "hadir") {
+          return val ? (
+            dayjs(val).format(`[Pukul] HH:mm:ss [WIB]`)
+          ) : (
+            <span className="flex items-center font-medium text-warning">
+              belum kelar <IoIosTimer className="ms-1 text-lg text-blue-400" />
+            </span>
+          );
+        } else {
+          return (
+            <span className="font-medium text-negative">tidak keluar</span>
+          );
+        }
       },
     },
     {

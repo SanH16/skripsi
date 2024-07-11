@@ -16,6 +16,7 @@ import AddAbsensi from "../misc/AddAbsensi";
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
 import { useDebounce } from "@/hooks/useDebounce";
 import { ModalDeleteAbsensi } from "@/components/shared-components/ModalDeleteAbsensi";
+import UpdateAbsensi from "../misc/UpdateAbsensi";
 
 export function TableAbsensi() {
   useDocumentTitle("Halaman Presensi");
@@ -23,15 +24,21 @@ export function TableAbsensi() {
 
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
-
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
 
   const [searchValue, setSearchValue] = useState("");
   const searchQuery = useDebounce(searchValue, 800);
+  const [selectedAbsensi, setSelectedAbsensi] = useState(null);
 
   const handleOpenModalDelete = (user) => {
     setUserToDelete(user);
     setIsShowDelete((prev) => !prev);
+  };
+
+  const handleRowClick = (record) => {
+    setSelectedAbsensi(record); // Set selected item untuk update modal
+    setIsUpdateModalVisible(true);
   };
 
   const handleOpenModal = () => {
@@ -66,8 +73,13 @@ export function TableAbsensi() {
     },
   });
   const dataAbsensi = data || [];
-
   // console.log("absensi query", dataAbsensi);
+
+  // Cek apakah ada absensi untuk hari ini
+  const absensiToday = dataAbsensi?.some(
+    (item) =>
+      new Date(item.createdAt).toDateString() === new Date().toDateString(),
+  );
 
   return (
     <>
@@ -76,18 +88,20 @@ export function TableAbsensi() {
           <h3 className="mb-3 font-bold">Absensi Pegawai</h3>
         </Space>
 
-        <Space size="middle">
-          <Button
-            id="buat-mutasi"
-            className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
-            onClick={handleOpenModal}
-          >
-            <span className="me-2 text-lg">
-              <MdOutlineFileUpload />
-            </span>
-            Tambah Absensi
-          </Button>
-        </Space>
+        {!absensiToday ? (
+          <Space size="middle">
+            <Button
+              id="tambah-absensi"
+              className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+              onClick={handleOpenModal}
+            >
+              <span className="me-2 text-lg">
+                <MdOutlineFileUpload />
+              </span>
+              Tambah Absensi
+            </Button>
+          </Space>
+        ) : null}
       </Flex>
       <CardAbsensi data={dataAbsensi} />
       <Card>
@@ -131,7 +145,9 @@ export function TableAbsensi() {
             dataSource={dataAbsensi}
             scroll={{ x: true }}
             style={{ maxWidth: "100%" }}
-            // pagination={false}
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record), // Handle row click event
+            })}
             pagination={{
               defaultCurrent: 1,
               defaultPageSize: 3,
@@ -173,6 +189,21 @@ export function TableAbsensi() {
         width={900}
       >
         <AddAbsensi onClose={handleCloseModal} refetchAbsensi={refetch} />
+      </Modal>
+
+      {/* Modal update */}
+      <Modal
+        title="Update Absensi"
+        open={isUpdateModalVisible}
+        onCancel={() => setIsUpdateModalVisible(false)}
+        footer={null}
+        width={900}
+      >
+        <UpdateAbsensi
+          onClose={() => setIsUpdateModalVisible(false)}
+          refetchAbsensi={refetch}
+          updateData={selectedAbsensi}
+        />
       </Modal>
     </>
   );
