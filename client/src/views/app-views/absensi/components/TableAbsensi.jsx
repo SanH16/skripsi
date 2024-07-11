@@ -66,8 +66,13 @@ export function TableAbsensi() {
     },
   });
   const dataAbsensi = data || [];
-
   // console.log("absensi query", dataAbsensi);
+
+  // Cek apakah ada absensi untuk hari ini
+  const absensiToday = dataAbsensi?.some(
+    (item) =>
+      new Date(item.createdAt).toDateString() === new Date().toDateString(),
+  );
 
   return (
     <>
@@ -76,18 +81,20 @@ export function TableAbsensi() {
           <h3 className="mb-3 font-bold">Absensi Pegawai</h3>
         </Space>
 
-        <Space size="middle">
-          <Button
-            id="buat-mutasi"
-            className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
-            onClick={handleOpenModal}
-          >
-            <span className="me-2 text-lg">
-              <MdOutlineFileUpload />
-            </span>
-            Tambah Absensi
-          </Button>
-        </Space>
+        {!absensiToday ? (
+          <Space size="middle">
+            <Button
+              id="tambah-absensi"
+              className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+              onClick={handleOpenModal}
+            >
+              <span className="me-2 text-lg">
+                <MdOutlineFileUpload />
+              </span>
+              Tambah Absensi
+            </Button>
+          </Space>
+        ) : null}
       </Flex>
       <CardAbsensi data={dataAbsensi} />
       <Card>
