@@ -3,23 +3,23 @@ import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { showErrorToast } from "./Toast";
 import { globalRoute } from "@/utils/GlobalRoute";
-import { APImutasi } from "@/apis/APImutasi";
+import { APIabsensi } from "@/apis/APIabsensi";
 
-export function ModalDeleteMutasi({ closeModal, stateModal, refetchDelete }) {
+export function ModalDeleteAbsensi({ closeModal, stateModal, refetchDelete }) {
   const [isOpen, setIsOpen] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleOk = async () => {
     try {
-      await APImutasi.deleteMutasi(stateModal.uuid).then(() => {
+      await APIabsensi.deleteAbsensi(stateModal.uuid).then(() => {
         setIsOpen(false);
         setIsSubmitting(true);
         closeModal();
-        globalRoute.navigate("/mutasi");
+        globalRoute.navigate("/absensi");
         refetchDelete();
       });
     } catch (error) {
       console.error(error);
-      showErrorToast("Mutasi Pegawai gagal dihapus", "top-center", "large");
+      showErrorToast("Absensi gagal dihapus", "top-center", "large");
     }
   };
 
@@ -64,7 +64,7 @@ export function ModalDeleteMutasi({ closeModal, stateModal, refetchDelete }) {
         className="flex flex-col items-center pt-5 text-center"
       >
         <FaTrashAlt className="my-4 h-8 w-8 text-red-500 sm:h-8 sm:w-8" />
-        <h5 className="font-bold">Menghapus Data Mutasi</h5>
+        <h5 className="font-bold">Menghapus Data Absensi</h5>
         <p
           id="logout-modal-text"
           className="mt-2 text-sm leading-relaxed text-grey-400 sm:text-base md:px-3"

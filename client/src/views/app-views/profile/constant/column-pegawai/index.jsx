@@ -178,16 +178,16 @@ export const ColumnPegawai = (handleOpenModalDelete) => [
       return (
         <>
           <Link to={`/update-pegawai/${record.uuid}`}>
-            <Button type="primary" className="me-2 h-[25px] w-auto">
-              <FaRegEdit className="p-[2px] text-[25px]" />
+            <Button type="primary" className="me-2 h-[30px] w-[32px] p-0">
+              <FaRegEdit className="p-[2px] text-[20px]" />
             </Button>
           </Link>
 
           <Button
             onClick={() => handleOpenModalDelete(record)}
-            className="h-[25px] w-auto border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+            className="h-[30px] w-[32px] border-red-500 p-0 text-red-500 hover:bg-red-500 hover:text-white"
           >
-            <MdOutlineDeleteSweep className="text-[25px]" />
+            <MdOutlineDeleteSweep className="text-[20px]" />
           </Button>
         </>
       );

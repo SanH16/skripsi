@@ -5,7 +5,7 @@ import { showErrorToast } from "./Toast";
 import { globalRoute } from "@/utils/GlobalRoute";
 import { APIuser } from "@/apis/APIuser";
 
-export function ModalDeleteUser({ closeModal, stateModal }) {
+export function ModalDeleteUser({ closeModal, stateModal, refetchDelete }) {
   const [isOpen, setIsOpen] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleOk = async () => {
@@ -15,7 +15,7 @@ export function ModalDeleteUser({ closeModal, stateModal }) {
         setIsSubmitting(true);
         closeModal();
         globalRoute.navigate("/profil");
-        window.location.reload();
+        refetchDelete();
       });
     } catch (error) {
       console.error(error);

@@ -44,7 +44,7 @@ export function TableCuti() {
     setIsShowDelete((prev) => !prev);
   };
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["cutiData", searchQuery],
     queryFn: async () => {
       const result = await APIcuti.getAllCuti();
@@ -165,6 +165,7 @@ export function TableCuti() {
         <ModalDeleteCuti
           closeModal={handleOpenModalDelete}
           stateModal={userToDelete}
+          refetchDelete={refetch}
         />
       )}
 

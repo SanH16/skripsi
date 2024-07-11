@@ -2,10 +2,10 @@ import { Modal, Button } from "antd";
 import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { showErrorToast } from "./Toast";
-import { globalRoute } from "@/utils/GlobalRoute";
+// import { globalRoute } from "@/utils/GlobalRoute";
 import { APIpegawai } from "@/apis/APIpegawai";
 
-export function ModalDeletePegawai({ closeModal, stateModal }) {
+export function ModalDeletePegawai({ closeModal, stateModal, refetchDelete }) {
   const [isOpen, setIsOpen] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleOk = async () => {
@@ -14,8 +14,8 @@ export function ModalDeletePegawai({ closeModal, stateModal }) {
         setIsOpen(false);
         setIsSubmitting(true);
         closeModal();
-        globalRoute.navigate("/profil");
-        window.location.reload();
+        // globalRoute.navigate("/profil");
+        refetchDelete();
       });
     } catch (error) {
       console.error(error);

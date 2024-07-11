@@ -9,13 +9,13 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
 import { APIabsensi } from "@/apis/APIabsensi";
 import { CardAbsensi } from "../misc/CardAbsensi";
-import { ModalDeleteMutasi } from "@/components/shared-components/ModalDeleteMutasi";
 
 import { ColumnAbsensi } from "../constant/column-absensi";
 import AddAbsensi from "../misc/AddAbsensi";
 
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
 import { useDebounce } from "@/hooks/useDebounce";
+import { ModalDeleteAbsensi } from "@/components/shared-components/ModalDeleteAbsensi";
 
 export function TableAbsensi() {
   useDocumentTitle("Halaman Presensi");
@@ -127,7 +127,7 @@ export function TableAbsensi() {
             rowKey="uuid"
             rowClassName={"hover:cursor-pointer"}
             loading={isLoading}
-            columns={ColumnAbsensi()}
+            columns={ColumnAbsensi(handleOpenModalDelete)}
             dataSource={dataAbsensi}
             scroll={{ x: true }}
             style={{ maxWidth: "100%" }}
@@ -158,9 +158,10 @@ export function TableAbsensi() {
       </Card>
       {/* drawer & modal */}
       {isShowDelete && (
-        <ModalDeleteMutasi
+        <ModalDeleteAbsensi
           closeModal={handleOpenModalDelete}
           stateModal={userToDelete}
+          refetchDelete={refetch}
         />
       )}
 
