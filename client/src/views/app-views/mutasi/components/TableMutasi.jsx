@@ -27,7 +27,7 @@ import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 
 import { useDebounce } from "@/hooks/useDebounce";
-import { FilterSearchTable } from "../../../../components/shared-components/FilterSearchTable";
+import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
 
 export function TableMutasi() {
   useDocumentTitle("Halaman Mutasi");
