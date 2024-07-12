@@ -157,6 +157,11 @@ p {
   font-family: "Poppins", sans-serif;
 }
 
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #17c6a3;
+  border-color: #17c6a3;
+}
+
 input,
 textarea {
   font-family: "Poppins", sans-serif;
