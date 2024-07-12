@@ -89,6 +89,7 @@ export const ColumnAbsensi = (handleOpenModalDelete) => {
           <div className="flex justify-center">
             <Image
               src={`http://localhost:5000/images/${val}`}
+              onClick={(val) => val.stopPropagation()}
               preview={true}
               fallback={anonymousPict}
               className="h-10 w-10 rounded-lg"

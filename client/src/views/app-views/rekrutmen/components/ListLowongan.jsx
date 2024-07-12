@@ -8,6 +8,7 @@ import {
   ConfigProvider,
   Flex,
   Image,
+  Modal,
   Pagination,
   Row,
   Skeleton,
@@ -31,6 +32,7 @@ import parse from "html-react-parser";
 
 import { authService } from "@/configs/auth";
 import { useQuery } from "@tanstack/react-query";
+import AddLamaran from "../misc/AddLamaran";
 
 export function ListLowongan() {
   return (
@@ -62,6 +64,8 @@ const SearchLowongan = () => (
 export function ListingLowongan() {
   const isAuthenticated = authService.isAuthorized();
   const [currentPage, setCurrentPage] = useState(1);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const sizePage = 6;
 
   const path = window.location.pathname;
@@ -83,7 +87,11 @@ export function ListingLowongan() {
     event.preventDefault();
     event.stopPropagation();
 
-    console.log("di klik");
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
   };
 
   return (
@@ -193,6 +201,16 @@ export function ListingLowongan() {
             </Col>
           )}
         </ConfigProvider>
+
+        <Modal
+          title="Upload Lamaran"
+          open={isModalVisible}
+          onCancel={handleCloseModal}
+          footer={null}
+          width={900}
+        >
+          <AddLamaran onClose={handleCloseModal} />
+        </Modal>
       </footer>
     </>
   );

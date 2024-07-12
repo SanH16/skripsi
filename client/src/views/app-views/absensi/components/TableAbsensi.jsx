@@ -41,6 +41,11 @@ export function TableAbsensi() {
     setIsUpdateModalVisible(true);
   };
 
+  const handleCloseUpdateModal = () => {
+    setIsUpdateModalVisible(false);
+    setSelectedAbsensi(null); // Reset selectedAbsensi
+  };
+
   const handleOpenModal = () => {
     setIsModalVisible(true);
   };
@@ -146,7 +151,9 @@ export function TableAbsensi() {
             scroll={{ x: true }}
             style={{ maxWidth: "100%" }}
             onRow={(record) => ({
-              onClick: () => handleRowClick(record), // Handle row click event
+              onClick: () => handleRowClick(record),
+
+              // Handle row click event
             })}
             pagination={{
               defaultCurrent: 1,
@@ -195,12 +202,12 @@ export function TableAbsensi() {
       <Modal
         title="Update Absensi"
         open={isUpdateModalVisible}
-        onCancel={() => setIsUpdateModalVisible(false)}
+        onCancel={handleCloseUpdateModal}
         footer={null}
         width={900}
       >
         <UpdateAbsensi
-          onClose={() => setIsUpdateModalVisible(false)}
+          onClose={handleCloseUpdateModal}
           refetchAbsensi={refetch}
           updateData={selectedAbsensi}
         />
