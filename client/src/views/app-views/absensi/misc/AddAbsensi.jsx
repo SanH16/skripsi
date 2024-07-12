@@ -96,21 +96,16 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
     setIsShowConfirm((prev) => !prev);
   };
 
-  //   const handleStatusChange = (value) => {
-  //     setIsTimeDisabled(value !== "hadir");
-  //     setValue("status", value);
-  //   };
-
   const handleTimeDisable = () => {
     const currentTime = dayjs();
     const currentHour = currentTime.hour();
-    const currentMinute = currentTime.minute();
+    // const currentMinute = currentTime.minute();
+
+    const timeStart = currentHour >= 6;
+    const timeEnd = currentHour <= 8;
 
     // Jam Masuk
-    if (
-      (currentHour === 6 && currentMinute >= 5) ||
-      (currentHour === 8 && currentMinute <= 10)
-    ) {
+    if (timeStart && timeEnd) {
       // 6.05 sampai 8.10 bisa absen masuk
       setJamMasukDisabled(false);
     } else {
@@ -118,7 +113,7 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
     }
 
     // Jam Keluar
-    if (currentHour >= 17 && currentHour < 18) {
+    if (currentHour >= 17 && currentHour <= 18) {
       setJamKeluarDisabled(false);
     } else {
       setJamKeluarDisabled(true);

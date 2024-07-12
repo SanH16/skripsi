@@ -7,18 +7,25 @@ import { FaPeopleLine } from "react-icons/fa6";
 import { MdPeople } from "react-icons/md";
 import { TbFaceId } from "react-icons/tb";
 
+import { useSelector } from "react-redux";
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+
 import { APIcuti } from "@/apis/APIcuti";
 import { APIpegawai } from "@/apis/APIpegawai";
 import { APImutasi } from "@/apis/APImutasi";
 import { APIabsensi } from "@/apis/APIabsensi";
+import { APIlamaran } from "@/apis/APIlamaran";
 
 export function TotalCards() {
+  const userState = useSelector(selectGetUserLogin);
+  const verifRole = userState?.data?.role === "admin";
   const [data, setData] = useState({
     totalRekrutmen: 0,
     totalMutasi: 0,
     totalPegawai: 0,
     totalCuti: 0,
     totalAbsensi: 0,
+    totalPelamar: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +40,7 @@ export function TotalCards() {
       const pegawaiTotal = await APIpegawai.getDataPegawai();
       const mutasiTotal = await APImutasi.getAllMutasi();
       const absensiTotal = await APIabsensi.getDataAbsensi();
+      const pelamarTotal = await APIlamaran.getDataLamaran();
 
       setData((prevData) => ({
         ...prevData,
@@ -41,6 +49,7 @@ export function TotalCards() {
         totalPegawai: pegawaiTotal.length,
         totalMutasi: mutasiTotal.length,
         totalAbsensi: absensiTotal.length,
+        totalPelamar: pelamarTotal.length,
       }));
       setIsLoading(false);
     } catch (error) {
@@ -85,69 +94,79 @@ export function TotalCards() {
       available: data.totalAbsensi > 0,
       link: "/absensi",
     },
+    {
+      title: "Total Pelamar Kerja",
+      total: data.totalPelamar,
+      icon: <TbFaceId />,
+      available: data.totalPelamar > 0,
+      link: "/rekrutmen",
+    },
   ];
 
   return (
     <>
       <Row gutter={[16, 16]}>
-        {cardData.map((item, i) => (
-          <Col key={i} span={6} xs={24} md={12} lg={12} xl={6}>
-            <a href={item.link}>
-              <Card hoverable className="hover:shadow-lg">
-                <div className="grid h-32 content-between">
-                  <Flex justify="space-between" align="flex-start">
-                    <div>
-                      <p
-                        id="total-card-title"
-                        className="me-0 font-medium lg:me-3"
-                      >
-                        {item.title}
-                      </p>
+        {cardData.map(
+          (item, i) =>
+            (verifRole || item.title !== "Total Pelamar Kerja") && (
+              <Col key={i} span={6} xs={24} md={12} lg={12} xl={6}>
+                <a href={item.link}>
+                  <Card hoverable className="hover:shadow-lg">
+                    <div className="grid h-32 content-between">
+                      <Flex justify="space-between" align="flex-start">
+                        <div>
+                          <p
+                            id="total-card-title"
+                            className="me-0 font-medium lg:me-3"
+                          >
+                            {item.title}
+                          </p>
+                          <Skeleton
+                            loading={isLoading}
+                            active
+                            title={false}
+                            paragraph={{ rows: 1 }}
+                          >
+                            <h4 id="total-item" className="font-bold">
+                              {item.total}
+                            </h4>
+                          </Skeleton>
+                        </div>
+                        <div className="grid h-16 w-16 place-content-center rounded-lg bg-green-50">
+                          <i
+                            id="item-icon"
+                            className="text-[40px] text-green-400 duration-100 hover:text-[50px]"
+                            alt="item-icon"
+                          >
+                            {item.icon}
+                          </i>
+                        </div>
+                      </Flex>
                       <Skeleton
                         loading={isLoading}
                         active
                         title={false}
                         paragraph={{ rows: 1 }}
                       >
-                        <h4 id="total-item" className="font-bold">
-                          {item.total}
-                        </h4>
+                        <h6 id="total-card-percent" className="text-grey-200">
+                          Data
+                          <span
+                            className={`ms-2 place-content-center rounded px-2 font-semibold ${
+                              item.available
+                                ? "bg-green-50 text-positive"
+                                : "bg-grey-50 text-negative"
+                            }`}
+                          >
+                            {item.available ? "Tersedia" : "Belum Tersedia"}
+                          </span>
+                        </h6>
                       </Skeleton>
                     </div>
-                    <div className="grid h-16 w-16 place-content-center rounded-lg bg-green-50">
-                      <i
-                        id="item-icon"
-                        className="text-[40px] text-green-400 duration-100 hover:text-[50px]"
-                        alt="item-icon"
-                      >
-                        {item.icon}
-                      </i>
-                    </div>
-                  </Flex>
-                  <Skeleton
-                    loading={isLoading}
-                    active
-                    title={false}
-                    paragraph={{ rows: 1 }}
-                  >
-                    <h6 id="total-card-percent" className="text-grey-200">
-                      Data
-                      <span
-                        className={`ms-2 place-content-center rounded px-2 font-semibold ${
-                          item.available
-                            ? "bg-green-50 text-positive"
-                            : "bg-grey-50 text-negative"
-                        }`}
-                      >
-                        {item.available ? "Tersedia" : "Belum Tersedia"}
-                      </span>
-                    </h6>
-                  </Skeleton>
-                </div>
-              </Card>
-            </a>
-          </Col>
-        ))}
+                  </Card>
+                </a>
+              </Col>
+            ),
+        )}
       </Row>
     </>
   );
