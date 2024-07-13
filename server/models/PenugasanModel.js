@@ -37,6 +37,13 @@ const Penugasan = db.define(
         notEmpty: true,
       },
     },
+    divisi: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     tasks_list: {
       type: DataTypes.JSON,
       allowNull: false,
