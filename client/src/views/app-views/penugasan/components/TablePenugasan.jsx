@@ -2,7 +2,7 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { Button, Card, ConfigProvider, Flex, Space, Table } from "antd";
 import { MdOutlineFileUpload } from "react-icons/md";
-import { ModalDeleteAbsensi } from "@/components/shared-components/ModalDeleteAbsensi";
+import { ModalDeletePenugasan } from "@/components/shared-components/ModalDeletePenugasan";
 
 import { useQuery } from "@tanstack/react-query";
 import { APIpenugasan } from "@/apis/APIpenugasan";
@@ -25,7 +25,7 @@ export function TablePenugasan() {
     setIsShowDelete((prev) => !prev);
   };
 
-  const { data, isError, isLoading } = useQuery({
+  const { data, isError, isLoading, refetch } = useQuery({
     queryKey: ["penugasanData"],
     queryFn: async () => {
       const result = await APIpenugasan.getAllPenugasan();
@@ -91,7 +91,7 @@ export function TablePenugasan() {
             id="absensi-table-list"
             rowKey="uuid"
             rowClassName={"hover:cursor-pointer"}
-            // loading={isLoading}
+            loading={isLoading}
             columns={ColumnPenugasan(handleOpenModalDelete)}
             dataSource={dataPenugasan}
             scroll={{ x: true }}
@@ -126,21 +126,21 @@ export function TablePenugasan() {
       </Card>
       {/* drawer & modal */}
       {isShowDelete && (
-        <ModalDeleteAbsensi
+        <ModalDeletePenugasan
           closeModal={handleOpenModalDelete}
           stateModal={userToDelete}
-          //   refetchDelete={refetch}
+          refetchDelete={refetch}
         />
       )}
 
       {/* <Modal
-        title="Tambah Absensi"
+        title="Tambah Penugasan"
         open={isModalVisible}
         onCancel={handleCloseModal}
         footer={null}
         width={900}
       >
-        <AddAbsensi onClose={handleCloseModal} refetchAbsensi={refetch} />
+        <AddPenugasan onClose={handleCloseModal} refetchPenugasan={refetch} />
       </Modal> */}
     </>
   );
