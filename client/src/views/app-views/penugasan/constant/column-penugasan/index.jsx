@@ -30,9 +30,15 @@ export const ColumnPenugasan = (handleOpenModalDelete) => {
     },
     {
       title: "Divisi",
-      dataIndex: ["user", "pegawai", "jabatan"],
-      key: "jabatan",
+      dataIndex: "divisi",
+      key: "divisi",
       width: 150,
+      render: (val) =>
+        val ? (
+          <span>{val}</span>
+        ) : (
+          <span className="text-gray-400">no data</span>
+        ),
     },
     {
       title: "Status",
