@@ -80,3 +80,34 @@ export const createPenugasan = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
+export const deletePenugasan = async (req, res) => {
+  try {
+    const penugasan = await Penugasan.findOne({
+      where: {
+        uuid: req.params.id,
+      },
+    });
+
+    if (!penugasan) return res.status(404).json({ msg: "Data tidak ditemukan" });
+
+    if (req.role === "admin") {
+      await Penugasan.destroy({
+        where: {
+          id: penugasan.id,
+        },
+      });
+    } else {
+      if (req.userId !== penugasan.userId) return res.status(403).json({ msg: "Akses terlarang" });
+      await Penugasan.destroy({
+        where: {
+          [Op.and]: [{ id: penugasan.id }, { userId: req.userId }],
+        },
+      });
+    }
+    // kirim response
+    res.status(200).json({ msg: "Penugasan deleted successfuly" });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
