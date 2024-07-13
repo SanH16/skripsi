@@ -9,6 +9,7 @@ import {
   Flex,
   Image,
   List,
+  Modal,
   Skeleton,
   Space,
   Tag,
@@ -37,6 +38,7 @@ import { authService } from "@/configs/auth";
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { useQuery } from "@tanstack/react-query";
+import AddLamaran from "./AddLamaran";
 
 export default function DetailLowongan() {
   const isAuthenticated = authService.isAuthorized();
@@ -45,12 +47,24 @@ export default function DetailLowongan() {
 
   const { rekrutmenId } = useParams();
   const [isShowDelete, setIsShowDelete] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useDocumentTitle("Detail Lowongan");
   useScrollToTop();
 
   const handleOpenModalDelete = () => {
     setIsShowDelete((prev) => !prev);
+  };
+
+  const handleLamarClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
   };
 
   const { data, isLoading, isError } = useQuery({
@@ -131,7 +145,10 @@ export default function DetailLowongan() {
             <Flex justify="space-around" align="center">
               <section>
                 <Space size="middle">
-                  <Button className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white">
+                  <Button
+                    onClick={handleLamarClick}
+                    className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+                  >
                     <span className="me-2 text-lg">
                       <MdOutlineFileUpload />
                     </span>
@@ -301,6 +318,15 @@ export default function DetailLowongan() {
             detailRekrutmen={detailRekrutmen}
           />
         )}
+        <Modal
+          title="Upload Lamaran"
+          open={isModalVisible}
+          onCancel={handleCloseModal}
+          footer={null}
+          width={900}
+        >
+          <AddLamaran onClose={handleCloseModal} />
+        </Modal>
       </section>
     </>
   );
