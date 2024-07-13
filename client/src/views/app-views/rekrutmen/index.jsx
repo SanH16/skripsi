@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { FaUserClock } from "react-icons/fa";
+import { BsPersonVcard } from "react-icons/bs";
+
 import { useState } from "react";
 import { TablePelamar } from "./components/TablePelamar";
 
@@ -31,14 +33,21 @@ export default function Rekrutmen() {
           {verifRole && (
             <>
               <Col className="flex items-center justify-center">
-                <Tooltip title="Data Pelamar" placement="left">
+                <Tooltip
+                  title={showTablePelamar ? "Data Lowongan" : "Data Pelamar"}
+                  placement="left"
+                >
                   <Button
                     id="data_pelamar"
                     type="primary"
                     onClick={handleButtonClick}
                     className="border-green-500 bg-transparent text-green-500 hover:bg-green-500 hover:text-white"
                   >
-                    <FaUserClock className="ms-1 text-lg" />
+                    {showTablePelamar ? (
+                      <BsPersonVcard className="justify-center text-xl" />
+                    ) : (
+                      <FaUserClock className="justify-center text-xl" />
+                    )}
                   </Button>
                 </Tooltip>
                 <Link to="/unggah-lowongan">

@@ -1,10 +1,9 @@
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useScrollToTop } from "@/hooks/useScrollToTop";
-import AddTugas from "./misc/AddTugas";
+import { TablePenugasan } from "./components/TablePenugasan";
 
 export default function Penugasan() {
-  useDocumentTitle("Halaman Penugasan");
-  useScrollToTop();
-
-  return <AddTugas />;
+  return (
+    <section className="py-5">
+      <TablePenugasan />
+    </section>
+  );
 }

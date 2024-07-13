@@ -32,11 +32,10 @@ const AddTugas = () => {
 
   const handleOk = () => {
     const newTask = {
-      user: "User",
+      completed_by: "User",
       tasks_list: checkedList.join(", "),
       date: new Date().toLocaleString(), // Menambahkan waktu penyelesaian tugas secara dinamis
     };
-    console.log("p", newTask);
     setCompletedTasks([...completedTasks, newTask]); // Simpan tugas yg diselesaikan
     setIsModalVisible(false);
   };
@@ -69,6 +68,9 @@ const AddTugas = () => {
   };
 
   const { status, color, text } = determineStatus();
+
+  console.log("data task", checkedList);
+  console.log("data completed", completedTasks);
 
   return (
     <div>
@@ -107,7 +109,7 @@ const AddTugas = () => {
             {completedTasks.map((item, index) => (
               <p key={index} className="text-sm font-normal text-gray-500">
                 <span className="pe-1">{index}</span>
-                <strong>{item.user}</strong>
+                <strong>{item.completed_by}</strong>
                 <span className="ps-1">({item.tasks_list})</span>
                 <span className="ps-1">
                   {dayjs(item.date).format("HH:mm:ss")}
