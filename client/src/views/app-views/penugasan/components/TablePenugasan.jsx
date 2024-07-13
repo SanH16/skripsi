@@ -1,6 +1,6 @@
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
-import { Button, Card, ConfigProvider, Flex, Space, Table } from "antd";
+import { Button, Card, ConfigProvider, Flex, Modal, Space, Table } from "antd";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { ModalDeletePenugasan } from "@/components/shared-components/ModalDeletePenugasan";
 
@@ -11,6 +11,7 @@ import { FilterSearchTable } from "@/components/shared-components/FilterSearchTa
 import { ColumnPenugasan } from "../constant/column-penugasan";
 import { useState } from "react";
 import { CardPenugasan } from "../misc/CardPenugasan";
+import UpdateTugas from "../misc/UpdateTugas";
 
 export function TablePenugasan() {
   useDocumentTitle("Halaman Penugasan");
@@ -19,10 +20,22 @@ export function TablePenugasan() {
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   //   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const [selectedPenugasan, setSelectedPenugasan] = useState(null);
 
   const handleOpenModalDelete = (user) => {
     setUserToDelete(user);
     setIsShowDelete((prev) => !prev);
+  };
+
+  const handleRowClick = (record) => {
+    setSelectedPenugasan(record); // Set selected item untuk update modal
+    setIsUpdateModalVisible(true);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setIsUpdateModalVisible(false);
+    setSelectedPenugasan(null); // Reset
   };
 
   const { data, isError, isLoading, refetch } = useQuery({
@@ -96,10 +109,9 @@ export function TablePenugasan() {
             dataSource={dataPenugasan}
             scroll={{ x: true }}
             style={{ maxWidth: "100%" }}
-            // onRow={(record) => ({
-            //   onClick: () => handleRowClick(record),
-
-            // })}
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record),
+            })}
             pagination={{
               defaultCurrent: 1,
               defaultPageSize: 3,
@@ -133,15 +145,19 @@ export function TablePenugasan() {
         />
       )}
 
-      {/* <Modal
-        title="Tambah Penugasan"
-        open={isModalVisible}
-        onCancel={handleCloseModal}
+      <Modal
+        title="Daily Task"
+        open={isUpdateModalVisible}
+        onCancel={handleCloseUpdateModal}
         footer={null}
         width={900}
       >
-        <AddPenugasan onClose={handleCloseModal} refetchPenugasan={refetch} />
-      </Modal> */}
+        <UpdateTugas
+          onClose={handleCloseUpdateModal}
+          refetchPenugasan={refetch}
+          updateData={selectedPenugasan}
+        />
+      </Modal>
     </>
   );
 }
