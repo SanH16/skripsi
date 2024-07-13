@@ -26,7 +26,6 @@ export const ColumnPenugasan = (handleOpenModalDelete) => {
       dataIndex: "judul",
       key: "judul",
       width: 150,
-      //   sorter: (a, b) => a.nama_pegawai.localeCompare(b.nama_pegawai),
     },
     {
       title: "Divisi",
