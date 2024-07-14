@@ -134,7 +134,7 @@ export default function UpdateMutasi() {
                 htmlType="submit"
                 disabled={isSubmitting}
               >
-                Buat
+                Update
               </Button>
             </Space>
           </div>
@@ -334,12 +334,12 @@ export default function UpdateMutasi() {
       {isShowConfirm && (
         <ModalConfirm
           closeModal={handleOpenModalConfirm}
-          modalTitle="Buat Mutasi Pegawai"
+          modalTitle="Update Mutasi Pegawai"
           inputData={inputData}
           action={updateMutasi}
         >
           <>
-            <p>Apakah anda yakin ingin membuat mutasi?</p>
+            <p>Apakah anda yakin ingin mengubah mutasi?</p>
           </>
         </ModalConfirm>
       )}
