@@ -31,14 +31,13 @@ export function TableAbsensi() {
   const searchQuery = useDebounce(searchValue, 800);
   const [selectedAbsensi, setSelectedAbsensi] = useState(null);
 
-  const handleOpenModalDelete = (user) => {
-    setUserToDelete(user);
-    setIsShowDelete((prev) => !prev);
-  };
-
   const handleRowClick = (record) => {
     setSelectedAbsensi(record); // Set selected item untuk update modal
     setIsUpdateModalVisible(true);
+  };
+  const handleOpenModalDelete = (user) => {
+    setUserToDelete(user);
+    setIsShowDelete((prev) => !prev);
   };
 
   const handleCloseUpdateModal = () => {
