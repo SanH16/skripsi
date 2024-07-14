@@ -26,7 +26,11 @@ const Penugasan = db.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    target_selesai: {
+    penempatan: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    durasi_waktu: {
       type: DataTypes.DATE,
       allowNull: true,
     },

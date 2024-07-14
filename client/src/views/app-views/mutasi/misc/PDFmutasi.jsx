@@ -26,7 +26,6 @@ export default function PDFmutasi({ mutasiData }) {
     const fetchMutasiById = async () => {
       try {
         const result = await APImutasi.getMutasiById(mutasiData.uuid);
-        //   console.log("mutasi pdf fetch", result);
         setData(result);
       } catch (error) {
         console.error(error);
@@ -56,14 +55,14 @@ export default function PDFmutasi({ mutasiData }) {
 }
 
 const Pdf = ({ data }) => {
-  const titlePDF = "Surat Jalan Mutasi";
+  const titlePDF = "Surat Mutasi";
 
-  const tanggalDibuat = dayjs(data?.createdAt);
-  const tanggalMulai = dayjs(data?.tanggal_mulai);
+  const tanggalMulai = dayjs(data?.tanggal_mulai).format("DD MMMM YYYY");
   const now_days = dayjs().format("DD MMMM YYYY");
 
   return (
     <Document title={titlePDF}>
+      {}
       <Page size="A4" style={styles.body}>
         <Image style={styles.header} className="w-[100vw]" src={kopSurat} />
         <View>
@@ -75,28 +74,32 @@ const Pdf = ({ data }) => {
         </View>
         <View style={styles.text}>
           <Text>Dengan hormat,</Text>
-          <Text>Yang bertanda tangan dibawah ini, saya:</Text>
-          <Text>Nama : direktur</Text>
-          <Text>Jabatan : Direktur </Text>
-          <Text>Keterangan : {data?.keterangan_mutasi}</Text>
-        </View>
-        <View style={styles.text}>
-          <Text>Menyetujui permohonan cuti yang diajukan:</Text>
-          <Text>Nama : {data?.nama_pegawai}</Text>
-          <Text>Jabatan : {data?.user?.pegawai?.jabatan}</Text>
-          <Text>Alasan cuti :{data?.keterangan_mutasi}</Text>
+          <Text>
+            Yang dengan ini bertindak atas nama PT. Radenmat Putra Tunggal.
+            Memutuskan untuk melakukan mutasi terhadap karyawan PT. Radenmat
+            Putra Tunggal di bawah ini:
+          </Text>
+          <Text>Nama: {data?.nama_pegawai}</Text>
+          <Text>Jabatan: {data?.user?.pegawai?.jabatan}</Text>
+          <Text>Cabang Asal: {data?.cabang_sebelum}</Text>
         </View>
         <View style={styles.text}>
           <Text>
-            Selama {now_days} hari terhitung mulai tanggal{" "}
-            {tanggalDibuat.format("DD MMMM YYYY")} s/d tanggal{" "}
-            {tanggalMulai.format("DD MMMM YYYY")}.
+            Tanggal mulai dan lokasi kantor yang baru adalah sebagai berikut:
+          </Text>
+          <Text>Tanggal Mulai bekerja: {tanggalMulai}</Text>
+          <Text>Cabang Tujuan: {data?.cabang_tujuan}</Text>
+        </View>
+        <View style={styles.text}>
+          <Text>
+            Proses mutasi ini mulai efektif pada tanggal {tanggalMulai}. Oleh
+            karena itu, kepada karyawan yang bersangkutan beserta PT. Radenmat
+            Putra Tunggal untuk segera mempersiapkan segala sesuatunya sebelum
+            tanggal tersebut.
           </Text>
           <Text>
-            Selama menjalankan cuti, dimohon kesediannya untuk selalu siap
-            dihubungi apabila terjadi permasalahan di PT Radenmat Putra Tunggal
-            terkait dengan pekerjaan saudara/i. Demikian balasan permohonan cuti
-            ini disampaikan, untuk dapat dipergunakan sebagaimana mestinya.
+            Demikian surat mutasi ini dibuat untuk dapat dipergunakan
+            sebagaimana mestinya.
           </Text>
         </View>
 

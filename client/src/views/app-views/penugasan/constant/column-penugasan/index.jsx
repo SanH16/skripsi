@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { Button, Tooltip } from "antd";
+import { Button, Image, Tooltip } from "antd";
+import anonymousPict from "@/assets/anonymous profile.jpg";
 
 import { useSelector } from "react-redux";
 
@@ -38,6 +39,46 @@ export const ColumnPenugasan = (handleOpenModalDelete) => {
         ) : (
           <span className="text-gray-400">no data</span>
         ),
+    },
+    {
+      title: "Penempatan",
+      dataIndex: "penempatan",
+      key: "penempatan",
+      width: 150,
+      render: (val) =>
+        val ? (
+          <span>{val}</span>
+        ) : (
+          <span className="text-gray-400">no data</span>
+        ),
+    },
+    {
+      title: "Durasi Waktu",
+      dataIndex: "durasi_waktu",
+      key: "durasi_waktu",
+      width: 200,
+      render: (val) =>
+        val
+          ? dayjs(val).format("DD MMMM YYYY")
+          : dayjs().format("dddd, DD MMMM YYYY"),
+    },
+    {
+      title: "Team",
+      dataIndex: ["user", "name", "pegawai", "photo"],
+      key: "photo",
+      width: 150,
+      render: (val, record) => (
+        <>
+          <Tooltip title={record.user.name}>
+            <Image
+              src={`http://localhost:5000/images/${val}`}
+              preview={false}
+              fallback={anonymousPict}
+              className="m-2 flex h-8 w-8 rounded-full"
+            />
+          </Tooltip>
+        </>
+      ),
     },
     {
       title: "Status",
@@ -78,26 +119,6 @@ export const ColumnPenugasan = (handleOpenModalDelete) => {
           </Button>
         );
       },
-    },
-    {
-      title: "Target Selesai",
-      dataIndex: "target_selesai",
-      key: "target_selesai",
-      width: 200,
-      render: (val) => dayjs(val).format("DD MMMM YYYY"),
-    },
-    {
-      title: "Tanggal Selesai",
-      dataIndex: "completed_at",
-      key: "completed_at",
-      width: 150,
-      render: (val) => dayjs(val).format("DD MMMM YYYY"),
-    },
-    {
-      title: "Completed by",
-      dataIndex: ["user", "name"],
-      key: "name",
-      width: 150,
     },
     {
       title: "Action",
