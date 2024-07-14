@@ -96,6 +96,11 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
     setIsShowConfirm((prev) => !prev);
   };
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < dayjs().endOf("day").subtract(1, "day");
+  };
+
   const handleTimeDisable = () => {
     const currentTime = dayjs();
     const currentHour = currentTime.hour();
@@ -113,7 +118,7 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
     }
 
     // Jam Keluar
-    if (currentHour >= 17 && currentHour <= 18) {
+    if (currentHour >= 17 && currentHour <= 19) {
       setJamKeluarDisabled(false);
     } else {
       setJamKeluarDisabled(true);
@@ -240,6 +245,7 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
                       {...field}
                       showTime
                       disabled={jamMasukDisabled}
+                      disabledDate={disabledDate}
                       className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
                         errors.jam_masuk
                           ? "border-negative text-negative"

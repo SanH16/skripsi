@@ -6,7 +6,16 @@ import User from "../models/UserModel.js";
 export const getAllPenugasan = async (req, res) => {
   try {
     const response = await Penugasan.findAll({
-      attributes: ["uuid", "judul", "keterangan_tugas", "target_selesai", "status_tugas", "tasks_list", "completed_at"],
+      attributes: [
+        "uuid",
+        "judul",
+        "keterangan_tugas",
+        "durasi_waktu",
+        "penempatan",
+        "status_tugas",
+        "tasks_list",
+        "completed_at",
+      ],
       include: [
         {
           model: User,
@@ -37,7 +46,16 @@ export const getPenugasanById = async (req, res) => {
     if (!penugasan) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
     const response = await Penugasan.findOne({
-      attributes: ["uuid", "judul", "keterangan_tugas", "target_selesai", "status_tugas", "tasks_list", "completed_at"],
+      attributes: [
+        "uuid",
+        "judul",
+        "keterangan_tugas",
+        "durasi_waktu",
+        "penempatan",
+        "status_tugas",
+        "tasks_list",
+        "completed_at",
+      ],
       where: {
         id: penugasan.id,
       },
@@ -62,7 +80,7 @@ export const getPenugasanById = async (req, res) => {
 };
 
 export const createPenugasan = async (req, res) => {
-  const { judul, keterangan_tugas, target_selesai, status_tugas, tasks_list, completed_at } = req.body;
+  const { judul, keterangan_tugas, durasi_waktu, penempatan, status_tugas, tasks_list, completed_at } = req.body;
   if (req.role !== "admin") {
     return res.status(403).send("Hanya admin yang dapat membuat penugasan");
   }
@@ -70,7 +88,8 @@ export const createPenugasan = async (req, res) => {
     await Penugasan.create({
       judul: judul,
       keterangan_tugas: keterangan_tugas,
-      target_selesai: target_selesai,
+      durasi_waktu: durasi_waktu,
+      penempatan: penempatan,
       status_tugas: status_tugas,
       tasks_list: tasks_list,
       completed_at: completed_at,
@@ -92,10 +111,10 @@ export const updatePenugasan = async (req, res) => {
 
     if (!penugasan) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
-    const { judul, keterangan_tugas, target_selesai, status_tugas, tasks_list, completed_at } = req.body;
+    const { judul, keterangan_tugas, durasi_waktu, penempatan, status_tugas, tasks_list, completed_at } = req.body;
     if (req.role === "admin") {
       await Penugasan.update(
-        { judul, keterangan_tugas, target_selesai, status_tugas, tasks_list, completed_at },
+        { judul, keterangan_tugas, durasi_waktu, penempatan, status_tugas, tasks_list, completed_at },
         {
           where: {
             id: penugasan.id,
@@ -105,7 +124,7 @@ export const updatePenugasan = async (req, res) => {
     } else {
       if (req.userId !== penugasan.userId) return res.status(403).json({ msg: "Akses Terlarang" });
       await Penugasan.update(
-        { judul, keterangan_tugas, target_selesai, status_tugas, tasks_list, completed_at },
+        { judul, keterangan_tugas, durasi_waktu, penempatan, status_tugas, tasks_list, completed_at },
         {
           where: {
             [Op.and]: [{ id: penugasan.id }, { userId: req.userId }],

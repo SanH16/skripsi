@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 import { APIrekrutmen } from "@/apis/APIrekrutmen";
 import { FaTasks, FaUserSecret } from "react-icons/fa";
-import { FaPeopleLine } from "react-icons/fa6";
-import { MdPeople } from "react-icons/md";
+import { FaPeopleLine, FaPersonWalkingLuggage } from "react-icons/fa6";
+import { MdPeople, MdOutlinePersonPin } from "react-icons/md";
 import { TbFaceId } from "react-icons/tb";
 
 import { useSelector } from "react-redux";
@@ -15,6 +15,7 @@ import { APIpegawai } from "@/apis/APIpegawai";
 import { APImutasi } from "@/apis/APImutasi";
 import { APIabsensi } from "@/apis/APIabsensi";
 import { APIlamaran } from "@/apis/APIlamaran";
+import { APIpenugasan } from "@/apis/APIpenugasan";
 
 export function TotalCards() {
   const userState = useSelector(selectGetUserLogin);
@@ -26,6 +27,7 @@ export function TotalCards() {
     totalCuti: 0,
     totalAbsensi: 0,
     totalPelamar: 0,
+    totalPenugasan: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,6 +43,7 @@ export function TotalCards() {
       const mutasiTotal = await APImutasi.getAllMutasi();
       const absensiTotal = await APIabsensi.getDataAbsensi();
       const pelamarTotal = await APIlamaran.getDataLamaran();
+      const penugasanTotal = await APIpenugasan.getAllPenugasan();
 
       setData((prevData) => ({
         ...prevData,
@@ -50,6 +53,7 @@ export function TotalCards() {
         totalMutasi: mutasiTotal.length,
         totalAbsensi: absensiTotal.length,
         totalPelamar: pelamarTotal.length,
+        totalPenugasan: penugasanTotal.length,
       }));
       setIsLoading(false);
     } catch (error) {
@@ -97,9 +101,16 @@ export function TotalCards() {
     {
       title: "Total Pelamar Kerja",
       total: data.totalPelamar,
-      icon: <TbFaceId />,
+      icon: <MdOutlinePersonPin />,
       available: data.totalPelamar > 0,
       link: "/rekrutmen",
+    },
+    {
+      title: "Total Daftar Penugasan",
+      total: data.totalPenugasan,
+      icon: <FaPersonWalkingLuggage />,
+      available: data.totalPenugasan > 0,
+      link: "/penugasan",
     },
   ];
 
