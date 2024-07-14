@@ -132,7 +132,10 @@ export const ColumnCuti = (handleOpenModalDelete) => {
 
             {verifRole && (
               <Button
-                onClick={() => handleOpenModalDelete(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenModalDelete(record);
+                }}
                 className="h-[30px] w-[32px] border-red-500 p-0 text-red-500 hover:bg-red-500 hover:text-white"
               >
                 <MdOutlineDeleteSweep className="text-[20px]" />
