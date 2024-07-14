@@ -57,7 +57,10 @@ export const ColumnPenugasan = (handleOpenModalDelete) => {
       dataIndex: "durasi_waktu",
       key: "durasi_waktu",
       width: 200,
-      render: (val) => dayjs(val).format("DD MMMM YYYY"),
+      render: (val) =>
+        val
+          ? dayjs(val).format("DD MMMM YYYY")
+          : dayjs().format("dddd, DD MMMM YYYY"),
     },
     {
       title: "Team",

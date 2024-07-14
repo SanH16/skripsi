@@ -26,7 +26,6 @@ export default function PDFmutasi({ mutasiData }) {
     const fetchMutasiById = async () => {
       try {
         const result = await APImutasi.getMutasiById(mutasiData.uuid);
-        //   console.log("mutasi pdf fetch", result);
         setData(result);
       } catch (error) {
         console.error(error);
