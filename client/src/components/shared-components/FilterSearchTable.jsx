@@ -1,7 +1,7 @@
 import { Col, Form, Input, Row, ConfigProvider, Button, Tooltip } from "antd";
 import { BsSearch } from "react-icons/bs";
 import { RiFileExcel2Line } from "react-icons/ri";
-import { FaRegFilePdf } from "react-icons/fa6";
+import { MdPrint } from "react-icons/md";
 
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
@@ -11,6 +11,7 @@ export function FilterSearchTable({
   title,
   placeholder,
   handleDownloadExcel,
+  handleDownloadPdf,
 }) {
   const userState = useSelector(selectGetUserLogin);
   const verifRole = userState?.data?.role === "admin";
@@ -66,10 +67,10 @@ export function FilterSearchTable({
                 </Tooltip>
                 <Tooltip title="Download PDF">
                   <Button
-                    onClick={handleDownloadExcel}
+                    onClick={handleDownloadPdf}
                     className="ms-3 h-[30px] w-[32px] rounded-lg border-green-500 p-0 text-green-500 hover:bg-green-500 hover:text-white"
                   >
-                    <FaRegFilePdf className="text-[20px]" />
+                    <MdPrint className="text-[20px]" />
                   </Button>
                 </Tooltip>
               </Col>
