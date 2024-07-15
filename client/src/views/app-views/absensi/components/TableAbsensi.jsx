@@ -17,6 +17,7 @@ import { FilterSearchTable } from "@/components/shared-components/FilterSearchTa
 import { useDebounce } from "@/hooks/useDebounce";
 import { ModalDeleteAbsensi } from "@/components/shared-components/ModalDeleteAbsensi";
 import UpdateAbsensi from "../misc/UpdateAbsensi";
+import * as XLSX from "xlsx";
 
 export function TableAbsensi() {
   useDocumentTitle("Halaman Presensi");
@@ -51,6 +52,24 @@ export function TableAbsensi() {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const handleDownloadExcel = () => {
+    const newData = dataAbsensi.map((row) => {
+      // delete row.tableData;
+      // return row;
+      // const { uuid, ...rest } = row; // Destructure and remove uuid
+      return {
+        ...row,
+        name: row.user.name,
+        jabatan: row.user.pegawai.jabatan,
+      };
+    });
+    const workSheet = XLSX.utils.json_to_sheet(newData);
+    const workBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, "absensi");
+    //Download
+    XLSX.writeFile(workBook, "DataAbsensi.xlsx");
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -113,7 +132,9 @@ export function TableAbsensi() {
           setSearchValue={setSearchValue}
           title="Daftar Absensi"
           placeholder="data absensi (nama/jabatan)"
+          handleDownloadExcel={handleDownloadExcel}
         />
+
         <ConfigProvider
           theme={{
             components: {

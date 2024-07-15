@@ -29,6 +29,7 @@
     "react-router-dom": "^6.23.1",
     "react-toastify": "^10.0.5",
     "redux": "^5.0.1",
+    "xlsx": "^0.18.5",
     "yup": "^1.4.0"
   },
   "devDependencies": {
