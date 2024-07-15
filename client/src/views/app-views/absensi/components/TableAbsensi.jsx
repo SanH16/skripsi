@@ -18,6 +18,12 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { ModalDeleteAbsensi } from "@/components/shared-components/ModalDeleteAbsensi";
 import UpdateAbsensi from "../misc/UpdateAbsensi";
 
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+
 export function TableAbsensi() {
   useDocumentTitle("Halaman Presensi");
   useScrollToTop();
@@ -51,6 +57,72 @@ export function TableAbsensi() {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const handleDownloadExcel = () => {
+    const newData = dataAbsensi.map((row) => {
+      // delete row.tableData;
+      // return row;
+      // const { uuid, ...rest } = row; // Destructure and remove uuid
+      return {
+        ...row,
+        name: row.user.name,
+        jabatan: row.user.pegawai.jabatan,
+      };
+    });
+    const workSheet = XLSX.utils.json_to_sheet(newData);
+    const workBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workBook, workSheet, "absensi");
+    //Download
+    XLSX.writeFile(workBook, "Absensi_Radenmat.xlsx");
+  };
+
+  const handleDownloadPdf = () => {
+    const columns = [
+      { header: "ID", dataKey: "uuid" },
+      { header: "Nama Pegawai", dataKey: "name" },
+      { header: "Jabatan", dataKey: "jabatan" },
+      { header: "Hari", dataKey: "createdAt" },
+      { header: "Jam Masuk", dataKey: "jam_masuk" },
+      { header: "Jam Keluar", dataKey: "jam_keluar" },
+      { header: "Status", dataKey: "status" },
+      { header: "Keterangan", dataKey: "keterangan" },
+    ];
+    const formattedData = dataAbsensi.map((row) => ({
+      uuid: row.uuid.slice(0, 5),
+      name: row.user.name,
+      jabatan: row.user.pegawai.jabatan,
+      createdAt: dayjs(row.createdAt).format("dddd, DD MMMM YYYY"),
+      jam_masuk: row.jam_masuk
+        ? dayjs(row.jam_masuk).format("HH:mm:ss")
+        : "Tidak masuk",
+      jam_keluar: row.jam_keluar
+        ? dayjs(row.jam_keluar).format("HH:mm:ss")
+        : "Belum keluar",
+      status: row.status,
+      keterangan: row.keterangan || "-",
+    }));
+
+    const doc = new jsPDF();
+    doc.text("Data Absensi", 10, 10);
+    doc.autoTable({
+      theme: "grid",
+      head: [columns.map((col) => col.header)],
+      body: formattedData.map((row) => columns.map((col) => row[col.dataKey])),
+      columnStyles: {
+        0: { cellWidth: 15 }, // ID
+        1: { cellWidth: 30 }, // Nama Pegawai
+        2: { cellWidth: 20 }, // Jabatan
+        3: { cellWidth: 30 }, // Hari
+        4: { cellWidth: 25 }, // Jam Masuk
+        5: { cellWidth: 25 }, // Jam Keluar
+        6: { cellWidth: 20 }, // Status
+        7: { cellWidth: 35 }, // Keterangan
+      },
+      margin: { right: 10, left: 5 },
+      styles: { overflow: "linebreak" },
+    });
+    doc.save("Absensi_Radenmat.pdf");
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -113,6 +185,8 @@ export function TableAbsensi() {
           setSearchValue={setSearchValue}
           title="Daftar Absensi"
           placeholder="data absensi (nama/jabatan)"
+          handleDownloadExcel={handleDownloadExcel}
+          handleDownloadPdf={handleDownloadPdf}
         />
         <ConfigProvider
           theme={{
