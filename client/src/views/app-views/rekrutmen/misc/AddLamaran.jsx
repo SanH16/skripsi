@@ -22,6 +22,9 @@ export default function AddLamaran({ onClose }) {
   const [inputData, setInputData] = useState(null);
   const [dokumenCV, setDokumenCV] = useState("");
 
+  // const max_file_size = 2000000; // 2 mb
+  // const allowed_file_type = ["application/pdf"];
+
   const schema = yup.object().shape({
     nama: yup.string().required("Nama Lengkap harus diisi"),
     nomor_telepon: yup.string().required("Nomor Hp harus diisi"),
@@ -30,6 +33,20 @@ export default function AddLamaran({ onClose }) {
       .required("Pendidikan terakhir harus diisi"),
     keterampilan: yup.array().required("Keahlian harus diisi"),
     dokumen_cv: yup.mixed(),
+    // .required("File harus diisi Bro!")
+    // .test("required", "File Dokumen harus diisi", (value) => {
+    //   return value && value.size > 0;
+    // })
+    // .test("fileSize", "Ukuran file terlalu besar, maksimal 2 MB", (value) => {
+    //   return value.size <= max_file_size;
+    // })
+    // .test(
+    //   "fileType",
+    //   "Format file tidak valid, hanya file pdf yang diperbolehkan",
+    //   (value) => {
+    //     return allowed_file_type.includes(value.type);
+    //   },
+    // ),
     dokumen_lain: yup.string().required("Dokumen Lain harus diisi"),
   });
   const {
@@ -38,17 +55,16 @@ export default function AddLamaran({ onClose }) {
     formState: { errors, isSubmitting },
     handleSubmit,
     setValue,
-    reset,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const handleDokumenCV = (e) => {
-    const file = e.target.files[0];
-    setValue("dokumen_cv", file);
-    if (file) {
-      setDokumenCV(file.name);
-    }
+  const handleOpenModalCancel = () => {
+    setIsShowCancel((prev) => !prev);
+  };
+  const handleOpenModalConfirm = () => {
+    setIsShowConfirm((prev) => !prev);
   };
 
   const onSubmitArticle = (data) => {
@@ -56,15 +72,9 @@ export default function AddLamaran({ onClose }) {
       ...data,
       keterampilan: data.keterampilan.join(", "),
     };
+    console.log("larma data", newData);
     setInputData(newData);
     handleOpenModalConfirm();
-  };
-
-  const handleOpenModalCancel = () => {
-    setIsShowCancel((prev) => !prev);
-  };
-  const handleOpenModalConfirm = () => {
-    setIsShowConfirm((prev) => !prev);
   };
 
   const createLamaran = async (data) => {
@@ -75,7 +85,7 @@ export default function AddLamaran({ onClose }) {
         "top-center",
         "large",
       );
-      reset();
+      // reset();
       onClose();
     } catch (err) {
       console.error(err);
@@ -275,23 +285,28 @@ export default function AddLamaran({ onClose }) {
                 </label>
                 <input
                   id="dokumen_cv"
-                  type="file"
                   {...register("dokumen_cv")}
                   className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
                     errors.dokumen_cv
                       ? "border-negative text-negative"
                       : "border-grey-100 text-grey-900"
                   }`}
-                  placeholder="Masukkan CV (.pdf)"
-                  onChange={handleDokumenCV}
+                  type="file"
                   accept=".pdf"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    console.log("Selected file:", file);
+
+                    setValue("dokumen_cv", file);
+                    console.log("Setvalue:", e.target.files);
+                    setDokumenCV(file.name);
+                    clearErrors("dokumen_cv");
+                  }}
                 />
                 <span className="pt-1 text-xs text-negative">
                   {errors.dokumen_cv?.message}
                 </span>
-                {dokumenCV && (
-                  <p className="text-sm text-gray-500">{dokumenCV}</p>
-                )}
+                {dokumenCV ? <span>{dokumenCV}</span> : null}
               </Row>
 
               {/* Conf Pw */}
