@@ -5,17 +5,35 @@ import User from "../models/UserModel.js";
 
 export const getAllPenugasan = async (req, res) => {
   try {
+    let whereClause = {};
+    if (req.role !== "admin") {
+      const pegawai = await Pegawai.findOne({
+        where: {
+          userId: req.userId,
+        },
+      });
+
+      if (!pegawai) {
+        return res.status(404).json({ msg: "Pegawai tidak ditemukan untuk user ini" });
+      }
+
+      const jabatan = pegawai.jabatan;
+      whereClause.divisi = jabatan; // Hanya menampilkan penugasan berdasarkan jabatan pengguna
+    }
+
     const response = await Penugasan.findAll({
       attributes: [
         "uuid",
         "judul",
         "keterangan_tugas",
         "durasi_waktu",
+        "divisi",
         "penempatan",
         "status_tugas",
         "tasks_list",
         "completed_at",
       ],
+      where: whereClause,
       include: [
         {
           model: User,
@@ -51,6 +69,7 @@ export const getPenugasanById = async (req, res) => {
         "judul",
         "keterangan_tugas",
         "durasi_waktu",
+        "divisi",
         "penempatan",
         "status_tugas",
         "tasks_list",
@@ -80,7 +99,8 @@ export const getPenugasanById = async (req, res) => {
 };
 
 export const createPenugasan = async (req, res) => {
-  const { judul, keterangan_tugas, durasi_waktu, penempatan, status_tugas, tasks_list, completed_at } = req.body;
+  const { judul, keterangan_tugas, durasi_waktu, penempatan, divisi, status_tugas, tasks_list, completed_at } =
+    req.body;
   if (req.role !== "admin") {
     return res.status(403).send("Hanya admin yang dapat membuat penugasan");
   }
@@ -89,6 +109,7 @@ export const createPenugasan = async (req, res) => {
       judul: judul,
       keterangan_tugas: keterangan_tugas,
       durasi_waktu: durasi_waktu,
+      divisi: divisi,
       penempatan: penempatan,
       status_tugas: status_tugas,
       tasks_list: tasks_list,
@@ -111,10 +132,10 @@ export const updatePenugasan = async (req, res) => {
 
     if (!penugasan) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
-    const { judul, keterangan_tugas, durasi_waktu, penempatan, status_tugas, tasks_list, completed_at } = req.body;
-    if (req.role === "admin") {
+    const { tasks_list } = req.body;
+    if (req.role === "admin" || req.userId === penugasan.userId) {
       await Penugasan.update(
-        { judul, keterangan_tugas, durasi_waktu, penempatan, status_tugas, tasks_list, completed_at },
+        { tasks_list },
         {
           where: {
             id: penugasan.id,
@@ -122,9 +143,12 @@ export const updatePenugasan = async (req, res) => {
         }
       );
     } else {
-      if (req.userId !== penugasan.userId) return res.status(403).json({ msg: "Akses Terlarang" });
+      // Pengguna biasa hanya dapat mengubah penugasan yang sesuai dengan divisi mereka
+      if (req.divisi !== penugasan.divisi) {
+        return res.status(403).json({ msg: "Akses Terlarang" });
+      }
       await Penugasan.update(
-        { judul, keterangan_tugas, durasi_waktu, penempatan, status_tugas, tasks_list, completed_at },
+        { tasks_list },
         {
           where: {
             [Op.and]: [{ id: penugasan.id }, { userId: req.userId }],
@@ -156,12 +180,7 @@ export const deletePenugasan = async (req, res) => {
         },
       });
     } else {
-      if (req.userId !== penugasan.userId) return res.status(403).json({ msg: "Akses terlarang" });
-      await Penugasan.destroy({
-        where: {
-          [Op.and]: [{ id: penugasan.id }, { userId: req.userId }],
-        },
-      });
+      return res.status(403).json({ msg: "Akses terlarang" });
     }
     // kirim response
     res.status(200).json({ msg: "Penugasan deleted successfuly" });
