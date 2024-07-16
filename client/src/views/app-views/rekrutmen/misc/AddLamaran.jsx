@@ -20,6 +20,7 @@ export default function AddLamaran({ onClose }) {
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
+  const [dokumenCV, setDokumenCV] = useState("");
 
   const schema = yup.object().shape({
     nama: yup.string().required("Nama Lengkap harus diisi"),
@@ -28,32 +29,25 @@ export default function AddLamaran({ onClose }) {
       .string()
       .required("Pendidikan terakhir harus diisi"),
     keterampilan: yup.array().required("Keahlian harus diisi"),
-    dokumen_cv: yup.string().required("Dokumen CV harus diisi"),
-    dokumen_lain: yup.string().nullable(),
+    dokumen_cv: yup.mixed(),
+    dokumen_lain: yup.string().required("Dokumen Lain harus diisi"),
   });
   const {
     register,
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
+    setValue,
     reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const createLamaran = async (data) => {
-    try {
-      await APIlamaran.createLamaran(data);
-      showSuccessToast(
-        "Data Lamaran kamu berhasil diupload",
-        "top-center",
-        "large",
-      );
-      reset();
-      onClose();
-    } catch (err) {
-      console.error(err);
-      showErrorToast("Data Lamaran kamu gagal dibuat", "top-center", "large");
+  const handleDokumenCV = (e) => {
+    const file = e.target.files[0];
+    setValue("dokumen_cv", file);
+    if (file) {
+      setDokumenCV(file.name);
     }
   };
 
@@ -73,12 +67,28 @@ export default function AddLamaran({ onClose }) {
     setIsShowConfirm((prev) => !prev);
   };
 
+  const createLamaran = async (data) => {
+    try {
+      await APIlamaran.createLamaran(data);
+      showSuccessToast(
+        "Data Lamaran kamu berhasil diupload",
+        "top-center",
+        "large",
+      );
+      reset();
+      onClose();
+    } catch (err) {
+      console.error(err);
+      showErrorToast("Data Lamaran kamu gagal dibuat", "top-center", "large");
+    }
+  };
+
   return (
-    <section id="unggah-mutasi" className="mb-5 py-5">
+    <section id="unggah-lamaran" className="mb-5 py-5">
       <form
         onSubmit={handleSubmit(onSubmitArticle)}
         className="flex flex-col gap-6"
-        // encType="multipart/form-data"
+        encType="multipart/form-data"
       >
         {/* Title */}
         <Flex justify="space-between" align="center">
@@ -265,18 +275,23 @@ export default function AddLamaran({ onClose }) {
                 </label>
                 <input
                   id="dokumen_cv"
+                  type="file"
                   {...register("dokumen_cv")}
                   className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
                     errors.dokumen_cv
                       ? "border-negative text-negative"
                       : "border-grey-100 text-grey-900"
                   }`}
-                  type="text"
                   placeholder="Masukkan CV (.pdf)"
+                  onChange={handleDokumenCV}
+                  accept=".pdf"
                 />
                 <span className="pt-1 text-xs text-negative">
                   {errors.dokumen_cv?.message}
                 </span>
+                {dokumenCV && (
+                  <p className="text-sm text-gray-500">{dokumenCV}</p>
+                )}
               </Row>
 
               {/* Conf Pw */}
