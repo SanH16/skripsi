@@ -1,10 +1,6 @@
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import "react-quill/dist/quill.snow.css";
-import * as yup from "yup";
 import { useState } from "react";
-import { Flex, Col, Row, Button, Space, Select } from "antd";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { Flex, Col, Button, Space, Select, Input, Upload, Form } from "antd";
 
 import { ModalConfirm } from "@/components/shared-components/ModalConfirm";
 import { ModalCancel } from "@/components/shared-components/ModalCancel";
@@ -20,45 +16,11 @@ export default function AddLamaran({ onClose }) {
   const [isShowCancel, setIsShowCancel] = useState(false);
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
-  const [dokumenCV, setDokumenCV] = useState("");
 
-  const schema = yup.object().shape({
-    nama: yup.string().required("Nama Lengkap harus diisi"),
-    nomor_telepon: yup.string().required("Nomor Hp harus diisi"),
-    pendidikan_terakhir: yup
-      .string()
-      .required("Pendidikan terakhir harus diisi"),
-    keterampilan: yup.array().required("Keahlian harus diisi"),
-    dokumen_cv: yup.mixed(),
-    dokumen_lain: yup.string().required("Dokumen Lain harus diisi"),
-  });
-  const {
-    register,
-    control,
-    formState: { errors, isSubmitting },
-    handleSubmit,
-    setValue,
-    reset,
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
-  const handleDokumenCV = (e) => {
-    const file = e.target.files[0];
-    setValue("dokumen_cv", file);
-    if (file) {
-      setDokumenCV(file.name);
-    }
-  };
-
-  const onSubmitArticle = (data) => {
-    const newData = {
-      ...data,
-      keterampilan: data.keterampilan.join(", "),
-    };
-    setInputData(newData);
-    handleOpenModalConfirm();
-  };
+  const [fileListCv, setFileListCv] = useState([]);
+  const [fileListLain, setFileListLain] = useState([]);
+  const [error, setError] = useState(null);
+  const [form] = Form.useForm();
 
   const handleOpenModalCancel = () => {
     setIsShowCancel((prev) => !prev);
@@ -67,15 +29,39 @@ export default function AddLamaran({ onClose }) {
     setIsShowConfirm((prev) => !prev);
   };
 
+  const onSubmitArticle = (values) => {
+    const newData = {
+      ...values,
+      dokumen_cv: fileListCv,
+      dokumen_lain: fileListLain,
+      keterampilan: values.keterampilan.join(", "),
+    };
+    console.log("lamaran data", newData);
+    setInputData(newData);
+    handleOpenModalConfirm();
+  };
+
   const createLamaran = async (data) => {
+    const formData = new FormData();
+    fileListCv.forEach((file) => {
+      formData.append("dokumen_cv", file);
+    });
+    fileListLain.forEach((file) => {
+      formData.append("dokumen_lain", file);
+    });
+    formData.append("nama", data.nama);
+    formData.append("nomor_telepon", data.nomor_telepon);
+    formData.append("pendidikan_terakhir", data.pendidikan_terakhir);
+    formData.append("keterampilan", data.keterampilan);
+    formData.append("dokumen_lain", data.dokumen_lain);
     try {
-      await APIlamaran.createLamaran(data);
+      await APIlamaran.createLamaran(formData);
       showSuccessToast(
         "Data Lamaran kamu berhasil diupload",
         "top-center",
         "large",
       );
-      reset();
+      // reset();
       onClose();
     } catch (err) {
       console.error(err);
@@ -83,10 +69,53 @@ export default function AddLamaran({ onClose }) {
     }
   };
 
+  const beforeUploadCv = (file) => {
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      setError("Dokumen CV tidak boleh melebihi 2MB!");
+      return false;
+    }
+    setFileListCv([...fileListCv, file]);
+    setError(null);
+    return false;
+  };
+
+  const beforeUploadLain = (file) => {
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      setError("Dokumen Pendukung tidak boleh melebihi 2MB!");
+      return false;
+    }
+    setFileListLain([...fileListLain, file]);
+    setError(null);
+    return false;
+  };
+
+  const propsCv = {
+    name: "dokumen_cv",
+    accept: ".pdf",
+    beforeUpload: beforeUploadCv,
+    onRemove: (file) => {
+      setFileListCv((prev) => prev.filter((item) => item.uid !== file.uid));
+    },
+    fileList: fileListCv,
+  };
+
+  const propsLain = {
+    name: "dokumen_lain",
+    accept: ".pdf",
+    beforeUpload: beforeUploadLain,
+    onRemove: (file) => {
+      setFileListLain((prev) => prev.filter((item) => item.uid !== file.uid));
+    },
+    fileList: fileListLain,
+  };
+
   return (
     <section id="unggah-lamaran" className="mb-5 py-5">
-      <form
-        onSubmit={handleSubmit(onSubmitArticle)}
+      <Form
+        form={form}
+        onFinish={onSubmitArticle}
         className="flex flex-col gap-6"
         encType="multipart/form-data"
       >
@@ -102,12 +131,7 @@ export default function AddLamaran({ onClose }) {
               >
                 Batal
               </Button>
-              <Button
-                id="submit-button"
-                type="primary"
-                htmlType="submit"
-                disabled={isSubmitting}
-              >
+              <Button id="submit-button" type="primary" htmlType="submit">
                 Buat
               </Button>
             </Space>
@@ -120,207 +144,121 @@ export default function AddLamaran({ onClose }) {
               vertical
               className="gap-6 rounded-lg border border-grey-50 p-6"
             >
-              {/* Role */}
-              <Row>
-                <label
-                  className="block text-xl font-semibold text-grey-400"
-                  htmlFor="nama"
-                >
-                  Nama Lengkap
-                </label>
-                <input
-                  id="nama"
-                  {...register("nama")}
-                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.nama
-                      ? "border-negative text-negative"
-                      : "border-grey-100 text-grey-900"
-                  }`}
-                  type="text"
+              {/* Nama */}
+              <Form.Item
+                name="nama"
+                label="Nama Lengkap"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                rules={[
+                  { required: true, message: "Nama Lengkap harus diisi" },
+                ]}
+              >
+                <Input
                   placeholder="Masukkan Nama lengkap disini"
+                  className="mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none"
                 />
-                <span className="pt-1 text-xs text-negative">
-                  {errors.nama?.message}
-                </span>
-              </Row>
+              </Form.Item>
 
-              {/* Role */}
-              <Row>
-                <label
-                  className="block text-xl font-semibold text-grey-400"
-                  htmlFor="nomor_telepon"
-                >
-                  Nomor Hp
-                </label>
-                <input
-                  id="nomor_telepon"
-                  {...register("nomor_telepon")}
-                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.nomor_telepon
-                      ? "border-negative text-negative"
-                      : "border-grey-100 text-grey-900"
-                  }`}
-                  type="number"
+              {/* no hp */}
+              <Form.Item
+                name="nomor_telepon"
+                label="Nomor Hp"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                rules={[{ required: true, message: "Nomor Hp harus diisi" }]}
+              >
+                <Input
                   placeholder="Masukkan Nomor HP disini"
+                  type="number"
+                  className="mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none"
                 />
-                <span className="pt-1 text-xs text-negative">
-                  {errors.nomor_telepon?.message}
-                </span>
-              </Row>
+              </Form.Item>
+
+              {/* pendidikan */}
+              <Form.Item
+                name="pendidikan_terakhir"
+                label="Pendidikan Terakhir"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                rules={[
+                  {
+                    required: true,
+                    message: "Pendidikan terakhir harus diisi",
+                  },
+                ]}
+              >
+                <Select
+                  options={[
+                    { value: "SMP", label: "SMP" },
+                    { value: "SMA", label: "SMA" },
+                    { value: "Diploma 3", label: "Diploma 3" },
+                    { value: "Sarjana S1", label: "Sarjana S1" },
+                  ]}
+                  variant="borderless"
+                  placeholder="Pilih Pendidikan terakhir.."
+                  className="mt-2 block w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none"
+                />
+              </Form.Item>
 
               {/* Role */}
-              <Row>
-                <label
-                  className="block text-xl font-semibold text-grey-400"
-                  htmlFor="pendidikan_terakhir"
-                >
-                  Pendidikan Terakhir
-                </label>
-                <Controller
-                  name="pendidikan_terakhir"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      variant="borderless"
-                      {...field}
-                      options={[
-                        {
-                          value: "SMP",
-                          label: "SMP",
-                        },
-                        {
-                          value: "SMA",
-                          label: "SMA",
-                        },
-                        {
-                          value: "Diploma 3",
-                          label: "Diploma 3",
-                        },
-                        {
-                          value: "Sarjana S1",
-                          label: "Sarjana S1",
-                        },
-                      ]}
-                      className={`mt-2 block w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
-                        errors.pendidikan_terakhir
-                          ? "border-negative text-negative"
-                          : "border-grey-100 text-grey-900"
-                      }`}
-                      placeholder="Pilih Pendidikan terakhir.."
-                    />
-                  )}
+              <Form.Item
+                name="keterampilan"
+                label="Keterampilan"
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                rules={[{ required: true, message: "Keahlian harus diisi" }]}
+              >
+                <Select
+                  mode="tags"
+                  variant="borderless"
+                  options={[
+                    { value: "nodejs", label: "NodeJS" },
+                    { value: "javascript", label: "JavaScript" },
+                    { value: "laravel.php", label: "Laravel/PHP" },
+                  ]}
+                  tokenSeparators={[",", " ", "."]}
+                  placeholder="Masukkan keterampilan anda.."
+                  className="mt-2 block w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none"
                 />
-                <span className="pt-1 text-xs text-negative">
-                  {errors.pendidikan_terakhir?.message}
-                </span>
-              </Row>
-
-              {/* Role */}
-              <Row>
-                <label
-                  className="block text-xl font-semibold text-grey-400"
-                  htmlFor="keterampilan"
-                >
-                  Keterampilan
-                </label>
-                <Controller
-                  name="keterampilan"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      mode="tags"
-                      variant="borderless"
-                      {...field}
-                      options={[
-                        {
-                          value: "nodejs",
-                          label: "NodeJS",
-                        },
-                        {
-                          value: "javascript",
-                          label: "JavaScript",
-                        },
-                        {
-                          value: "laravel.php",
-                          label: "Laravel/PHP",
-                        },
-                      ]}
-                      tokenSeparators={[",", " ", "."]}
-                      className={`mt-2 block w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
-                        errors.keterampilan
-                          ? "border-negative text-negative"
-                          : "border-grey-100 text-grey-900"
-                      }`}
-                      placeholder="Pilih Keterampilan anda.."
-                    />
-                  )}
-                />
-                <span className="pt-1 text-xs text-negative">
-                  {errors.keterampilan?.message}
-                </span>
-              </Row>
+              </Form.Item>
             </Flex>
 
             <Flex
               vertical
               className="gap-6 rounded-lg border border-grey-50 p-6"
             >
-              {/* Role */}
-              <Row>
-                <label
-                  className="block text-xl font-semibold text-grey-400"
-                  htmlFor="dokumen_cv"
-                >
-                  Dokumen CV
-                </label>
-                <input
-                  id="dokumen_cv"
-                  type="file"
-                  {...register("dokumen_cv")}
-                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.dokumen_cv
-                      ? "border-negative text-negative"
-                      : "border-grey-100 text-grey-900"
-                  }`}
-                  placeholder="Masukkan CV (.pdf)"
-                  onChange={handleDokumenCV}
-                  accept=".pdf"
-                />
-                <span className="pt-1 text-xs text-negative">
-                  {errors.dokumen_cv?.message}
-                </span>
-                {dokumenCV && (
-                  <p className="text-sm text-gray-500">{dokumenCV}</p>
-                )}
-              </Row>
+              {/* Dokumen CV */}
+              <Form.Item
+                name="dokumen_cv"
+                label="Dokumen CV"
+                // rules={[{ required: true, message: "Dokumen CV harus diisi" }]}
+                getValueFromEvent={({ file }) => file.originFileObj}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+              >
+                <Upload {...propsCv}>
+                  <Button>Select file (.pdf)</Button>
+                </Upload>
+              </Form.Item>
 
-              {/* Conf Pw */}
-              <Row>
-                <label
-                  className="block text-xl font-semibold text-grey-400"
-                  htmlFor="dokumen_lain"
-                >
-                  Dokumen Pendukung
-                </label>
-                <input
-                  id="dokumen_lain"
-                  {...register("dokumen_lain")}
-                  className={`mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                    errors.dokumen_lain
-                      ? "border-negative text-negative"
-                      : "border-grey-100 text-grey-900"
-                  }`}
-                  type="text"
-                  placeholder="Dokumen pendukung (surat lamaran .etc)"
-                />
-                <span className="pt-1 text-xs text-negative">
-                  {errors.dokumen_lain?.message}
-                </span>
-              </Row>
+              {/* Dokumen Pendukung */}
+              <Form.Item
+                name="dokumen_lain"
+                label="Dokumen Pendukung"
+                getValueFromEvent={({ file }) => file.originFileObj}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+              >
+                <Upload {...propsLain}>
+                  <Button>Select file (.pdf)</Button>
+                </Upload>
+              </Form.Item>
+              {error && <div className="text-negative">{error}</div>}
             </Flex>
           </div>
         </Col>
-      </form>
+      </Form>
       {isShowCancel && <ModalCancel closeModal={handleOpenModalCancel} />}
       {isShowConfirm && (
         <ModalConfirm
