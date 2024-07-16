@@ -20,8 +20,7 @@ export const APIlamaran = {
     try {
       const result = await axiosInstance.post("/create-lamaran", data, {
         headers: {
-          //   "Content-Type": "multipart/form-data",
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
       return result.data;

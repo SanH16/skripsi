@@ -1,5 +1,5 @@
-// import multer from "multer";
-// import path from "path";
+import multer from "multer";
+import path from "path";
 import Lamaran from "../models/LamaranModel.js";
 import Rekrutmens from "../models/RekrutmenModel.js";
 // import { Op } from "sequelize";
@@ -7,15 +7,7 @@ import Rekrutmens from "../models/RekrutmenModel.js";
 export const getDataLamaran = async (req, res) => {
   try {
     const response = await Lamaran.findAll({
-      attributes: [
-        "uuid",
-        "nama",
-        "nomor_telepon",
-        "pendidikan_terakhir",
-        "keterampilan",
-        "dokumen_cv",
-        "dokumen_lain",
-      ],
+      attributes: ["uuid", "nama", "nomor_telepon", "pendidikan_terakhir", "keterampilan", "dokumen_cv"],
       include: [
         {
           model: Rekrutmens,
@@ -30,7 +22,12 @@ export const getDataLamaran = async (req, res) => {
 };
 
 export const createLamaran = async (req, res) => {
-  const { nama, nomor_telepon, pendidikan_terakhir, keterampilan, dokumen_cv, dokumen_lain } = req.body;
+  const { nama, nomor_telepon, pendidikan_terakhir, keterampilan } = req.body;
+
+  if (!req.file) {
+    return res.status(400).json({ msg: "No file uploaded" });
+  }
+  const dokumen_cv = req.file.filename;
 
   try {
     await Lamaran.create({
@@ -39,7 +36,6 @@ export const createLamaran = async (req, res) => {
       pendidikan_terakhir: pendidikan_terakhir,
       keterampilan: keterampilan,
       dokumen_cv: dokumen_cv,
-      dokumen_lain: dokumen_lain,
     });
     res.status(201).json({ msg: "Lamaran berhasil diupload" });
   } catch (error) {
@@ -66,3 +62,27 @@ export const deleteLamaran = async (req, res) => {
     res.status(400).json({ msg: error.message });
   }
 };
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "docfiles");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-lamaran-${file.originalname}`);
+  },
+});
+
+// Filter file untuk menerima hanya PDF
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "application/pdf") {
+    cb(null, true);
+  } else {
+    cb(new Error("Hanya file PDF yang diperbolehkan!"), false);
+  }
+};
+
+export const upload = multer({
+  storage: storage,
+  limits: { fileSize: "1000000" }, // 2 MB
+  fileFilter: fileFilter,
+}).single("dokumen_cv");
