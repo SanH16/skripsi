@@ -17,7 +17,9 @@ export default function AddLamaran({ onClose }) {
   const [isShowConfirm, setIsShowConfirm] = useState(false);
   const [inputData, setInputData] = useState(null);
 
-  const [fileList, setFileList] = useState([]);
+  const [fileListCv, setFileListCv] = useState([]);
+  const [fileListLain, setFileListLain] = useState([]);
+  const [error, setError] = useState(null);
   const [form] = Form.useForm();
 
   const handleOpenModalCancel = () => {
@@ -30,7 +32,8 @@ export default function AddLamaran({ onClose }) {
   const onSubmitArticle = (values) => {
     const newData = {
       ...values,
-      dokumen_cv: fileList,
+      dokumen_cv: fileListCv,
+      dokumen_lain: fileListLain,
       keterampilan: values.keterampilan.join(", "),
     };
     console.log("lamaran data", newData);
@@ -40,8 +43,11 @@ export default function AddLamaran({ onClose }) {
 
   const createLamaran = async (data) => {
     const formData = new FormData();
-    fileList.forEach((file) => {
+    fileListCv.forEach((file) => {
       formData.append("dokumen_cv", file);
+    });
+    fileListLain.forEach((file) => {
+      formData.append("dokumen_lain", file);
     });
     formData.append("nama", data.nama);
     formData.append("nomor_telepon", data.nomor_telepon);
@@ -63,17 +69,46 @@ export default function AddLamaran({ onClose }) {
     }
   };
 
-  const props = {
-    name: "dokumen_cv", // set nama upload file
+  const beforeUploadCv = (file) => {
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      setError("Dokumen CV tidak boleh melebihi 2MB!");
+      return false;
+    }
+    setFileListCv([...fileListCv, file]);
+    setError(null);
+    return false;
+  };
+
+  const beforeUploadLain = (file) => {
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      setError("Dokumen Pendukung tidak boleh melebihi 2MB!");
+      return false;
+    }
+    setFileListLain([...fileListLain, file]);
+    setError(null);
+    return false;
+  };
+
+  const propsCv = {
+    name: "dokumen_cv",
     accept: ".pdf",
-    beforeUpload: (file) => {
-      setFileList([...fileList, file]); // Add the selected file to fileList
-      return false; // Prevent default upload behavior
-    },
+    beforeUpload: beforeUploadCv,
     onRemove: (file) => {
-      setFileList((prev) => prev.filter((item) => item.uid !== file.uid));
+      setFileListCv((prev) => prev.filter((item) => item.uid !== file.uid));
     },
-    fileList,
+    fileList: fileListCv,
+  };
+
+  const propsLain = {
+    name: "dokumen_lain",
+    accept: ".pdf",
+    beforeUpload: beforeUploadLain,
+    onRemove: (file) => {
+      setFileListLain((prev) => prev.filter((item) => item.uid !== file.uid));
+    },
+    fileList: fileListLain,
   };
 
   return (
@@ -199,9 +234,11 @@ export default function AddLamaran({ onClose }) {
                 label="Dokumen CV"
                 // rules={[{ required: true, message: "Dokumen CV harus diisi" }]}
                 getValueFromEvent={({ file }) => file.originFileObj}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
               >
-                <Upload {...props}>
-                  <Button>Select File</Button>
+                <Upload {...propsCv}>
+                  <Button>Select file (.pdf)</Button>
                 </Upload>
               </Form.Item>
 
@@ -209,17 +246,15 @@ export default function AddLamaran({ onClose }) {
               <Form.Item
                 name="dokumen_lain"
                 label="Dokumen Pendukung"
+                getValueFromEvent={({ file }) => file.originFileObj}
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                rules={[
-                  { required: true, message: "Dokumen Lain harus diisi" },
-                ]}
               >
-                <Input
-                  placeholder="Dokumen pendukung (surat lamaran .etc)"
-                  className="mt-2 block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none"
-                />
+                <Upload {...propsLain}>
+                  <Button>Select file (.pdf)</Button>
+                </Upload>
               </Form.Item>
+              {error && <div className="text-negative">{error}</div>}
             </Flex>
           </div>
         </Col>

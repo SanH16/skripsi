@@ -7,7 +7,15 @@ import Rekrutmens from "../models/RekrutmenModel.js";
 export const getDataLamaran = async (req, res) => {
   try {
     const response = await Lamaran.findAll({
-      attributes: ["uuid", "nama", "nomor_telepon", "pendidikan_terakhir", "keterampilan", "dokumen_cv"],
+      attributes: [
+        "uuid",
+        "nama",
+        "nomor_telepon",
+        "pendidikan_terakhir",
+        "keterampilan",
+        "dokumen_cv",
+        "dokumen_lain",
+      ],
       include: [
         {
           model: Rekrutmens,
@@ -24,10 +32,12 @@ export const getDataLamaran = async (req, res) => {
 export const createLamaran = async (req, res) => {
   const { nama, nomor_telepon, pendidikan_terakhir, keterampilan } = req.body;
 
-  if (!req.file) {
-    return res.status(400).json({ msg: "No file uploaded" });
+  if (!req.files || !req.files.dokumen_cv || !req.files.dokumen_lain) {
+    return res.status(400).json({ msg: "No files uploaded" });
   }
-  const dokumen_cv = req.file.filename;
+
+  const dokumen_cv = req.files.dokumen_cv[0].filename;
+  const dokumen_lain = req.files.dokumen_lain[0].filename;
 
   try {
     await Lamaran.create({
@@ -36,6 +46,7 @@ export const createLamaran = async (req, res) => {
       pendidikan_terakhir: pendidikan_terakhir,
       keterampilan: keterampilan,
       dokumen_cv: dokumen_cv,
+      dokumen_lain: dokumen_lain,
     });
     res.status(201).json({ msg: "Lamaran berhasil diupload" });
   } catch (error) {
@@ -85,4 +96,7 @@ export const upload = multer({
   storage: storage,
   limits: { fileSize: "1000000" }, // 2 MB
   fileFilter: fileFilter,
-}).single("dokumen_cv");
+}).fields([
+  { name: "dokumen_cv", maxCount: 1 },
+  { name: "dokumen_lain", maxCount: 1 },
+]);
