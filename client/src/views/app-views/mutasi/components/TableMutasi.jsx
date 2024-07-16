@@ -29,6 +29,11 @@ import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { useDebounce } from "@/hooks/useDebounce";
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
 
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+
 export function TableMutasi() {
   useDocumentTitle("Halaman Mutasi");
   useScrollToTop();
@@ -67,6 +72,48 @@ export function TableMutasi() {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const handleDownloadPdf = () => {
+    const columns = [
+      { header: "ID", dataKey: "uuid" },
+      { header: "Nama Pegawai", dataKey: "name" },
+      { header: "Keterangan Mutasi", dataKey: "keterangan_mutasi" },
+      { header: "Cabang Sebelum", dataKey: "cabang_sebelum" },
+      { header: "Cabang Tujuan", dataKey: "cabang_tujuan" },
+      { header: "Tanggal Mulai", dataKey: "tanggal_mulai" },
+      { header: "Tanggal Dibuat", dataKey: "createdAt" },
+    ];
+
+    const formattedData = dataMutasi.map((row) => ({
+      uuid: row.uuid.slice(0, 5),
+      name: row.user.name,
+      keterangan_mutasi: row.keterangan_mutasi,
+      createdAt: dayjs(row.createdAt).format("dddd, DD MMMM YYYY"),
+      cabang_tujuan: row.cabang_tujuan,
+      cabang_sebelum: row.cabang_sebelum,
+      tanggal_mulai: dayjs(row.tanggal_mulai).format("dddd, DD MMMM YYYY"),
+    }));
+
+    const doc = new jsPDF();
+    doc.text("Data Rekap Mutasi", 10, 10);
+    doc.autoTable({
+      theme: "grid",
+      head: [columns.map((col) => col.header)],
+      body: formattedData.map((row) => columns.map((col) => row[col.dataKey])),
+      columnStyles: {
+        0: { cellWidth: 15 }, // ID
+        1: { cellWidth: 30 }, // Keterangan Mutasi
+        2: { cellWidth: 30 }, // Cabang Sebelum
+        3: { cellWidth: 30 }, // Cabang Tujuan
+        4: { cellWidth: 25 }, // Tanggal Mulai
+        5: { cellWidth: 25 }, // Nama Pegawai
+        6: { cellWidth: 25 }, // Tanggal Dibuat
+      },
+      margin: { right: 10, left: 5 },
+      styles: { overflow: "linebreak" },
+    });
+    doc.save("Mutasi_Radenmat.pdf");
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -124,6 +171,7 @@ export function TableMutasi() {
           setSearchValue={setSearchValue}
           title="Daftar Mutasi"
           placeholder="data mutasi (nama/cabang)"
+          handleDownloadPdf={handleDownloadPdf}
         />
         <ConfigProvider
           theme={{
