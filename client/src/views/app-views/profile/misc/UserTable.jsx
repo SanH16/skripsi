@@ -7,54 +7,67 @@ import { ModalDeleteUser } from "@/components/shared-components/ModalDeleteUser"
 import { ModalDeletePegawai } from "@/components/shared-components/ModalDeletePegawai";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnPegawai } from "../constant/column-pegawai";
+import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
+
+import { useDebounce } from "@/hooks/useDebounce";
+
+import * as XLSX from "xlsx";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
 
 export default function UserTable({ isUserTable }) {
   const [showAll, setShowAll] = useState(false);
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
+  const [searchValue, setSearchValue] = useState("");
+  const searchQuery = useDebounce(searchValue, 800);
+
   const handleOpenModalDelete = (user) => {
     setUserToDelete(user);
     setIsShowDelete((prev) => !prev);
   };
 
-  const {
-    data: dataUser,
-    isLoading: isLoadingUser,
-    isError: isErrorUser,
-    refetch: refetchUser,
-  } = useQuery({
-    queryKey: ["userData"],
+  const todayDate = dayjs().format("dddd,DD-MM-YYYY");
+
+  const handleDownloadExcel = () => {
+    if (!isUserTable) {
+      const newData = DataSource.map((row) => {
+        delete row.uuid;
+        delete row.photo;
+        return {
+          name: row.user.name,
+          ...row,
+        };
+      });
+      const workSheet = XLSX.utils.json_to_sheet(newData);
+      const workBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workBook, workSheet, "data pegawai");
+      //Download
+      XLSX.writeFile(workBook, `DataPegawai_Radenmat-${todayDate}.xlsx`);
+    }
+  };
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: [isUserTable ? "userData" : "pegawaiData", searchQuery],
     queryFn: async () => {
-      const result = await APIuser.getAllUsers();
-      return result;
+      const result = isUserTable
+        ? await APIuser.getAllUsers()
+        : await APIpegawai.getDataPegawai();
+      let filteredData = result;
+      if (searchQuery) {
+        filteredData = result.filter((data) => {
+          const filterBy = isUserTable
+            ? data.name.toLowerCase().includes(searchQuery.toLowerCase())
+            : data.user.name.toLowerCase().includes(searchQuery.toLowerCase());
+          return filterBy;
+        });
+      }
+      return filteredData;
     },
   });
 
-  const {
-    data: dataPegawai,
-    isLoading: isLoadingPegawai,
-    isError: isErrorPegawai,
-    refetch: refetchPegawai,
-  } = useQuery({
-    queryKey: ["pegawaiData"],
-    queryFn: async () => {
-      const result = await APIpegawai.getDataPegawai();
-      return result;
-    },
-  });
-
-  const DataSource = isUserTable
-    ? dataUser
-      ? showAll
-        ? dataUser
-        : dataUser.slice(0, 3)
-      : []
-    : dataPegawai
-      ? showAll
-        ? dataPegawai
-        : dataPegawai.slice(0, 3)
-      : [];
+  const DataSource = data ? (showAll ? data : data.slice(0, 3)) : [];
   const Columns = isUserTable
     ? ColumnUser(handleOpenModalDelete)
     : ColumnPegawai(handleOpenModalDelete);
@@ -66,6 +79,13 @@ export default function UserTable({ isUserTable }) {
   return (
     <>
       <Card id="user-table-section">
+        <FilterSearchTable
+          setSearchValue={setSearchValue}
+          placeholder={`${isUserTable ? "data user" : "data pegawai"} (nama)`}
+          // handleDownloadPdf={handleDownloadPdf}
+          handleDownloadExcel={handleDownloadExcel}
+          isUserTable={isUserTable}
+        />
         <div className="flex justify-between">
           <p id="user-table-title" className="mb-4 text-2xl font-semibold">
             {isUserTable ? "Data Akun User" : "Data Pegawai"}
@@ -108,7 +128,7 @@ export default function UserTable({ isUserTable }) {
           <Table
             id="table-user"
             rowClassName={"hover:cursor-pointer"}
-            loading={isLoadingUser || isLoadingPegawai}
+            loading={isLoading}
             columns={Columns}
             dataSource={DataSource}
             pagination={false}
@@ -116,18 +136,14 @@ export default function UserTable({ isUserTable }) {
             // scroll={{ x: true }}
             style={{ maxWidth: "100%" }}
             summary={() =>
-              ((isUserTable && isErrorUser) ||
-                (!isUserTable && isErrorPegawai)) &&
-              !isLoadingUser &&
-              !isLoadingPegawai ? (
+              isError && !isLoading ? (
                 <Table.Summary.Row>
                   <Table.Summary.Cell colSpan={10}>
                     <p className="text-center">
                       Terjadi kesalahan! silahkan kembali beberapa saat lagi.
                     </p>
                     <p className="text-center text-negative">
-                      {(isUserTable && isErrorUser.message) ||
-                        (!isUserTable && isErrorPegawai.message)}
+                      {isError.message}
                     </p>
                   </Table.Summary.Cell>
                 </Table.Summary.Row>
@@ -145,14 +161,14 @@ export default function UserTable({ isUserTable }) {
           <ModalDeleteUser
             closeModal={handleOpenModalDelete}
             stateModal={userToDelete}
-            refetchDelete={refetchUser}
+            refetchDelete={refetch}
           />
         )}
         {isShowDelete && !isUserTable && (
           <ModalDeletePegawai
             closeModal={handleOpenModalDelete}
             stateModal={userToDelete}
-            refetchDelete={refetchPegawai}
+            refetchDelete={refetch}
           />
         )}
       </Card>

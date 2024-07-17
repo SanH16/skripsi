@@ -142,7 +142,7 @@ export default function AddLamaran({ onClose }) {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <Flex
               vertical
-              className="gap-6 rounded-lg border border-grey-50 p-6"
+              className="gap-6 rounded-lg border border-grey-50 p-6 duration-300 hover:shadow-lg"
             >
               {/* Nama */}
               <Form.Item
@@ -226,7 +226,7 @@ export default function AddLamaran({ onClose }) {
 
             <Flex
               vertical
-              className="gap-6 rounded-lg border border-grey-50 p-6"
+              className="gap-6 rounded-lg border border-grey-50 p-6 duration-300 hover:shadow-lg"
             >
               {/* Dokumen CV */}
               <Form.Item

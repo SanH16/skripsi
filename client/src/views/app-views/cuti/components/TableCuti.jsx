@@ -16,6 +16,11 @@ import PDFcuti from "../misc/PDFcuti";
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
 import { useDebounce } from "@/hooks/useDebounce";
 
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+
 export function TableCuti() {
   useDocumentTitle("Cuti Pegawai");
   useScrollToTop();
@@ -44,6 +49,50 @@ export function TableCuti() {
     setIsShowDelete((prev) => !prev);
   };
 
+  const todayDate = dayjs().format("dddd,DD-MM-YYYY");
+
+  const handleDownloadPdf = () => {
+    const columns = [
+      { header: "ID", dataKey: "uuid" },
+      { header: "Nama Pegawai", dataKey: "name" },
+      { header: "Alasan Cuti", dataKey: "alasan_cuti" },
+      { header: "Tanggal Mulai", dataKey: "start_cuti" },
+      { header: "Tanggal Selesai", dataKey: "end_cuti" },
+      { header: "Keterangan", dataKey: "keterangan" },
+      { header: "Status", dataKey: "status" },
+    ];
+
+    const formattedData = dataCuti.map((row) => ({
+      uuid: row.uuid.slice(0, 5),
+      name: row.user.name,
+      alasan_cuti: row.alasan_cuti,
+      start_cuti: dayjs(row.start_cuti).format("dddd, DD MMMM YYYY"),
+      end_cuti: dayjs(row.end_cuti).format("dddd, DD MMMM YYYY"),
+      keterangan: row.keterangan,
+      status: row.status,
+    }));
+
+    const doc = new jsPDF();
+    doc.text("Data Rekap Cuti", 10, 10);
+    doc.autoTable({
+      theme: "grid",
+      head: [columns.map((col) => col.header)],
+      body: formattedData.map((row) => columns.map((col) => row[col.dataKey])),
+      columnStyles: {
+        0: { cellWidth: 15 }, // ID
+        1: { cellWidth: 30 }, // Nama Pegawai
+        2: { cellWidth: 40 }, // Alasan Cuti
+        3: { cellWidth: 30 }, // Tanggal Mulai
+        4: { cellWidth: 30 }, // Tanggal Selesai
+        5: { cellWidth: 30 }, // Keterangan
+        6: { cellWidth: 25 }, // Status
+      },
+      margin: { right: 5, left: 5 },
+      styles: { overflow: "linebreak" },
+    });
+    doc.save(`Cuti_Radenmat-${todayDate}.pdf`);
+  };
+
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["cutiData", searchQuery],
     queryFn: async () => {
@@ -65,7 +114,6 @@ export function TableCuti() {
     },
   });
   const dataCuti = data || [];
-  // console.log("cuti query", dataCuti);
 
   return (
     <>
@@ -94,6 +142,7 @@ export function TableCuti() {
           setSearchValue={setSearchValue}
           title="Daftar Pengajuan Cuti"
           placeholder="data cuti (nama/keterangan)"
+          handleDownloadPdf={handleDownloadPdf}
         />
         <ConfigProvider
           theme={{

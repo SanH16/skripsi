@@ -5,6 +5,7 @@ import { MdPrint } from "react-icons/md";
 
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+import { useLocation } from "react-router-dom";
 
 export function FilterSearchTable({
   setSearchValue,
@@ -12,12 +13,20 @@ export function FilterSearchTable({
   placeholder,
   handleDownloadExcel,
   handleDownloadPdf,
+  isUserTable,
 }) {
   const userState = useSelector(selectGetUserLogin);
   const verifRole = userState?.data?.role === "admin";
+  const location = useLocation();
+  const verifPage =
+    location.pathname.includes("cuti") ||
+    location.pathname.includes("mutasi") ||
+    location.pathname.includes("reward-and-punishment");
+
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };
+
   return (
     <>
       <Form layout="vertical">
@@ -55,7 +64,7 @@ export function FilterSearchTable({
                 />
               </Form.Item>
             </Col>
-            {verifRole ? (
+            {verifRole && !verifPage && !isUserTable ? (
               <Col span={2}>
                 <Tooltip title="Download Excel">
                   <Button
@@ -74,7 +83,20 @@ export function FilterSearchTable({
                   </Button>
                 </Tooltip>
               </Col>
-            ) : null}
+            ) : (
+              verifRole && (
+                <Col span={2}>
+                  <Tooltip title="Download PDF">
+                    <Button
+                      onClick={handleDownloadPdf}
+                      className="h-[30px] w-[32px] rounded-lg border-green-500 p-0 text-green-500 hover:bg-green-500 hover:text-white"
+                    >
+                      <MdPrint className="text-[20px]" />
+                    </Button>
+                  </Tooltip>
+                </Col>
+              )
+            )}
           </Row>
         </ConfigProvider>
       </Form>
