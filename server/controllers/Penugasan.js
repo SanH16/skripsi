@@ -6,6 +6,7 @@ import User from "../models/UserModel.js";
 export const getAllPenugasan = async (req, res) => {
   try {
     let whereClause = {};
+    // Ambil jabatan dari Pegawai yang terkait dengan user saat ini
     if (req.role !== "admin") {
       const pegawai = await Pegawai.findOne({
         where: {
@@ -132,31 +133,16 @@ export const updatePenugasan = async (req, res) => {
 
     if (!penugasan) return res.status(404).json({ msg: "Data tidak ditemukan" });
 
-    const { tasks_list } = req.body;
-    if (req.role === "admin" || req.userId === penugasan.userId) {
-      await Penugasan.update(
-        { tasks_list },
-        {
-          where: {
-            id: penugasan.id,
-          },
-        }
-      );
-    } else {
-      // Pengguna biasa hanya dapat mengubah penugasan yang sesuai dengan divisi mereka
-      if (req.divisi !== penugasan.divisi) {
-        return res.status(403).json({ msg: "Akses Terlarang" });
+    const { tasks_list, status_tugas } = req.body;
+    await Penugasan.update(
+      { tasks_list, status_tugas },
+      {
+        where: {
+          id: penugasan.id,
+        },
       }
-      await Penugasan.update(
-        { tasks_list },
-        {
-          where: {
-            [Op.and]: [{ id: penugasan.id }, { userId: req.userId }],
-          },
-        }
-      );
-    }
-    // response
+    );
+
     res.status(200).json({ msg: "Penugasan updated successfully" });
   } catch (error) {
     res.status(500).json({ msg: error.message });
