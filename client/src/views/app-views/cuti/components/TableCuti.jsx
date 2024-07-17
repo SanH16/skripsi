@@ -9,12 +9,12 @@ import { Link } from "react-router-dom";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 import { ModalDeleteCuti } from "@/components/shared-components/ModalDeleteCuti";
-import { CardCuti } from "../misc/CardCuti";
 import { useQuery } from "@tanstack/react-query";
 import PDFcuti from "../misc/PDFcuti";
 
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
 import { useDebounce } from "@/hooks/useDebounce";
+import { CardTable } from "@/components/shared-components/CardTable";
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -136,7 +136,7 @@ export function TableCuti() {
           </Link>
         </Space>
       </Flex>
-      <CardCuti data={dataCuti} />
+      <CardTable data={dataCuti} titleCard={"Pengajuan Cuti hari ini"} />
       <Card>
         <FilterSearchTable
           setSearchValue={setSearchValue}

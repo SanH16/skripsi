@@ -3,19 +3,19 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 import { useState } from "react";
 import { Card, Table, ConfigProvider, Button, Flex, Space, Modal } from "antd";
-
 import { MdOutlineFileUpload } from "react-icons/md";
 
 import { useQuery } from "@tanstack/react-query";
 import { APIabsensi } from "@/apis/APIabsensi";
-import { CardAbsensi } from "../misc/CardAbsensi";
 
 import { ColumnAbsensi } from "../constant/column-absensi";
-import AddAbsensi from "../misc/AddAbsensi";
 
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
 import { useDebounce } from "@/hooks/useDebounce";
 import { ModalDeleteAbsensi } from "@/components/shared-components/ModalDeleteAbsensi";
+import { CardTable } from "@/components/shared-components/CardTable";
+
+import AddAbsensi from "../misc/AddAbsensi";
 import UpdateAbsensi from "../misc/UpdateAbsensi";
 
 import * as XLSX from "xlsx";
@@ -181,7 +181,7 @@ export function TableAbsensi() {
           </Space>
         ) : null}
       </Flex>
-      <CardAbsensi data={dataAbsensi} />
+      <CardTable data={dataAbsensi} titleCard={"Data Absensi hari ini"} />
       <Card>
         <FilterSearchTable
           setSearchValue={setSearchValue}

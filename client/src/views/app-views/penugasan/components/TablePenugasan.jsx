@@ -10,12 +10,12 @@ import { FilterSearchTable } from "@/components/shared-components/FilterSearchTa
 
 import { ColumnPenugasan } from "../constant/column-penugasan";
 import { useState } from "react";
-import { CardPenugasan } from "../misc/CardPenugasan";
 import UpdateTugas from "../misc/UpdateTugas";
 
 import { useDebounce } from "@/hooks/useDebounce";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { useSelector } from "react-redux";
+import { CardTable } from "@/components/shared-components/CardTable";
 
 export function TablePenugasan() {
   useDocumentTitle("Halaman Penugasan");
@@ -89,7 +89,7 @@ export function TablePenugasan() {
           </Space>
         )}
       </Flex>
-      <CardPenugasan data={dataPenugasan} />
+      <CardTable data={dataPenugasan} titleCard={"Data Penugasan hari ini"} />
       <Card>
         <FilterSearchTable
           setSearchValue={setSearchValue}
