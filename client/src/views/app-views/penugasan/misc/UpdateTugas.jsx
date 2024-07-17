@@ -35,6 +35,15 @@ const UpdateTugas = ({ onClose, refetchPenugasan, updateData }) => {
 
   const handleChange = (list) => {
     setCheckedList(list);
+
+    // Update status_tugas based on checkedList
+    if (list.length === 0) {
+      setStatusTugas("idle");
+    } else if (list.length < allTasks.length) {
+      setStatusTugas("ongoing");
+    } else {
+      setStatusTugas("completed");
+    }
   };
 
   const handleOk = async () => {
@@ -59,6 +68,8 @@ const UpdateTugas = ({ onClose, refetchPenugasan, updateData }) => {
       console.error("Error updating penugasan:", error);
     }
   };
+
+  console.log("STATUS", statusTugas);
 
   const determineStatus = () => {
     let color = "";
@@ -93,27 +104,18 @@ const UpdateTugas = ({ onClose, refetchPenugasan, updateData }) => {
         </div>
         <div className="pb-1">
           <p className="text-sm font-medium text-gray-600">Completed by:</p>
-          {Array.isArray(statusTugas) &&
-            statusTugas.map((item, index) => (
-              <div
-                key={index}
-                className="flex items-center text-sm font-normal text-gray-500"
-              >
-                <span className="pe-1">{index + 1}.</span>
-
-                <Image
-                  src={`http://localhost:5000/images/${item.completed_by}`}
-                  preview={false}
-                  fallback={anonymousPict}
-                  className="m-2 flex h-8 w-8 rounded-full"
-                />
-                <strong>{item.completed_by}</strong>
-                <span className="ps-1">({item.tasks_list})</span>
-                <span className="ps-1">
-                  {dayjs(item.completed_at)?.format("HH:mm:ss")}
-                </span>
-              </div>
-            ))}
+          <div className="flex items-center text-sm font-normal text-gray-500">
+            <Image
+              src={`http://localhost:5000/images/${updateData.user.photo}`}
+              preview={false}
+              fallback={anonymousPict}
+              className="m-2 flex h-8 w-8 rounded-full"
+            />
+            <strong>{updateData.user.name}</strong>
+            <span className="ps-1">
+              {dayjs(updateData.completed_at)?.format("HH:mm:ss")}
+            </span>
+          </div>
         </div>
         <Tag className={color} type="primary">
           <span className="flex items-center justify-center font-medium">
