@@ -6,6 +6,7 @@ import { FaTasks, FaUserSecret } from "react-icons/fa";
 import { FaPeopleLine, FaPersonWalkingLuggage } from "react-icons/fa6";
 import { MdPeople, MdOutlinePersonPin } from "react-icons/md";
 import { TbFaceId } from "react-icons/tb";
+import { PiTipJar } from "react-icons/pi";
 
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
@@ -16,6 +17,7 @@ import { APImutasi } from "@/apis/APImutasi";
 import { APIabsensi } from "@/apis/APIabsensi";
 import { APIlamaran } from "@/apis/APIlamaran";
 import { APIpenugasan } from "@/apis/APIpenugasan";
+import { APIreward } from "@/apis/APIreward";
 
 export function TotalCards() {
   const userState = useSelector(selectGetUserLogin);
@@ -28,6 +30,7 @@ export function TotalCards() {
     totalAbsensi: 0,
     totalPelamar: 0,
     totalPenugasan: 0,
+    totalReward: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,6 +47,7 @@ export function TotalCards() {
       const absensiTotal = await APIabsensi.getDataAbsensi();
       const pelamarTotal = await APIlamaran.getDataLamaran();
       const penugasanTotal = await APIpenugasan.getAllPenugasan();
+      const rewardTotal = await APIreward.getAllReward();
 
       setData((prevData) => ({
         ...prevData,
@@ -54,6 +58,7 @@ export function TotalCards() {
         totalAbsensi: absensiTotal.length,
         totalPelamar: pelamarTotal.length,
         totalPenugasan: penugasanTotal.length,
+        totalReward: rewardTotal.length,
       }));
       setIsLoading(false);
     } catch (error) {
@@ -111,6 +116,13 @@ export function TotalCards() {
       icon: <FaPersonWalkingLuggage />,
       available: data.totalPenugasan > 0,
       link: "/penugasan",
+    },
+    {
+      title: "Data Reward",
+      total: data.totalReward,
+      icon: <PiTipJar />,
+      available: data.totalReward > 0,
+      link: "/reward-and-punishment",
     },
   ];
 

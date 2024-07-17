@@ -13,6 +13,7 @@ import MutasiRoute from "./routes/MutasiRoute.js";
 import AbsensiRoute from "./routes/AbsensiRoute.js";
 import LamaranRoute from "./routes/LamaranRoute.js";
 import PenugasanRoute from "./routes/PenugasanRoute.js";
+import RewardRoute from "./routes/RewardRoute.js";
 
 dotenv.config();
 const port = process.env.APP_PORT;
@@ -48,6 +49,7 @@ app.use(
 );
 
 app.use("/images", express.static("./images"));
+app.use("/docfiles", express.static("./docfiles"));
 app.use(
   cors({
     credentials: true, // allow pengiriman cookie di CORS
@@ -66,6 +68,7 @@ app.use(MutasiRoute);
 app.use(AbsensiRoute);
 app.use(LamaranRoute);
 app.use(PenugasanRoute);
+app.use(RewardRoute);
 
 // store.sync(); // sinkronisasi table session di db
 // store.sync({force: true}); // sinkronisasi table session di db dan menghapus data lama

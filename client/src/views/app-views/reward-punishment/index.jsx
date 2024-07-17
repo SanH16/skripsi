@@ -1,8 +1,9 @@
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { TableReward } from "./components/TableReward";
 
 export default function RewardAndPunishment() {
-  useDocumentTitle("Reward and Punishment");
-  useScrollToTop();
-  return <div>RewardAndPunishment</div>;
+  return (
+    <section className="py-5">
+      <TableReward />;
+    </section>
+  );
 }

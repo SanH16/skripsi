@@ -59,6 +59,8 @@ export function TableAbsensi() {
     setIsModalVisible(false);
   };
 
+  const todayDate = dayjs().format("dddd,DD-MM-YYYY");
+
   const handleDownloadExcel = () => {
     const newData = dataAbsensi.map((row) => {
       // delete row.tableData;
@@ -74,7 +76,7 @@ export function TableAbsensi() {
     const workBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workBook, workSheet, "absensi");
     //Download
-    XLSX.writeFile(workBook, "Absensi_Radenmat.xlsx");
+    XLSX.writeFile(workBook, `Absensi_Radenmat-${todayDate}.xlsx`);
   };
 
   const handleDownloadPdf = () => {
@@ -104,7 +106,7 @@ export function TableAbsensi() {
     }));
 
     const doc = new jsPDF();
-    doc.text("Data Absensi", 10, 10);
+    doc.text("Data Rekap Absensi", 10, 10);
     doc.autoTable({
       theme: "grid",
       head: [columns.map((col) => col.header)],
@@ -122,7 +124,7 @@ export function TableAbsensi() {
       margin: { right: 10, left: 5 },
       styles: { overflow: "linebreak" },
     });
-    doc.save("Absensi_Radenmat.pdf");
+    doc.save(`Absensi_Radenmat-${todayDate}.pdf`);
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
