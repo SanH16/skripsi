@@ -1,4 +1,5 @@
 import { BsSearch } from "react-icons/bs";
+import { LoadingOutlined } from "@ant-design/icons";
 
 import {
   Avatar,
@@ -32,6 +33,7 @@ import parse from "html-react-parser";
 
 import { authService } from "@/configs/auth";
 import { useQuery } from "@tanstack/react-query";
+import { useDebounce } from "@/hooks/useDebounce";
 import AddLamaran from "../misc/AddLamaran";
 
 export function ListLowongan() {
@@ -42,11 +44,15 @@ export function ListLowongan() {
   );
 }
 
-const SearchLowongan = ({ onSearch }) => (
+const SearchLowongan = ({ onSearch, isLoading }) => (
   <section id="search-lowongan">
     <div className="relative mb-6 focus:bg-black">
       <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-4 sm:ps-8">
-        <BsSearch className="text-gray-400" />
+        {isLoading ? (
+          <LoadingOutlined className="text-green-400" />
+        ) : (
+          <BsSearch className="text-gray-400" />
+        )}
       </div>
       <input
         id="search-bar-forum-1"
@@ -64,7 +70,8 @@ export function ListingLowongan() {
   const isAuthenticated = authService.isAuthorized();
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // new state for search query
+  const [searchValue, setSearchValue] = useState(""); // new state for search value
+  const searchQuery = useDebounce(searchValue, 800);
 
   const sizePage = 6;
 
@@ -74,7 +81,7 @@ export function ListingLowongan() {
   useScrollToTop();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["rekrutmenList", currentPage],
+    queryKey: ["rekrutmenList", currentPage, searchQuery],
     queryFn: async () => {
       const result = await APIrekrutmen.getAllRekrutmens(currentPage);
       return result;
@@ -100,7 +107,7 @@ export function ListingLowongan() {
 
   return (
     <>
-      <SearchLowongan onSearch={setSearchQuery} />
+      <SearchLowongan onSearch={setSearchValue} isLoading={isLoading} />
       <section id="list-lowongan">
         <Row gutter={[16, 24]}>
           {filteredDataLowongan
