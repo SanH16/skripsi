@@ -103,7 +103,7 @@ const UpdateTugas = ({ onClose, refetchPenugasan, updateData }) => {
           <p className="text-sm font-normal">{updateData.keterangan_tugas}</p>
         </div>
         <div className="pb-1">
-          <p className="text-sm font-medium text-gray-600">Completed by:</p>
+          <p className="text-sm font-medium text-gray-600">Team:</p>
           <div className="flex items-center text-sm font-normal text-gray-500">
             <Image
               src={`http://localhost:5000/images/${updateData.user.photo}`}

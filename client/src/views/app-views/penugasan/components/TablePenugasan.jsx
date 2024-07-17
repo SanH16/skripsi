@@ -14,10 +14,14 @@ import { CardPenugasan } from "../misc/CardPenugasan";
 import UpdateTugas from "../misc/UpdateTugas";
 
 import { useDebounce } from "@/hooks/useDebounce";
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+import { useSelector } from "react-redux";
 
 export function TablePenugasan() {
   useDocumentTitle("Halaman Penugasan");
   useScrollToTop();
+  const userState = useSelector(selectGetUserLogin);
+  const verifRole = userState?.data?.role === "admin";
 
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -70,18 +74,20 @@ export function TablePenugasan() {
           <h3 className="mb-3 font-bold">Penugasan Pegawai</h3>
         </Space>
 
-        <Space size="middle">
-          <Button
-            id="tambah-absensi"
-            className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
-            //   onClick={handleOpenModal}
-          >
-            <span className="me-2 text-lg">
-              <MdOutlineFileUpload />
-            </span>
-            Tambah Tugas
-          </Button>
-        </Space>
+        {verifRole && (
+          <Space size="middle">
+            <Button
+              id="tambah-absensi"
+              className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+              //   onClick={handleOpenModal}
+            >
+              <span className="me-2 text-lg">
+                <MdOutlineFileUpload />
+              </span>
+              Tambah Tugas
+            </Button>
+          </Space>
+        )}
       </Flex>
       <CardPenugasan data={dataPenugasan} />
       <Card>
