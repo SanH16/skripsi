@@ -1,7 +1,32 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { Button, Tag } from "antd";
+import { Button, Tag, Tooltip } from "antd";
 import { MdOutlineDeleteSweep } from "react-icons/md";
+import { HiOutlineFolderDownload } from "react-icons/hi";
+
+export const renderDokumen = (dokumen) => {
+  const baseUrl = "http://localhost:5000/docfiles/";
+  return (
+    <div>
+      {dokumen ? (
+        <a
+          href={`${baseUrl}${dokumen}`}
+          download={dokumen}
+          target="_blank"
+          className="flex items-center justify-center"
+        >
+          <Tooltip title={`Lihat ${dokumen}`}>
+            <Button className="h-[30px] w-[32px] border-green-500 p-0 font-semibold text-green-500 hover:bg-green-500 hover:text-white">
+              <HiOutlineFolderDownload className="text-[20px]" />
+            </Button>
+          </Tooltip>
+        </a>
+      ) : (
+        <Button disabled>Download</Button>
+      )}
+    </div>
+  );
+};
 
 export const ColumnPelamar = (handleOpenModalDelete) => {
   return [
@@ -39,12 +64,14 @@ export const ColumnPelamar = (handleOpenModalDelete) => {
       dataIndex: "dokumen_cv",
       key: "dokumen_cv",
       width: 150,
+      render: (dokumen_cv) => renderDokumen(dokumen_cv),
     },
     {
       title: "Dokumen Pendukung",
       dataIndex: "dokumen_lain",
       key: "dokumen_lain",
       width: 200,
+      render: (dokumen_lain) => renderDokumen(dokumen_lain),
     },
     {
       title: "Keterampilan",
