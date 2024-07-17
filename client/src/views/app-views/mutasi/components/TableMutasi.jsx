@@ -17,17 +17,18 @@ import { MdOutlineFileUpload } from "react-icons/md";
 
 import { useQuery } from "@tanstack/react-query";
 import { APImutasi } from "@/apis/APImutasi";
-import { CardMutasi } from "../misc/CardMutasi";
 import { ColumnMutasi } from "../constant/column-mutasi";
-import PDFmutasi from "../misc/PDFmutasi";
 import { ModalDeleteMutasi } from "@/components/shared-components/ModalDeleteMutasi";
-import AddMutasi from "../misc/AddMutasi";
 
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 
 import { useDebounce } from "@/hooks/useDebounce";
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
+import { CardTable } from "@/components/shared-components/CardTable";
+
+import PDFmutasi from "../misc/PDFmutasi";
+import AddMutasi from "../misc/AddMutasi";
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -166,7 +167,7 @@ export function TableMutasi() {
           </Space>
         ) : null}
       </Flex>
-      <CardMutasi data={dataMutasi} />
+      <CardTable data={dataMutasi} titleCard={"Data Mutasi hari ini"} />
       <Card>
         <FilterSearchTable
           setSearchValue={setSearchValue}

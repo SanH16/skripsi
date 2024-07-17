@@ -7,9 +7,7 @@ import { Card, Table, ConfigProvider, Button, Flex, Space, Modal } from "antd";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 import { useQuery } from "@tanstack/react-query";
-// import { CardMutasi } from "../misc/CardMutasi";
 import { ModalDeleteMutasi } from "@/components/shared-components/ModalDeleteMutasi";
-// import AddMutasi from "../misc/AddMutasi";
 
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
@@ -18,6 +16,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
 import { ColumnReward } from "../constant/column-reward";
 import { APIreward } from "@/apis/APIreward";
+import { CardTable } from "@/components/shared-components/CardTable";
 
 export function TableReward() {
   useDocumentTitle("Halaman Reward");
@@ -90,12 +89,12 @@ export function TableReward() {
           </Space>
         ) : null}
       </Flex>
-      {/* <CardMutasi data={dataReward} /> */}
+      <CardTable data={dataReward} titleCard={"Reward hari ini"} />
       <Card>
         <FilterSearchTable
           setSearchValue={setSearchValue}
           title="Daftar Reward"
-          placeholder="data mutasi (nama/cabang)"
+          placeholder="data reward (nama)"
           //   handleDownloadPdf={handleDownloadPdf}
         />
         <ConfigProvider
