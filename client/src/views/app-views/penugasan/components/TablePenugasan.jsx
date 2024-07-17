@@ -13,6 +13,8 @@ import { useState } from "react";
 import { CardPenugasan } from "../misc/CardPenugasan";
 import UpdateTugas from "../misc/UpdateTugas";
 
+import { useDebounce } from "@/hooks/useDebounce";
+
 export function TablePenugasan() {
   useDocumentTitle("Halaman Penugasan");
   useScrollToTop();
@@ -22,6 +24,9 @@ export function TablePenugasan() {
   //   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
   const [selectedPenugasan, setSelectedPenugasan] = useState(null);
+
+  const [searchValue, setSearchValue] = useState("");
+  const searchQuery = useDebounce(searchValue, 800);
 
   const handleOpenModalDelete = (user) => {
     setUserToDelete(user);
@@ -39,10 +44,21 @@ export function TablePenugasan() {
   };
 
   const { data, isError, isLoading, refetch } = useQuery({
-    queryKey: ["penugasanData"],
+    queryKey: ["penugasanData", searchQuery],
     queryFn: async () => {
       const result = await APIpenugasan.getAllPenugasan();
-      return result;
+      // Logika filter
+      let filteredData = result;
+      if (searchQuery) {
+        filteredData = result.filter((data) => {
+          const filterBy =
+            data.judul.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            data.divisi.toLowerCase().includes(searchQuery.toLowerCase());
+          return filterBy;
+        });
+      }
+
+      return filteredData;
     },
   });
   const dataPenugasan = data || [];
@@ -70,7 +86,7 @@ export function TablePenugasan() {
       <CardPenugasan data={dataPenugasan} />
       <Card>
         <FilterSearchTable
-          //   setSearchValue={setSearchValue}
+          setSearchValue={setSearchValue}
           title="Daftar Penugasan"
           placeholder="data penugasan (judul/divisi)"
         />

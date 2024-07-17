@@ -5,81 +5,92 @@ import anonymousPict from "@/assets/anonymous profile.jpg";
 
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { useQuery } from "@tanstack/react-query";
 import { APIpenugasan } from "@/apis/APIpenugasan";
 
 const UpdateTugas = ({ onClose, refetchPenugasan, updateData }) => {
   const [checkedList, setCheckedList] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
+  const [statusTugas, setStatusTugas] = useState("");
 
   useEffect(() => {
     if (updateData) {
-      // Set data awal dari penugasan yang diupdate
-      setCheckedList(updateData.tasks_list?.split(", ") || []);
-      setCompletedTasks(updateData.completedTasks || []);
+      let tasks = [];
+      try {
+        tasks = JSON.parse(updateData.tasks_list) || [];
+      } catch (e) {
+        console.error("Failed to parse tasks_list:", e);
+      }
+      setCheckedList(
+        tasks.filter((task) => task.checked).map((task) => task.name),
+      );
+      setAllTasks(tasks.map((task) => task.name));
+      setStatusTugas(updateData.status_tugas || "");
     }
-  }, [updateData, refetchPenugasan]);
-
-  const { data } = useQuery({
-    queryKey: ["penugasanData"],
-    queryFn: async () => {
-      const result = await APIpenugasan.getAllPenugasan();
-      return result;
-    },
-  });
-  const dataPenugasan = data || [];
-  console.log("kiw kiw", dataPenugasan);
-
-  const taskListing = [
-    "Menjahit 20 Pakaian",
-    "Memotong 10 Pakaian",
-    "Packing",
-    "Other",
-  ];
+  }, [updateData]);
 
   const calculateProgress = () => {
-    return (checkedList.length / taskListing.length) * 100;
+    if (allTasks.length === 0) return 0;
+    return (checkedList.length / allTasks.length) * 100;
   };
 
   const handleChange = (list) => {
     setCheckedList(list);
-  };
 
-  const handleOk = () => {
-    const newTask = {
-      completed_by: dataPenugasan[0]?.user?.pegawai?.photo,
-      tasks_list: checkedList.join(", "),
-      completed_at: new Date().toLocaleString(), // Menambahkan waktu penyelesaian tugas secara dinamis
-    };
-    setCompletedTasks([...completedTasks, newTask]); // Simpan tugas yg diselesaikan
-    onClose();
-  };
-
-  const determineStatus = () => {
-    const progress = calculateProgress();
-    if (progress === 100) {
-      return {
-        status: "completed",
-        color: "text-positive bg-positive-25 w-20",
-        text: "Completed",
-      };
-    } else if (progress > 0) {
-      return {
-        status: "ongoing",
-        color: "text-link bg-link-25 w-20",
-        text: "On Going",
-      };
+    // Update status_tugas based on checkedList
+    if (list.length === 0) {
+      setStatusTugas("idle");
+    } else if (list.length < allTasks.length) {
+      setStatusTugas("ongoing");
     } else {
-      return {
-        status: "idle",
-        color: "text-gray-500 bg-gray-25 w-20",
-        text: "Idle",
-      };
+      setStatusTugas("completed");
     }
   };
 
-  const { status, color, text } = determineStatus();
-  console.log("data tugas ok", completedTasks);
+  const handleOk = async () => {
+    try {
+      const tasks = allTasks.map((task) => ({
+        name: task,
+        checked: checkedList.includes(task),
+      }));
+      const updatePayload = {
+        tasks_list: tasks, // Ensure tasks_list is not a string
+        status_tugas: statusTugas,
+      };
+
+      const result = await APIpenugasan.updatePenugasan(
+        updateData.uuid,
+        updatePayload,
+      );
+      console.log("Penugasan updated successfully:", result);
+      onClose();
+      refetchPenugasan(); // Memuat ulang data penugasan setelah berhasil update
+    } catch (error) {
+      console.error("Error updating penugasan:", error);
+    }
+  };
+
+  console.log("STATUS", statusTugas);
+
+  const determineStatus = () => {
+    let color = "";
+    let text = "";
+
+    if (statusTugas === "completed") {
+      color = "text-positive bg-positive-25 w-20";
+      text = "Completed";
+    } else if (statusTugas === "ongoing") {
+      color = "text-link bg-link-25 w-20";
+      text = "On Going";
+    } else {
+      color = "text-gray-500 bg-gray-25 w-20";
+      text = "Idle";
+    }
+
+    return { color, text };
+  };
+
+  const { color, text } = determineStatus();
+  // console.log("data tugas ok", completedTasks);
 
   return (
     <div>
@@ -93,28 +104,20 @@ const UpdateTugas = ({ onClose, refetchPenugasan, updateData }) => {
         </div>
         <div className="pb-1">
           <p className="text-sm font-medium text-gray-600">Completed by:</p>
-          {completedTasks.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center text-sm font-normal text-gray-500"
-            >
-              <span className="pe-1">{index + 1}.</span>
-
-              <Image
-                src={`http://localhost:5000/images/${item.completed_by}`}
-                preview={false}
-                fallback={anonymousPict}
-                className="m-2 flex h-8 w-8 rounded-full"
-              />
-              <strong>{dataPenugasan[index]?.user?.name}</strong>
-              <span className="ps-1">({item.tasks_list})</span>
-              <span className="ps-1">
-                {dayjs(item.completed_at).format("HH:mm:ss")}
-              </span>
-            </div>
-          ))}
+          <div className="flex items-center text-sm font-normal text-gray-500">
+            <Image
+              src={`http://localhost:5000/images/${updateData.user.photo}`}
+              preview={false}
+              fallback={anonymousPict}
+              className="m-2 flex h-8 w-8 rounded-full"
+            />
+            <strong>{updateData.user.name}</strong>
+            <span className="ps-1">
+              {dayjs(updateData.completed_at)?.format("HH:mm:ss")}
+            </span>
+          </div>
         </div>
-        <Tag className={color} key={status} type="primary">
+        <Tag className={color} type="primary">
           <span className="flex items-center justify-center font-medium">
             {text}
           </span>
@@ -133,7 +136,7 @@ const UpdateTugas = ({ onClose, refetchPenugasan, updateData }) => {
           onChange={handleChange}
         >
           <div className="grid grid-cols-1 gap-2">
-            {taskListing.map((task) => (
+            {allTasks.map((task) => (
               <Checkbox key={task} value={task}>
                 {task}
               </Checkbox>

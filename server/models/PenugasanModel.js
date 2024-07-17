@@ -48,11 +48,28 @@ const Penugasan = db.define(
         notEmpty: true,
       },
     },
+    // tasks_list: {
+    //   type: DataTypes.JSON,
+    //   allowNull: false,
+    //   validate: {
+    //     notEmpty: true,
+    //   },
+    // },
     tasks_list: {
       type: DataTypes.JSON,
       allowNull: false,
       validate: {
         notEmpty: true,
+        isValidJSON(value) {
+          try {
+            const parsedValue = JSON.parse(JSON.stringify(value));
+            if (!Array.isArray(parsedValue)) {
+              throw new Error("tasks_list must be an array of task objects");
+            }
+          } catch (error) {
+            throw new Error("Invalid JSON format for tasks_list");
+          }
+        },
       },
     },
     completed_at: {
