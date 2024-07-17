@@ -37,14 +37,12 @@ import AddLamaran from "../misc/AddLamaran";
 export function ListLowongan() {
   return (
     <>
-      <SearchLowongan />
-
       <ListingLowongan />
     </>
   );
 }
 
-const SearchLowongan = () => (
+const SearchLowongan = ({ onSearch }) => (
   <section id="search-lowongan">
     <div className="relative mb-6 focus:bg-black">
       <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-4 sm:ps-8">
@@ -56,6 +54,7 @@ const SearchLowongan = () => (
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 ps-10 text-sm focus:outline-green-500 sm:p-5 sm:ps-14"
         placeholder="Cari kata kunci"
         name="search"
+        onChange={(e) => onSearch(e.target.value)}
       />
     </div>
   </section>
@@ -65,6 +64,7 @@ export function ListingLowongan() {
   const isAuthenticated = authService.isAuthorized();
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // new state for search query
 
   const sizePage = 6;
 
@@ -83,6 +83,10 @@ export function ListingLowongan() {
 
   const dataLowongan = data || [];
 
+  const filteredDataLowongan = dataLowongan.filter((item) => {
+    return item.title.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
   const handleLamarClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -96,9 +100,10 @@ export function ListingLowongan() {
 
   return (
     <>
+      <SearchLowongan onSearch={setSearchQuery} />
       <section id="list-lowongan">
         <Row gutter={[16, 24]}>
-          {dataLowongan
+          {filteredDataLowongan
             .slice((currentPage - 1) * sizePage, currentPage * sizePage)
             .map((item, i) => (
               <Col span={8} key={i} xs={24} md={12} lg={8}>
@@ -125,8 +130,7 @@ export function ListingLowongan() {
                             // src={item?.image_rekrutmen}
                             src={`http://localhost:5000/images/${item?.image_rekrutmen}`}
                             className="h-[200px] md:h-[190px] lg:h-[200px] xl:h-[250px]"
-                            preview={true}
-                            onClick={handleLamarClick}
+                            preview={false}
                             fallback={dataConstant[0].image}
                           />
                         )}
