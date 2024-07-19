@@ -16,18 +16,12 @@ const Reward = db.define(
       },
     },
     bonus_reward: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     total_gaji: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     userId: {
       type: DataTypes.INTEGER,

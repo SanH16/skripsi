@@ -102,9 +102,6 @@ export const getPenugasanById = async (req, res) => {
 export const createPenugasan = async (req, res) => {
   const { judul, keterangan_tugas, durasi_waktu, penempatan, divisi, status_tugas, tasks_list, completed_at } =
     req.body;
-  if (req.role !== "admin") {
-    return res.status(403).send("Hanya admin yang dapat membuat penugasan");
-  }
   try {
     await Penugasan.create({
       judul: judul,
