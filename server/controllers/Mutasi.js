@@ -35,11 +35,8 @@ export const getDataMutasi = async (req, res) => {
           "createdAt",
           "tanggal_mulai",
         ],
-        // where: {
-        //   userId: req.userId,
-        // },
         where: {
-          nama_pegawai: req.userName,
+          nama_pegawai: req.userName, // menampilkan berdasarkan nama
         },
         include: [
           {

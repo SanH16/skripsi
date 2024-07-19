@@ -57,7 +57,11 @@ export const ColumnPegawai = (handleOpenModalDelete) => [
     dataIndex: "gaji_pegawai",
     key: "gaji_pegawai",
     width: 150,
-    render: (values) => <span>{thousandSeparator(values)} jt</span>,
+    render: (values) => (
+      <span>
+        {thousandSeparator(values)} {values < 1000000 ? "rb" : "jt"}
+      </span>
+    ),
   },
   {
     title: "Status Bekerja",
@@ -117,7 +121,6 @@ export const ColumnPegawai = (handleOpenModalDelete) => [
     dataIndex: "tanggal_lahir",
     key: "tanggal_lahir",
     width: 150,
-    // sorter: (a, b) => a.tanggal_lahir.localeCompare(b.tanggal_lahir),
     render: (val) => {
       return dayjs(val).format("DD MMMM YYYY");
     },

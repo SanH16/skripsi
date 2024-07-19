@@ -1,12 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import dayjs from "dayjs";
 import "dayjs/locale/id";
-import { Button, Tooltip } from "antd";
+import { Button, Tag, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 
 import { useSelector } from "react-redux";
-
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+import { thousandSeparator } from "@/utils/ThousandSeparator";
+
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDeleteSweep } from "react-icons/md";
 import { IoInformationCircleOutline } from "react-icons/io5";
@@ -25,32 +26,43 @@ export const ColumnReward = (handleOpenModalDelete) => {
     },
     {
       title: "Nama Pegawai",
-      dataIndex: ["nama_pegawai"],
-      // render: (user) => user.map((item) => item.name).join(),
-      key: "nama_pegawai",
+      dataIndex: ["user", "name"],
+      key: "name",
       width: 150,
-      sorter: (a, b) => a.nama_pegawai.localeCompare(b.nama_pegawai),
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "Gaji Pokok Pegawai",
-      dataIndex: "keterangan_mutasi",
-      key: "keterangan_mutasi",
+      dataIndex: ["user", "pegawai", "gaji_pegawai"],
+      key: "gaji_pegawai",
       width: 250,
-      render: (val) => <span className="line-clamp-1">{val}</span>,
+      render: (values) => (
+        <span>
+          {thousandSeparator(values)} {values < 1000000 ? "rb" : "jt"}
+        </span>
+      ),
     },
     {
-      title: "Bonus",
-      dataIndex: "cabang_sebelum",
-      key: "cabang_sebelum",
+      title: "Bonus Imbalan",
+      dataIndex: "bonus_reward",
+      key: "bonus_reward",
       width: 200,
-      render: (val) => <span className="line-clamp-1">{val}</span>,
+      render: (values) => (
+        <Tag className="bg-green-100 font-bold text-green-600">
+          {thousandSeparator(values)} {values < 1000000 ? "rb" : "jt"}
+        </Tag>
+      ),
     },
     {
-      title: "Total Gaji",
-      dataIndex: "cabang_tujuan",
-      key: "cabang_tujuan",
+      title: "Total Pendapatan",
+      dataIndex: "total_gaji",
+      key: "total_gaji",
       width: 150,
-      render: (val) => <span className="line-clamp-1">{val}</span>,
+      render: (values) => (
+        <span>
+          {thousandSeparator(values)} {values < 1000000 ? "rb" : "jt"}
+        </span>
+      ),
     },
     {
       title: "Tanggal dibuat",
