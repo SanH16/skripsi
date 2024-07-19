@@ -66,6 +66,7 @@ export function TableReward() {
     },
   });
   const dataReward = data || [];
+  // console.log("dataReward", dataReward);
 
   return (
     <>

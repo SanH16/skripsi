@@ -26,10 +26,10 @@ export const ColumnReward = (handleOpenModalDelete) => {
     },
     {
       title: "Nama Pegawai",
-      dataIndex: ["user", "name"],
-      key: "name",
+      dataIndex: "nama_pegawai",
+      key: "nama_pegawai",
       width: 150,
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: (a, b) => a.nama_pegawai.localeCompare(b.nama_pegawai),
     },
     {
       title: "Gaji Pokok Pegawai",
@@ -55,8 +55,8 @@ export const ColumnReward = (handleOpenModalDelete) => {
     },
     {
       title: "Total Pendapatan",
-      dataIndex: "total_gaji",
-      key: "total_gaji",
+      dataIndex: "total_pendapatan",
+      key: "total_pendapatan",
       width: 150,
       render: (values) => (
         <span>

@@ -15,11 +15,18 @@ const Reward = db.define(
         notEmpty: true,
       },
     },
+    nama_pegawai: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     bonus_reward: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    total_gaji: {
+    total_pendapatan: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
