@@ -1,21 +1,26 @@
 import Reward from "../models/RewardModel.js";
 import User from "../models/UserModel.js";
 import Pegawai from "../models/PegawaiModel.js";
+// import { Op } from "sequelize";
 
 export const getDataReward = async (req, res) => {
   try {
     let response;
+    const rewardAttributes = ["uuid", "bonus_reward", "total_pendapatan", "nama_pegawai"];
+    const userAttributes = ["name", "email", "role"];
+    const pegawaiAttributes = ["gaji_pegawai"];
+
     if (req.role === "admin") {
       response = await Reward.findAll({
-        attributes: ["uuid", "bonus_reward", "total_gaji"],
+        attributes: rewardAttributes,
         include: [
           {
             model: User,
-            attributes: ["name", "email", "role"],
+            attributes: userAttributes,
             include: [
               {
                 model: Pegawai,
-                attributes: ["gaji_pegawai"],
+                attributes: pegawaiAttributes,
               },
             ],
           },
@@ -23,18 +28,18 @@ export const getDataReward = async (req, res) => {
       });
     } else {
       response = await Reward.findAll({
-        attributes: ["uuid", "bonus_reward", "total_gaji"],
+        attributes: rewardAttributes,
         where: {
-          userId: req.userId,
+          nama_pegawai: req.userName,
         },
         include: [
           {
             model: User,
-            attributes: ["name", "email", "role"],
+            attributes: userAttributes,
             include: [
               {
                 model: Pegawai,
-                attributes: ["gaji_pegawai"],
+                attributes: pegawaiAttributes,
               },
             ],
           },
@@ -48,7 +53,7 @@ export const getDataReward = async (req, res) => {
 };
 
 export const createReward = async (req, res) => {
-  const { bonus_reward } = req.body;
+  const { nama_pegawai, bonus_reward } = req.body;
   try {
     const pegawai = await Pegawai.findOne({
       where: {
@@ -57,16 +62,26 @@ export const createReward = async (req, res) => {
       attributes: ["gaji_pegawai"],
     });
 
-    if (!pegawai) {
-      return res.status(404).json({ msg: "Pegawai tidak ditemukan" });
-    }
+    // const user = await User.findAll({
+    //   where: {
+    //     id: req.params.id
+    //   },
+    //   attributes: ["name"],
+    // });
 
-    const gaji_pegawai = pegawai.gaji_pegawai;
-    const total_gaji = gaji_pegawai + bonus_reward;
+    // if (!pegawai) {
+    //   return res.status(404).json({ msg: "Pegawai tidak ditemukan" });
+    // }
+
+    // const matching = user.name === nama_pegawai;
+
+    const gaji_pokok = pegawai.gaji_pegawai;
+    const total_pendapatan = gaji_pokok + bonus_reward;
 
     await Reward.create({
       bonus_reward: bonus_reward,
-      total_gaji: total_gaji,
+      total_pendapatan: total_pendapatan,
+      nama_pegawai: nama_pegawai,
       userId: req.userId,
     });
     res.status(201).json({ msg: "Reward berhasil dibuat" });
