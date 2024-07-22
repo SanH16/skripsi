@@ -168,7 +168,7 @@ export function TableMutasi() {
         ) : null}
       </Flex>
       <CardTable data={dataMutasi} titleCard={"Data Mutasi hari ini"} />
-      <Card>
+      <Card hoverable>
         <FilterSearchTable
           setSearchValue={setSearchValue}
           title="Daftar Mutasi"

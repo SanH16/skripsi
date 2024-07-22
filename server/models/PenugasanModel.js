@@ -30,9 +30,26 @@ const Penugasan = db.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    // durasi_waktu: {
+    //   type: DataTypes.DATE,
+    //   allowNull: true,
+    // },
     durasi_waktu: {
-      type: DataTypes.DATE,
-      allowNull: true,
+      type: DataTypes.JSON,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        isValidJSON(value) {
+          try {
+            const parsedValue = JSON.parse(JSON.stringify(value));
+            if (!Array.isArray(parsedValue)) {
+              throw new Error("durasi_waktu must be an array of objects with 'start' and 'end' properties");
+            }
+          } catch (error) {
+            throw new Error("Invalid JSON format for durasi_waktu");
+          }
+        },
+      },
     },
     status_tugas: {
       type: DataTypes.STRING,

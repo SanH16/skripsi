@@ -137,7 +137,7 @@ export function TableCuti() {
         </Space>
       </Flex>
       <CardTable data={dataCuti} titleCard={"Pengajuan Cuti hari ini"} />
-      <Card>
+      <Card hoverable>
         <FilterSearchTable
           setSearchValue={setSearchValue}
           title="Daftar Pengajuan Cuti"

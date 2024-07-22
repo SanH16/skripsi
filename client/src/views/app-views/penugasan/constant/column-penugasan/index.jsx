@@ -32,7 +32,7 @@ export const ColumnPenugasan = (handleOpenModalDelete) => {
       title: "Divisi",
       dataIndex: "divisi",
       key: "divisi",
-      width: 150,
+      width: 100,
       render: (val) =>
         val ? (
           <span>{val}</span>
@@ -56,29 +56,56 @@ export const ColumnPenugasan = (handleOpenModalDelete) => {
       title: "Durasi Waktu",
       dataIndex: "durasi_waktu",
       key: "durasi_waktu",
-      width: 200,
-      render: (val) =>
-        val
-          ? dayjs(val).format("DD MMMM YYYY")
-          : dayjs().format("dddd, DD MMMM YYYY"),
+      width: 150,
+      render: (val) => {
+        if (val) {
+          try {
+            const durations = JSON.parse(val);
+            if (Array.isArray(durations) && durations.length > 0) {
+              const startDate = dayjs(durations[0].start);
+              const endDate = dayjs(durations[0].end);
+              const duration = endDate.diff(startDate, "day");
+              console.log("cek duration", duration);
+              return `${duration} Hari`;
+            }
+          } catch (e) {
+            console.error("Error parsing durasi_waktu:", e);
+          }
+        }
+        return dayjs().format("dddd, DD MMMM YYYY");
+      },
     },
     {
-      title: "Team",
-      dataIndex: ["user", "name", "pegawai", "photo"],
-      key: "photo",
+      title: "Tanggal Mulai",
+      dataIndex: "durasi_waktu",
+      key: "durasi_waktu",
       width: 150,
-      render: (val, record) => (
-        <>
-          <Tooltip title={record.user.name}>
-            <Image
-              src={`http://localhost:5000/images/${val}`}
-              preview={false}
-              fallback={anonymousPict}
-              className="m-2 flex h-8 w-8 rounded-full"
-            />
-          </Tooltip>
-        </>
-      ),
+      render: (val) => {
+        if (val) {
+          return dayjs(val[0].start).format("dddd, DD MMMM YYYY");
+        }
+        return dayjs().format("dddd, DD MMMM YYYY");
+      },
+    },
+    {
+      title: "Dibuat oleh",
+      dataIndex: ["user", "pegawai", "photo"],
+      key: "photo",
+      width: 100,
+      render: (val, record) => {
+        return (
+          <>
+            <Tooltip title={record.user.name}>
+              <Image
+                src={`http://localhost:5000/images/${val}`}
+                preview={false}
+                fallback={anonymousPict}
+                className="m-2 h-8 w-8 rounded-full"
+              />
+            </Tooltip>
+          </>
+        );
+      },
     },
     {
       title: "Status",

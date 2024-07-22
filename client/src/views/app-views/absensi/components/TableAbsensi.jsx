@@ -182,7 +182,7 @@ export function TableAbsensi() {
         ) : null}
       </Flex>
       <CardTable data={dataAbsensi} titleCard={"Data Absensi hari ini"} />
-      <Card>
+      <Card hoverable>
         <FilterSearchTable
           setSearchValue={setSearchValue}
           title="Daftar Absensi"

@@ -103,7 +103,7 @@ const UpdateTugas = ({ onClose, refetchPenugasan, updateData }) => {
           <p className="text-sm font-normal">{updateData.keterangan_tugas}</p>
         </div>
         <div className="pb-1">
-          <p className="text-sm font-medium text-gray-600">Team:</p>
+          <p className="text-sm font-medium text-gray-600">Dibuat oleh:</p>
           <div className="flex items-center text-sm font-normal text-gray-500">
             <Image
               src={`http://localhost:5000/images/${updateData.user.photo}`}
@@ -113,7 +113,7 @@ const UpdateTugas = ({ onClose, refetchPenugasan, updateData }) => {
             />
             <strong>{updateData.user.name}</strong>
             <span className="ps-1">
-              {dayjs(updateData.completed_at)?.format("HH:mm:ss")}
+              {dayjs(updateData.createdAt)?.format("HH:mm:ss")}
             </span>
           </div>
         </div>

@@ -92,7 +92,7 @@ export function TablePenugasan() {
         )}
       </Flex>
       <CardTable data={dataPenugasan} titleCard={"Data Penugasan hari ini"} />
-      <Card>
+      <Card hoverable>
         <FilterSearchTable
           setSearchValue={setSearchValue}
           title="Daftar Penugasan"
