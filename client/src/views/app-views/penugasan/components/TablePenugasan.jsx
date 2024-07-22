@@ -16,6 +16,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 import { useSelector } from "react-redux";
 import { CardTable } from "@/components/shared-components/CardTable";
+import { Link } from "react-router-dom";
 
 export function TablePenugasan() {
   useDocumentTitle("Halaman Penugasan");
@@ -76,16 +77,17 @@ export function TablePenugasan() {
 
         {verifRole && (
           <Space size="middle">
-            <Button
-              id="tambah-absensi"
-              className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
-              //   onClick={handleOpenModal}
-            >
-              <span className="me-2 text-lg">
-                <MdOutlineFileUpload />
-              </span>
-              Tambah Tugas
-            </Button>
+            <Link to={"/tambah-penugasan"}>
+              <Button
+                id="tambah-absensi"
+                className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
+              >
+                <span className="me-2 text-lg">
+                  <MdOutlineFileUpload />
+                </span>
+                Tambah Tugas
+              </Button>
+            </Link>
           </Space>
         )}
       </Flex>
