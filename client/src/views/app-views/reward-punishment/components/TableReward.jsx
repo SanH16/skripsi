@@ -7,7 +7,7 @@ import { Card, Table, ConfigProvider, Button, Flex, Space, Modal } from "antd";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 import { useQuery } from "@tanstack/react-query";
-import { ModalDeleteMutasi } from "@/components/shared-components/ModalDeleteMutasi";
+import { ModalDeleteReward } from "@/components/shared-components/ModalDeleteReward";
 
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
@@ -17,6 +17,7 @@ import { FilterSearchTable } from "@/components/shared-components/FilterSearchTa
 import { ColumnReward } from "../constant/column-reward";
 import { APIreward } from "@/apis/APIreward";
 import { CardTable } from "@/components/shared-components/CardTable";
+import AddReward from "../misc/AddReward";
 
 export function TableReward() {
   useDocumentTitle("Halaman Reward");
@@ -55,7 +56,7 @@ export function TableReward() {
       let filteredData = result;
       if (searchQuery) {
         filteredData = result.filter((data) => {
-          const filterBy = data.user.name
+          const filterBy = data.nama_pegawai
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
           return filterBy;
@@ -66,7 +67,6 @@ export function TableReward() {
     },
   });
   const dataReward = data || [];
-  // console.log("dataReward", dataReward);
 
   return (
     <>
@@ -158,7 +158,7 @@ export function TableReward() {
       </Card>
       {/* drawer & modal */}
       {isShowDelete && (
-        <ModalDeleteMutasi
+        <ModalDeleteReward
           closeModal={handleOpenModalDelete}
           stateModal={userToDelete}
           refetchDelete={refetch}
@@ -172,7 +172,7 @@ export function TableReward() {
         footer={null}
         width={900}
       >
-        {/* <AddMutasi onClose={handleCloseModal} refetchMutasi={refetch} /> */}
+        <AddReward onClose={handleCloseModal} refetchReward={refetch} />
       </Modal>
     </>
   );

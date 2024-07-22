@@ -39,30 +39,54 @@ export function TotalCards() {
   }, []);
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
-      const rekrutmenTotal = await APIrekrutmen.getAllRekrutmens();
-      const cutiTotal = await APIcuti.getAllCuti();
-      const pegawaiTotal = await APIpegawai.getDataPegawai();
-      const mutasiTotal = await APImutasi.getAllMutasi();
-      const absensiTotal = await APIabsensi.getDataAbsensi();
-      const pelamarTotal = await APIlamaran.getDataLamaran();
-      const penugasanTotal = await APIpenugasan.getAllPenugasan();
-      const rewardTotal = await APIreward.getAllReward();
+      const [
+        rekrutmenTotal,
+        cutiTotal,
+        pegawaiTotal,
+        mutasiTotal,
+        absensiTotal,
+        pelamarTotal,
+        penugasanTotal,
+        rewardTotal,
+      ] = await Promise.allSettled([
+        APIrekrutmen.getAllRekrutmens(),
+        APIcuti.getAllCuti(),
+        APIpegawai.getDataPegawai(),
+        APImutasi.getAllMutasi(),
+        APIabsensi.getDataAbsensi(),
+        APIlamaran.getDataLamaran(),
+        APIpenugasan.getAllPenugasan(),
+        APIreward.getAllReward(),
+      ]);
 
       setData((prevData) => ({
         ...prevData,
-        totalRekrutmen: rekrutmenTotal.length,
-        totalCuti: cutiTotal.length,
-        totalPegawai: pegawaiTotal.length,
-        totalMutasi: mutasiTotal.length,
-        totalAbsensi: absensiTotal.length,
-        totalPelamar: pelamarTotal.length,
-        totalPenugasan: penugasanTotal.length,
-        totalReward: rewardTotal.length,
+        totalRekrutmen:
+          rekrutmenTotal.status === "fulfilled"
+            ? rekrutmenTotal.value.length
+            : 0,
+        totalCuti:
+          cutiTotal.status === "fulfilled" ? cutiTotal.value.length : 0,
+        totalPegawai:
+          pegawaiTotal.status === "fulfilled" ? pegawaiTotal.value.length : 0,
+        totalMutasi:
+          mutasiTotal.status === "fulfilled" ? mutasiTotal.value.length : 0,
+        totalAbsensi:
+          absensiTotal.status === "fulfilled" ? absensiTotal.value.length : 0,
+        totalPelamar:
+          pelamarTotal.status === "fulfilled" ? pelamarTotal.value.length : 0,
+        totalPenugasan:
+          penugasanTotal.status === "fulfilled"
+            ? penugasanTotal.value.length
+            : 0,
+        totalReward:
+          rewardTotal.status === "fulfilled" ? rewardTotal.value.length : 0,
       }));
-      setIsLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
       setIsLoading(false);
     }
   };

@@ -62,19 +62,6 @@ export const createReward = async (req, res) => {
       attributes: ["gaji_pegawai"],
     });
 
-    // const user = await User.findAll({
-    //   where: {
-    //     id: req.params.id
-    //   },
-    //   attributes: ["name"],
-    // });
-
-    // if (!pegawai) {
-    //   return res.status(404).json({ msg: "Pegawai tidak ditemukan" });
-    // }
-
-    // const matching = user.name === nama_pegawai;
-
     const gaji_pokok = pegawai.gaji_pegawai;
     const total_pendapatan = gaji_pokok + bonus_reward;
 
@@ -85,6 +72,32 @@ export const createReward = async (req, res) => {
       userId: req.userId,
     });
     res.status(201).json({ msg: "Reward berhasil dibuat" });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+export const deleteReward = async (req, res) => {
+  try {
+    const reward = await Reward.findOne({
+      where: {
+        uuid: req.params.id,
+      },
+    });
+
+    if (!reward) return res.status(404).json({ msg: "Data tidak ditemukan" });
+
+    if (req.role === "admin") {
+      await Reward.destroy({
+        where: {
+          id: reward.id,
+        },
+      });
+    } else {
+      return res.status(403).json({ msg: "Akses terlarang" });
+    }
+    // kirim response
+    res.status(200).json({ msg: "Reward deleted successfuly" });
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
