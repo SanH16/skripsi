@@ -233,6 +233,7 @@ export default function AddUser() {
                       options={[
                         { value: "user", label: "User" },
                         { value: "admin", label: "Admin" },
+                        { value: "direktur", label: "Direktur" },
                       ]}
                       className={`mt-2 block w-full rounded-lg border px-2 py-1 text-base focus:border-green-500 focus:outline-none ${
                         errors.role
