@@ -2,7 +2,7 @@
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { Button, Tag, Tooltip } from "antd";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
@@ -83,15 +83,15 @@ export const ColumnReward = (handleOpenModalDelete) => {
           <>
             {verifRole ? (
               <>
-                <Link to={`/update-mutasi/${record.uuid}`}>
-                  <Button
-                    type="primary"
-                    className="me-2 h-[30px] w-[32px] p-0"
-                    disabled={!verifRole}
-                  >
-                    <FaRegEdit className="p-[2px] text-[20px]" />
-                  </Button>
-                </Link>
+                {/* <Link to={`/update-mutasi/${record.uuid}`}> */}
+                <Button
+                  type="primary"
+                  className="me-2 h-[30px] w-[32px] p-0"
+                  disabled={!verifRole}
+                >
+                  <FaRegEdit className="p-[2px] text-[20px]" />
+                </Button>
+                {/* </Link> */}
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();

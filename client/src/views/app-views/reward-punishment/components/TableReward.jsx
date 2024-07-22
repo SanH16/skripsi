@@ -91,7 +91,7 @@ export function TableReward() {
         ) : null}
       </Flex>
       <CardTable data={dataReward} titleCard={"Reward hari ini"} />
-      <Card>
+      <Card hoverable>
         <FilterSearchTable
           setSearchValue={setSearchValue}
           title="Daftar Reward"

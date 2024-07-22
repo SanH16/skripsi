@@ -95,12 +95,11 @@ export default function AddTugas() {
   };
 
   const onSubmitArticle = (data) => {
-    const startDate = dayjs(data.durasi_waktu[0]);
-    const endDate = dayjs(data.durasi_waktu[1]);
-    const duration = endDate.diff(startDate, "day") + 1; // Calculate duration in days
+    const startDate = dayjs(data.durasi_waktu[0]).format("YYYY-MM-DD");
+    const endDate = dayjs(data.durasi_waktu[1]).format("YYYY-MM-DD");
     const newData = {
       ...data,
-      durasi_waktu: duration, // Store the duration in days
+      durasi_waktu: [{ start: startDate, end: endDate }], // Store the duration as an array of objects
     };
     setInputData(newData);
     handleOpenModalConfirm();
@@ -289,6 +288,9 @@ export default function AddTugas() {
                           ? "border-negative text-negative"
                           : "border-grey-100 text-grey-900"
                       }`}
+                      // onChange={(value) => {
+                      //   console.log("value range picker", value);
+                      // }}
                       placeholder="Pilih durasi waktu penugasan"
                     />
                   )}
@@ -301,37 +303,45 @@ export default function AddTugas() {
 
               {/* Tasks List */}
               <Row>
-                <label className="block text-xl font-semibold text-grey-400">
-                  Tasks List
-                </label>
-                {fields.map((item, index) => (
-                  <div key={item.id} className="mt-2 flex items-center gap-4">
-                    <input
-                      {...register(`tasks_list.${index}.name`)}
-                      className={`block w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
-                        errors.tasks_list?.[index]?.name
-                          ? "border-negative text-negative"
-                          : "border-grey-100 text-grey-900"
-                      }`}
-                      type="text"
-                      placeholder="Task name"
-                    />
-                    <input
-                      type="checkbox"
-                      {...register(`tasks_list.${index}.checked`)}
-                    />
-                    <Button type="danger" onClick={() => remove(index)}>
-                      Remove
-                    </Button>
-                  </div>
-                ))}
-                <Button
-                  type="primary"
-                  onClick={() => append({ name: "", checked: false })}
-                  className="mt-2 block"
-                >
-                  Add Task
-                </Button>
+                <div className="block">
+                  <label className="text-xl font-semibold text-grey-400">
+                    Tasks List
+                  </label>
+                </div>
+                <div className="mt-2 block w-full">
+                  {fields.map((item, index) => (
+                    <div key={item.id} className="mb-2 flex items-center gap-4">
+                      <input
+                        {...register(`tasks_list.${index}.name`)}
+                        className={`w-full rounded-lg border p-4 text-base focus:border-green-500 focus:outline-none ${
+                          errors.tasks_list?.[index]?.name
+                            ? "border-negative text-negative"
+                            : "border-grey-100 text-grey-900"
+                        }`}
+                        type="text"
+                        placeholder="Masukkan nama tugas"
+                      />
+                      <input
+                        type="checkbox"
+                        {...register(`tasks_list.${index}.checked`)}
+                      />
+                      <Button
+                        type="dashed"
+                        className="border-negative text-negative hover:bg-negative hover:text-white"
+                        onClick={() => remove(index)}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="primary"
+                    onClick={() => append({ name: "", checked: false })}
+                    className="block"
+                  >
+                    Add Task
+                  </Button>
+                </div>
               </Row>
             </Flex>
 
