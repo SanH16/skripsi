@@ -15,6 +15,7 @@ export const getDataLamaran = async (req, res) => {
         "keterampilan",
         "dokumen_cv",
         "dokumen_lain",
+        "createdAt",
       ],
       include: [
         {

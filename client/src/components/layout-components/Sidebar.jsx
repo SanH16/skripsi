@@ -72,14 +72,13 @@ export default function Sidebar() {
         // display: collapsed ? "block" : "none",
       },
     },
-    !isDirektur &&
-      getItem(
-        "Dashboard",
-        "dashboard",
-        <Link to="/dashboard" className="p-2">
-          <TfiDashboard className={iconStyle} id="dashboard-icon-sidebar" />
-        </Link>,
-      ),
+    getItem(
+      "Dashboard",
+      "dashboard",
+      <Link to="/dashboard" className="p-2">
+        <TfiDashboard className={iconStyle} id="dashboard-icon-sidebar" />
+      </Link>,
+    ),
     !isDirektur &&
       getItem(
         "Rekrutmen",
@@ -131,22 +130,22 @@ export default function Sidebar() {
           <PiTipJar className={iconStyle} id="reward-icon-sidebar" />
         </Link>,
       ),
-    !isDirektur &&
-      getItem(
-        "Profile",
-        "profil",
-        <Link to="/profil" className="p-2">
-          <CgProfile className={iconStyle} id="reward-icon-sidebar" />
-        </Link>,
-      ),
     isDirektur &&
       getItem(
         "PHK",
         "phk",
-        <Link to="/phk" className="p-2">
+        <Link to="/pemutusan-hubungan-kerja" className="p-2">
           <FaUserTimes className={iconStyle} id="phk-icon-sidebar" />
         </Link>,
       ),
+    getItem(
+      "Profile",
+      "profil",
+      <Link to="/profil" className="p-2">
+        <CgProfile className={iconStyle} id="reward-icon-sidebar" />
+      </Link>,
+    ),
+
     {
       type: "divider",
       className: `absolute bottom-20 w-16 border-t-2 border-gray-200 transition-all duration-500 ease-out ${

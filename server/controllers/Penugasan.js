@@ -33,6 +33,7 @@ export const getAllPenugasan = async (req, res) => {
         "status_tugas",
         "tasks_list",
         "completed_at",
+        "createdAt",
       ],
       where: whereClause,
       include: [

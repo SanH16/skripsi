@@ -17,28 +17,28 @@ import kopSurat from "@/assets/kop-surat.jpg";
 
 import { Button } from "antd";
 import { MdOutlineFileUpload } from "react-icons/md";
-import { APImutasi } from "@/apis/APImutasi";
+import { APIphk } from "@/apis/APIphk";
 
-export default function PDFmutasi({ mutasiData }) {
+export default function PDFphk({ phkData }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchMutasiById = async () => {
       try {
-        const result = await APImutasi.getMutasiById(mutasiData.uuid);
+        const result = await APIphk.getPhkById(phkData.uuid);
         setData(result);
       } catch (error) {
         console.error(error);
       }
     };
     fetchMutasiById();
-  }, [mutasiData]);
+  }, [phkData]);
 
   return (
     <>
       <PDFDownloadLink
         document={<Pdf data={data} />}
-        fileName={`mutasi-pegawai-${data?.nama_pegawai}`}
+        fileName={`PHK-pegawai-${data?.nama_pegawai}`}
       >
         <Button className="m-3 border-green-500 font-semibold text-green-500 hover:bg-green-500 hover:text-white">
           <span className="text-lg">
@@ -55,9 +55,9 @@ export default function PDFmutasi({ mutasiData }) {
 }
 
 const Pdf = ({ data }) => {
-  const titlePDF = "Surat Mutasi";
+  const titlePDF = "Surat Pemutusan Hubungan Kerja";
 
-  const tanggalMulai = dayjs(data?.tanggal_mulai).format("DD MMMM YYYY");
+  const tanggalKeluar = dayjs(data?.tanggal_keluar).format("DD MMMM YYYY");
   const now_days = dayjs().format("DD MMMM YYYY");
 
   return (
@@ -74,31 +74,26 @@ const Pdf = ({ data }) => {
         <View style={styles.text}>
           <Text>Dengan hormat,</Text>
           <Text>
-            Yang dengan ini bertindak atas nama PT. Radenmat Putra Tunggal.
-            Memutuskan untuk melakukan mutasi terhadap karyawan PT. Radenmat
-            Putra Tunggal di bawah ini:
+            Sehubungan dengan keputusan yang diambil oleh PT. Radenmat Putra
+            Tunggal, kami dengan berat hati menyampaikan bahwa hubungan kerja
+            dengan karyawan yang disebutkan di bawah ini akan berakhir:
           </Text>
           <Text>Nama: {data?.nama_pegawai}</Text>
-          <Text>Jabatan: {data?.user?.pegawai?.jabatan}</Text>
-          <Text>Cabang Asal: {data?.cabang_sebelum}</Text>
+          <Text>Alasan: {data?.alasan_phk}</Text>
+        </View>
+        <View style={styles.text}>
+          <Text>Tanggal efektif berakhirnya hubungan kerja adalah:</Text>
+          <Text>Tanggal Berhenti Bekerja: {tanggalKeluar}</Text>
         </View>
         <View style={styles.text}>
           <Text>
-            Tanggal mulai dan lokasi kantor yang baru adalah sebagai berikut:
-          </Text>
-          <Text>Tanggal Mulai bekerja: {tanggalMulai}</Text>
-          <Text>Cabang Tujuan: {data?.cabang_tujuan}</Text>
-        </View>
-        <View style={styles.text}>
-          <Text>
-            Proses mutasi ini mulai efektif pada tanggal {tanggalMulai}. Oleh
-            karena itu, kepada karyawan yang bersangkutan beserta PT. Radenmat
-            Putra Tunggal untuk segera mempersiapkan segala sesuatunya sebelum
-            tanggal tersebut.
+            Keputusan ini akan berlaku efektif mulai tanggal {tanggalKeluar}.
+            Kami mengharapkan agar pihak terkait dapat mempersiapkan segala
+            sesuatunya menjelang tanggal tersebut.
           </Text>
           <Text>
-            Demikian surat mutasi ini dibuat untuk dapat dipergunakan
-            sebagaimana mestinya.
+            Kami berharap yang terbaik untuk Anda di masa depan dan terima kasih
+            atas kontribusi Anda selama ini di PT. Radenmat Putra Tunggal.
           </Text>
         </View>
 

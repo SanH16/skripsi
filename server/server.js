@@ -14,6 +14,7 @@ import AbsensiRoute from "./routes/AbsensiRoute.js";
 import LamaranRoute from "./routes/LamaranRoute.js";
 import PenugasanRoute from "./routes/PenugasanRoute.js";
 import RewardRoute from "./routes/RewardRoute.js";
+import PhkRoute from "./routes/PhkRoute.js";
 
 dotenv.config();
 const port = process.env.APP_PORT;
@@ -69,6 +70,7 @@ app.use(AbsensiRoute);
 app.use(LamaranRoute);
 app.use(PenugasanRoute);
 app.use(RewardRoute);
+app.use(PhkRoute);
 
 // store.sync(); // sinkronisasi table session di db
 // store.sync({force: true}); // sinkronisasi table session di db dan menghapus data lama
