@@ -103,7 +103,7 @@ export const ColumnPenugasan = (handleOpenModalDelete) => {
       render: (_, { status_tugas }) => {
         let text;
         let color;
-        if (status_tugas === "idle") {
+        if (status_tugas === "idle" || status_tugas === null) {
           (color = "text-warning bg-warning-25 w-20 w-28"), (text = "Idle");
         }
         if (status_tugas === "ongoing") {

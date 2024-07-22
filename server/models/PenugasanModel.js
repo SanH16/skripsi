@@ -36,10 +36,7 @@ const Penugasan = db.define(
     },
     status_tugas: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      allowNull: true,
     },
     divisi: {
       type: DataTypes.STRING,
@@ -48,13 +45,6 @@ const Penugasan = db.define(
         notEmpty: true,
       },
     },
-    // tasks_list: {
-    //   type: DataTypes.JSON,
-    //   allowNull: false,
-    //   validate: {
-    //     notEmpty: true,
-    //   },
-    // },
     tasks_list: {
       type: DataTypes.JSON,
       allowNull: false,
@@ -74,10 +64,7 @@ const Penugasan = db.define(
     },
     completed_at: {
       type: DataTypes.DATE,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      allowNull: true,
     },
     userId: {
       type: DataTypes.INTEGER,
