@@ -43,7 +43,10 @@ export default function Topbar() {
 
         <div id="profile-user-topbar" className="flex items-center gap-3">
           <div id="notification-icon-topbar" className="text-xl md:text-2xl">
-            <Link to="/notifikasi" className="hover:text-green-500">
+            <Link
+              to="/pemutusan-hubungan-kerja"
+              className="hover:text-green-500"
+            >
               <IoNotificationsOutline />
             </Link>
           </div>

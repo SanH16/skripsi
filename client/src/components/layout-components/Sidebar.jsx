@@ -11,10 +11,17 @@ import { IoIosLogOut } from "react-icons/io";
 import { MdOutlineAssignment, MdOutlinePeopleAlt } from "react-icons/md";
 import { BsPersonVcard } from "react-icons/bs";
 import { PiTipJar } from "react-icons/pi";
+import { FaUserTimes } from "react-icons/fa";
 
 import { LogoutModal } from "@/components/layout-components/LogoutModal";
 
+import { useSelector } from "react-redux";
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+
 export default function Sidebar() {
+  const userState = useSelector(selectGetUserLogin);
+  const isDirektur = userState?.data?.role === "direktur"; // Check direktur
+
   const [collapsed, setCollapsed] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const location = useLocation();
@@ -72,51 +79,65 @@ export default function Sidebar() {
         <TfiDashboard className={iconStyle} id="dashboard-icon-sidebar" />
       </Link>,
     ),
-    getItem(
-      "Rekrutmen",
-      "rekrutmen",
-      <Link to="/rekrutmen" className="p-2">
-        <BsPersonVcard className={iconStyle} id="rekrutmen-icon-sidebar" />
-      </Link>,
-    ),
-    getItem(
-      "Absensi",
-      "absensi",
-      <Link to="/absensi" className="p-2">
-        <MdOutlinePeopleAlt className={iconStyle} id="absensi-icon-sidebar" />
-      </Link>,
-    ),
-    getItem(
-      "Cuti",
-      "cuti",
-      <Link to="/cuti" className="p-2">
-        <AiOutlineSchedule className={iconStyle} id="cuti-icon-sidebar" />
-      </Link>,
-    ),
-    getItem(
-      "Mutasi",
-      "mutasi",
-      <Link to="/mutasi" className="p-2">
-        <HiOutlineNewspaper className={iconStyle} id="mutasi-icon-sidebar" />
-      </Link>,
-    ),
-    getItem(
-      "Penugasan",
-      "penugasan",
-      <Link to="/penugasan" className="p-2">
-        <MdOutlineAssignment
-          className={iconStyle}
-          id="penugasan-icon-sidebar"
-        />
-      </Link>,
-    ),
-    getItem(
-      "Reward & Punishment",
-      "reward",
-      <Link to="/reward-and-punishment" className="p-2">
-        <PiTipJar className={iconStyle} id="reward-icon-sidebar" />
-      </Link>,
-    ),
+    !isDirektur &&
+      getItem(
+        "Rekrutmen",
+        "rekrutmen",
+        <Link to="/rekrutmen" className="p-2">
+          <BsPersonVcard className={iconStyle} id="rekrutmen-icon-sidebar" />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Absensi",
+        "absensi",
+        <Link to="/absensi" className="p-2">
+          <MdOutlinePeopleAlt className={iconStyle} id="absensi-icon-sidebar" />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Cuti",
+        "cuti",
+        <Link to="/cuti" className="p-2">
+          <AiOutlineSchedule className={iconStyle} id="cuti-icon-sidebar" />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Mutasi",
+        "mutasi",
+        <Link to="/mutasi" className="p-2">
+          <HiOutlineNewspaper className={iconStyle} id="mutasi-icon-sidebar" />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Penugasan",
+        "penugasan",
+        <Link to="/penugasan" className="p-2">
+          <MdOutlineAssignment
+            className={iconStyle}
+            id="penugasan-icon-sidebar"
+          />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Reward & Punishment",
+        "reward",
+        <Link to="/reward-and-punishment" className="p-2">
+          <PiTipJar className={iconStyle} id="reward-icon-sidebar" />
+        </Link>,
+      ),
+    isDirektur &&
+      getItem(
+        "PHK",
+        "phk",
+        <Link to="/pemutusan-hubungan-kerja" className="p-2">
+          <FaUserTimes className={iconStyle} id="phk-icon-sidebar" />
+        </Link>,
+      ),
     getItem(
       "Profile",
       "profil",
@@ -124,6 +145,7 @@ export default function Sidebar() {
         <CgProfile className={iconStyle} id="reward-icon-sidebar" />
       </Link>,
     ),
+
     {
       type: "divider",
       className: `absolute bottom-20 w-16 border-t-2 border-gray-200 transition-all duration-500 ease-out ${

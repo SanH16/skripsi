@@ -1,9 +1,9 @@
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { TablePHK } from "./components/TablePHK";
 
 export default function PemutusanHubunganKerja() {
-  useDocumentTitle("Halaman PHK");
-  useScrollToTop();
-
-  return <div>PemutusanHubunganKerja</div>;
+  return (
+    <section className="py-5">
+      <TablePHK />
+    </section>
+  );
 }

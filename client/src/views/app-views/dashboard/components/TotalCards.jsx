@@ -2,7 +2,7 @@ import { Row, Col, Card, Skeleton, Flex } from "antd";
 import { useEffect, useState } from "react";
 
 import { APIrekrutmen } from "@/apis/APIrekrutmen";
-import { FaTasks, FaUserSecret } from "react-icons/fa";
+import { FaTasks, FaUserSecret, FaUserTimes } from "react-icons/fa";
 import { FaPeopleLine, FaPersonWalkingLuggage } from "react-icons/fa6";
 import { MdPeople, MdOutlinePersonPin } from "react-icons/md";
 import { TbFaceId } from "react-icons/tb";
@@ -18,10 +18,11 @@ import { APIabsensi } from "@/apis/APIabsensi";
 import { APIlamaran } from "@/apis/APIlamaran";
 import { APIpenugasan } from "@/apis/APIpenugasan";
 import { APIreward } from "@/apis/APIreward";
+import { APIphk } from "../../../../apis/APIphk";
 
 export function TotalCards() {
   const userState = useSelector(selectGetUserLogin);
-  const verifRole = userState?.data?.role === "admin";
+  const role = userState?.data?.role;
   const [data, setData] = useState({
     totalRekrutmen: 0,
     totalMutasi: 0,
@@ -31,6 +32,7 @@ export function TotalCards() {
     totalPelamar: 0,
     totalPenugasan: 0,
     totalReward: 0,
+    totalPhk: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -50,6 +52,7 @@ export function TotalCards() {
         pelamarTotal,
         penugasanTotal,
         rewardTotal,
+        phkTotal,
       ] = await Promise.allSettled([
         APIrekrutmen.getAllRekrutmens(),
         APIcuti.getAllCuti(),
@@ -59,6 +62,7 @@ export function TotalCards() {
         APIlamaran.getDataLamaran(),
         APIpenugasan.getAllPenugasan(),
         APIreward.getAllReward(),
+        APIphk.getDataPHK(),
       ]);
 
       setData((prevData) => ({
@@ -83,6 +87,7 @@ export function TotalCards() {
             : 0,
         totalReward:
           rewardTotal.status === "fulfilled" ? rewardTotal.value.length : 0,
+        totalPhk: phkTotal.status === "fulfilled" ? phkTotal.value.length : 0,
       }));
     } catch (error) {
       console.error(error);
@@ -148,71 +153,81 @@ export function TotalCards() {
       available: data.totalReward > 0,
       link: "/reward-and-punishment",
     },
+    {
+      title: "Data PHK",
+      total: data.totalPhk,
+      icon: <FaUserTimes />,
+      available: data.totalPhk > 0,
+      link: "/pemutusan-hubungan-kerja",
+    },
   ];
 
   return (
     <>
       <Row gutter={[16, 16]}>
-        {cardData.map(
-          (item, i) =>
-            (verifRole || item.title !== "Total Pelamar Kerja") && (
-              <Col key={i} span={6} xs={24} md={12} lg={12} xl={6}>
-                <a href={item.link}>
-                  <Card hoverable className="hover:shadow-lg">
-                    <div className="grid h-32 content-between">
-                      <Flex justify="space-between" align="flex-start">
-                        <div>
-                          <p
-                            id="total-card-title"
-                            className="me-0 font-medium lg:me-3"
-                          >
-                            {item.title}
-                          </p>
-                          <Skeleton
-                            loading={isLoading}
-                            active
-                            title={false}
-                            paragraph={{ rows: 1 }}
-                          >
-                            <h4 id="total-item" className="font-bold">
-                              {item.total}
-                            </h4>
-                          </Skeleton>
-                        </div>
-                        <div className="grid h-16 w-16 place-content-center rounded-lg bg-green-50">
-                          <i
-                            id="item-icon"
-                            className="text-[40px] text-green-400 duration-100 hover:text-[50px]"
-                            alt="item-icon"
-                          >
-                            {item.icon}
-                          </i>
-                        </div>
-                      </Flex>
-                      <Skeleton
-                        loading={isLoading}
-                        active
-                        title={false}
-                        paragraph={{ rows: 1 }}
-                      >
-                        <h6 id="total-card-percent" className="text-grey-200">
-                          Data
-                          <span
-                            className={`ms-2 place-content-center rounded px-2 font-semibold ${
-                              item.available
-                                ? "bg-green-50 text-positive"
-                                : "bg-grey-50 text-negative"
-                            }`}
-                          >
-                            {item.available ? "Tersedia" : "Belum Tersedia"}
-                          </span>
-                        </h6>
-                      </Skeleton>
-                    </div>
-                  </Card>
-                </a>
-              </Col>
-            ),
+        {cardData.map((item, i) =>
+          (role === "admin" && item.title !== "Data PHK") ||
+          (role === "user" &&
+            item.title !== "Data PHK" &&
+            item.title !== "Total Pelamar Kerja") ||
+          (role === "direktur" && item.title === "Data PHK") ? (
+            <Col key={i} span={6} xs={24} md={12} lg={12} xl={6}>
+              <a href={item.link}>
+                <Card hoverable className="hover:shadow-lg">
+                  <div className="grid h-32 content-between">
+                    <Flex justify="space-between" align="flex-start">
+                      <div>
+                        <p
+                          id="total-card-title"
+                          className="me-0 font-medium lg:me-3"
+                        >
+                          {item.title}
+                        </p>
+                        <Skeleton
+                          loading={isLoading}
+                          active
+                          title={false}
+                          paragraph={{ rows: 1 }}
+                        >
+                          <h4 id="total-item" className="font-bold">
+                            {item.total}
+                          </h4>
+                        </Skeleton>
+                      </div>
+                      <div className="grid h-16 w-16 place-content-center rounded-lg bg-green-50">
+                        <i
+                          id="item-icon"
+                          className="text-[40px] text-green-400 duration-100 hover:text-[50px]"
+                          alt="item-icon"
+                        >
+                          {item.icon}
+                        </i>
+                      </div>
+                    </Flex>
+                    <Skeleton
+                      loading={isLoading}
+                      active
+                      title={false}
+                      paragraph={{ rows: 1 }}
+                    >
+                      <h6 id="total-card-percent" className="text-grey-200">
+                        Data
+                        <span
+                          className={`ms-2 place-content-center rounded px-2 font-semibold ${
+                            item.available
+                              ? "bg-green-50 text-positive"
+                              : "bg-grey-50 text-negative"
+                          }`}
+                        >
+                          {item.available ? "Tersedia" : "Belum Tersedia"}
+                        </span>
+                      </h6>
+                    </Skeleton>
+                  </div>
+                </Card>
+              </a>
+            </Col>
+          ) : null,
         )}
       </Row>
     </>

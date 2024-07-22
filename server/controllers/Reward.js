@@ -6,7 +6,7 @@ import Pegawai from "../models/PegawaiModel.js";
 export const getDataReward = async (req, res) => {
   try {
     let response;
-    const rewardAttributes = ["uuid", "bonus_reward", "total_pendapatan", "nama_pegawai"];
+    const rewardAttributes = ["uuid", "bonus_reward", "total_pendapatan", "nama_pegawai", "createdAt"];
     const userAttributes = ["name", "email", "role"];
     const pegawaiAttributes = ["gaji_pegawai"];
 
