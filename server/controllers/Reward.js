@@ -1,7 +1,7 @@
 import Reward from "../models/RewardModel.js";
 import User from "../models/UserModel.js";
 import Pegawai from "../models/PegawaiModel.js";
-// import { Op } from "sequelize";
+import { Op } from "sequelize";
 
 export const getDataReward = async (req, res) => {
   try {
@@ -42,6 +42,49 @@ export const getDataReward = async (req, res) => {
                 attributes: pegawaiAttributes,
               },
             ],
+          },
+        ],
+      });
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+export const getRewardById = async (req, res) => {
+  try {
+    const reward = await Reward.findOne({
+      where: {
+        uuid: req.params.id,
+      },
+    });
+    if (!reward) return res.status(404).json({ msg: "Data tidak ditemukan" });
+
+    let response;
+    if (req.role === "admin") {
+      response = await Reward.findOne({
+        attributes: ["uuid", "nama_pegawai", "bonus_reward", "total_pendapatan", "createdAt"],
+        where: {
+          id: reward.id,
+        },
+        include: [
+          {
+            model: User,
+            attributes: ["name", "email", "role"],
+          },
+        ],
+      });
+    } else {
+      response = await Reward.findOne({
+        attributes: ["uuid", "nama_pegawai", "bonus_reward", "total_pendapatan", "createdAt"],
+        where: {
+          [Op.and]: [{ id: reward.id }, { nama_pegawai: req.userName }],
+        },
+        include: [
+          {
+            model: User,
+            attributes: ["name", "email"],
           },
         ],
       });

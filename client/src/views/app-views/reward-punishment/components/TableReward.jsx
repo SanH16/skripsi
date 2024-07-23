@@ -2,7 +2,16 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 import { useState } from "react";
-import { Card, Table, ConfigProvider, Button, Flex, Space, Modal } from "antd";
+import {
+  Card,
+  Table,
+  ConfigProvider,
+  Button,
+  Flex,
+  Space,
+  Modal,
+  Drawer,
+} from "antd";
 
 import { MdOutlineFileUpload } from "react-icons/md";
 
@@ -18,6 +27,7 @@ import { ColumnReward } from "../constant/column-reward";
 import { APIreward } from "@/apis/APIreward";
 import { CardTable } from "@/components/shared-components/CardTable";
 import AddReward from "../misc/AddReward";
+import PDFreward from "../misc/PDFreward";
 
 export function TableReward() {
   useDocumentTitle("Halaman Reward");
@@ -29,6 +39,9 @@ export function TableReward() {
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+  const [selectedReward, setSelectedReward] = useState(null);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const searchQuery = useDebounce(searchValue, 800);
@@ -38,12 +51,22 @@ export function TableReward() {
     setIsShowDelete((prev) => !prev);
   };
 
+  const handleRowClick = (record) => {
+    setSelectedReward(record); // Set data cuti terpilih
+    setIsDrawerVisible(true); // Buka Drawer
+  };
+
   const handleOpenModal = () => {
     setIsModalVisible(true);
   };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerVisible(false);
+    setSelectedReward(null);
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -130,6 +153,11 @@ export function TableReward() {
             loading={isLoading}
             columns={ColumnReward(handleOpenModalDelete)}
             dataSource={dataReward}
+            onRow={(record) => ({
+              onClick: () => {
+                handleRowClick(record);
+              },
+            })}
             scroll={{ x: true }}
             style={{ maxWidth: "100%" }}
             pagination={{
@@ -164,6 +192,16 @@ export function TableReward() {
           refetchDelete={refetch}
         />
       )}
+
+      <Drawer
+        title="Bonus Reward Pegawai"
+        placement="right"
+        size="large"
+        onClose={handleCloseDrawer}
+        open={isDrawerVisible}
+      >
+        {selectedReward && <PDFreward rewardData={selectedReward} />}
+      </Drawer>
 
       <Modal
         title="Tambah Reward"
