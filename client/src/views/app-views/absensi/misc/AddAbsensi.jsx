@@ -1,7 +1,7 @@
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import "react-quill/dist/quill.snow.css";
 import * as yup from "yup";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Flex, Col, Row, Button, Space, Select, DatePicker } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,14 +10,15 @@ import { ModalConfirm } from "@/components/shared-components/ModalConfirm";
 import { ModalCancel } from "@/components/shared-components/ModalCancel";
 
 import imagePrev from "@/assets/content-pages.png";
+import Webcam from "react-webcam";
 
 import {
   showErrorToast,
   showSuccessToast,
 } from "@/components/shared-components/Toast";
 import { APIabsensi } from "@/apis/APIabsensi";
-import { IoImageOutline } from "react-icons/io5";
-import { MdOutlineFileUpload } from "react-icons/md";
+// import { IoImageOutline } from "react-icons/io5";
+// import { MdOutlineFileUpload } from "react-icons/md";
 
 import dayjs from "dayjs";
 import "dayjs/locale/id";
@@ -32,6 +33,7 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
   const [jamKeluarDisabled, setJamKeluarDisabled] = useState(true);
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [capturedImage, setCapturedImage] = useState(null); // state captured image
   const MAX_IMAGE_SIZE = 1000000;
   const ALLOWED_IMAGE_TYPE = ["image/jpeg", "image/png"];
 
@@ -84,6 +86,7 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
   const onSubmitArticle = (data) => {
     const newData = {
       ...data,
+      bukti_photo: capturedImage,
     };
     setInputData(newData);
     handleOpenModalConfirm();
@@ -111,7 +114,7 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
 
     // Jam Masuk
     if (timeStart && timeEnd) {
-      // 6.05 sampai 8.10 bisa absen masuk
+      // 6 sampai 8 bisa absen masuk
       setJamMasukDisabled(false);
     } else {
       setJamMasukDisabled(true);
@@ -139,6 +142,46 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
       handleTimeDisable();
     }
     setValue("status", value);
+  };
+
+  // Webcam setup
+  const webcamRef = useRef(null);
+
+  const captureImage = useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    if (imageSrc) {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      img.src = imageSrc;
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "white";
+        ctx.fillText(getCurrentDateTime(), 10, canvas.height - 10);
+        canvas.toBlob((blob) => {
+          const file = new File([blob], "capturedImage.jpg", {
+            type: "image/jpeg",
+          });
+          setCapturedImage(file);
+          setImagePreview(URL.createObjectURL(blob));
+          setValue("bukti_photo", file);
+          clearErrors("bukti_photo");
+        }, "image/jpeg");
+      };
+    }
+  }, [setValue, clearErrors]);
+
+  const handleRefreshImage = () => {
+    setImagePreview(null);
+    setCapturedImage(null);
+    setValue("bukti_photo", null);
+  };
+
+  const getCurrentDateTime = () => {
+    return dayjs().format("DD/MM/YYYY HH:mm:ss");
   };
 
   return (
@@ -312,33 +355,38 @@ export default function AddAbsensi({ onClose, refetchAbsensi }) {
                         className="rounded-lg lg:h-[260px] lg:w-[360px]"
                       />
                     ) : (
-                      <div className="mx-auto flex flex-col items-center justify-center gap-4 pb-6 pt-5">
-                        <IoImageOutline size={100} color="#989898" />
-                        <div className="flex flex-col gap-1">
-                          <div className="mx-auto flex gap-2 text-green-500">
-                            <MdOutlineFileUpload size={20} />
-                            <p className="text-sm font-bold">Pilih Gambar</p>
-                          </div>
-                          <p className="text-xs text-grey-200">
-                            Format File: JPG dan PNG
-                          </p>
+                      <div className="relative lg:h-[260px] lg:w-[360px]">
+                        <Webcam
+                          audio={false}
+                          ref={webcamRef}
+                          mirrored={true}
+                          screenshotFormat="image/jpeg"
+                          className="h-full w-full rounded-lg"
+                        />
+                        <div className="rounded-0 absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-left text-white">
+                          <p>{getCurrentDateTime()}</p>
                         </div>
                       </div>
                     )}
-                    <input
-                      id="bukti_photo"
-                      {...register("bukti_photo")}
-                      type="file"
-                      className="hidden"
-                      accept=".jpg,.jpeg,.png"
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        setImagePreview(URL.createObjectURL(file));
-                        setValue("bukti_photo", file);
-                        clearErrors("bukti_photo");
-                      }}
-                    />
                   </label>
+                  <div className="mx-auto flex">
+                    <Button
+                      type="primary"
+                      onClick={captureImage}
+                      className="mt-2"
+                    >
+                      Capture Photo
+                    </Button>
+                    {imagePreview && (
+                      <Button
+                        type="default"
+                        onClick={handleRefreshImage}
+                        className="mx-2 mt-2"
+                      >
+                        Refresh
+                      </Button>
+                    )}
+                  </div>
                   <div className="flex flex-col pt-2">
                     <p className="text-sm text-grey-200">
                       Maksimum ukuran file: 1MB
