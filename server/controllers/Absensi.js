@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 import Absensi from "../models/AbsensiModel.js";
 import User from "../models/UserModel.js";
 import Pegawai from "../models/PegawaiModel.js";
@@ -186,6 +187,15 @@ export const deleteAbsensi = async (req, res) => {
         },
       });
     }
+
+    // Delete bukti_photo dari images folder
+    const photoPath = path.join("images", absensi.bukti_photo);
+    fs.unlink(photoPath, (err) => {
+      if (err) {
+        console.error("Failed to delete photo:", err);
+      }
+    });
+
     // kirim response
     res.status(200).json({ msg: "Absensi deleted successfuly" });
   } catch (error) {

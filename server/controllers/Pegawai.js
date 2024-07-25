@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 import Cuti from "../models/CutiModel.js";
 import Pegawai from "../models/PegawaiModel.js";
 import User from "../models/UserModel.js";
@@ -294,6 +295,14 @@ export const deletePegawai = async (req, res) => {
         },
       });
     }
+
+    // Delete photo dari images folder
+    const photoPath = path.join("images", pegawai.photo);
+    fs.unlink(photoPath, (err) => {
+      if (err) {
+        console.error("Failed to delete photo:", err);
+      }
+    });
     // kirim response
     res.status(200).json({ msg: "Pegawai deleted successfuly" });
   } catch (error) {
