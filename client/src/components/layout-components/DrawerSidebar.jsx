@@ -9,11 +9,18 @@ import { PiTipJar } from "react-icons/pi";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineAssignment, MdOutlinePeopleAlt } from "react-icons/md";
 
-import logoTopbar from "@/assets/react.svg";
+import logoTopbar from "@/assets/logo-radenmat-poppins.png";
 import { IoIosLogOut } from "react-icons/io";
 import { LogoutModal } from "@/components/layout-components/LogoutModal";
+import { FaUserTimes } from "react-icons/fa";
+
+import { useSelector } from "react-redux";
+import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 
 export default function DrawerSidebar() {
+  const userState = useSelector(selectGetUserLogin);
+  const isDirektur = userState?.data?.role === "direktur";
+
   const [isOpen, setIsOpen] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const location = useLocation();
@@ -57,51 +64,65 @@ export default function DrawerSidebar() {
         <TfiDashboard className={iconStyle} id="dashboard-icon-sidebar" />
       </Link>,
     ),
-    getItem(
-      "Rekrutmen",
-      "rekrut",
-      <Link to="/rekrutmen" className="p-2">
-        <BsPersonVcard className={iconStyle} id="rekrutmen-icon-sidebar" />
-      </Link>,
-    ),
-    getItem(
-      "Absensi",
-      "janji",
-      <Link to="/janji-temu" className="p-2">
-        <MdOutlinePeopleAlt className={iconStyle} id="absensi-icon-sidebar" />
-      </Link>,
-    ),
-    getItem(
-      "Cuti",
-      "jadwal",
-      <Link to="/jadwal-saya" className="p-2">
-        <AiOutlineSchedule className={iconStyle} id="cuti-icon-sidebar" />
-      </Link>,
-    ),
-    getItem(
-      "Mutasi",
-      "artikel",
-      <Link to="/artikel-saya" className="p-2">
-        <HiOutlineNewspaper className={iconStyle} id="mutasi-icon-sidebar" />
-      </Link>,
-    ),
-    getItem(
-      "Penugasan",
-      "forum",
-      <Link to="/forum" className="p-2">
-        <MdOutlineAssignment
-          className={iconStyle}
-          id="penugasan-icon-sidebar"
-        />
-      </Link>,
-    ),
-    getItem(
-      "Reward & Punishment",
-      "profil",
-      <Link to="/reward" className="p-2">
-        <PiTipJar className={iconStyle} id="reward-icon-sidebar" />
-      </Link>,
-    ),
+    !isDirektur &&
+      getItem(
+        "Rekrutmen",
+        "rekrutmen",
+        <Link to="/rekrutmen" className="p-2">
+          <BsPersonVcard className={iconStyle} id="rekrutmen-icon-sidebar" />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Absensi",
+        "absensi",
+        <Link to="/absensi" className="p-2">
+          <MdOutlinePeopleAlt className={iconStyle} id="absensi-icon-sidebar" />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Cuti",
+        "cuti",
+        <Link to="/cuti" className="p-2">
+          <AiOutlineSchedule className={iconStyle} id="cuti-icon-sidebar" />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Mutasi",
+        "mutasi",
+        <Link to="/mutasi" className="p-2">
+          <HiOutlineNewspaper className={iconStyle} id="mutasi-icon-sidebar" />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Penugasan",
+        "penugasan",
+        <Link to="/penugasan" className="p-2">
+          <MdOutlineAssignment
+            className={iconStyle}
+            id="penugasan-icon-sidebar"
+          />
+        </Link>,
+      ),
+    !isDirektur &&
+      getItem(
+        "Reward & Punishment",
+        "reward",
+        <Link to="/reward-and-punishment" className="p-2">
+          <PiTipJar className={iconStyle} id="reward-icon-sidebar" />
+        </Link>,
+      ),
+    isDirektur &&
+      getItem(
+        "PHK",
+        "phk",
+        <Link to="/pemutusan-hubungan-kerja" className="p-2">
+          <FaUserTimes className={iconStyle} id="phk-icon-sidebar" />
+        </Link>,
+      ),
     getItem(
       "Profile",
       "profil",
@@ -160,7 +181,7 @@ function DrawerTitle() {
           id="logo-reprohealth-drawer"
           src={logoTopbar}
           alt="logo"
-          className="h-[25px] w-28 cursor-pointer sm:block md:w-40"
+          className="h-auto w-28 cursor-pointer sm:block md:w-40"
         />
       </Link>
     </div>
