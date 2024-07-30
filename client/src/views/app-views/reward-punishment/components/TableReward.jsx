@@ -2,24 +2,10 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 import { useState } from "react";
-import {
-  Card,
-  Table,
-  ConfigProvider,
-  Button,
-  Flex,
-  Space,
-  Modal,
-  Drawer,
-} from "antd";
-
-import { MdOutlineFileUpload } from "react-icons/md";
+import { Card, Table, ConfigProvider, Modal, Drawer } from "antd";
 
 import { useQuery } from "@tanstack/react-query";
 import { ModalDeleteReward } from "@/components/shared-components/ModalDeleteReward";
-
-import { useSelector } from "react-redux";
-import { selectGetUserLogin } from "@/store/auth-get-user-slice";
 
 import { useDebounce } from "@/hooks/useDebounce";
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
@@ -29,12 +15,9 @@ import { CardTable } from "@/components/shared-components/CardTable";
 import AddReward from "../misc/AddReward";
 import PDFreward from "../misc/PDFreward";
 
-export function TableReward() {
+export function TableReward({ handleCloseModal, isModalVisible }) {
   useDocumentTitle("Halaman Reward");
   useScrollToTop();
-
-  const userState = useSelector(selectGetUserLogin);
-  const verifRole = userState?.data?.role === "admin";
 
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -42,7 +25,6 @@ export function TableReward() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedReward, setSelectedReward] = useState(null);
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const searchQuery = useDebounce(searchValue, 800);
 
@@ -52,16 +34,8 @@ export function TableReward() {
   };
 
   const handleRowClick = (record) => {
-    setSelectedReward(record); // Set data cuti terpilih
+    setSelectedReward(record); // Set data reward terpilih
     setIsDrawerVisible(true); // Buka Drawer
-  };
-
-  const handleOpenModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
   };
 
   const handleCloseDrawer = () => {
@@ -93,26 +67,6 @@ export function TableReward() {
 
   return (
     <>
-      <Flex justify="space-between" className="mb-6">
-        <Space size="middle">
-          <h3 className="mb-3 font-bold">Reward Pegawai</h3>
-        </Space>
-
-        {verifRole ? (
-          <Space size="middle">
-            <Button
-              id="buat-reward"
-              className="flex border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
-              onClick={handleOpenModal}
-            >
-              <span className="me-2 text-lg">
-                <MdOutlineFileUpload />
-              </span>
-              Tambah Reward
-            </Button>
-          </Space>
-        ) : null}
-      </Flex>
       <CardTable data={dataReward} titleCard={"Reward hari ini"} />
       <Card hoverable>
         <FilterSearchTable
