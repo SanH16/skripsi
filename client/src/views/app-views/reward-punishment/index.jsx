@@ -7,6 +7,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { useSelector } from "react-redux";
 
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
+import { TablePunishment } from "./components/TablePunishment";
 
 export default function RewardAndPunishment() {
   const userState = useSelector(selectGetUserLogin);
@@ -83,7 +84,10 @@ export default function RewardAndPunishment() {
         )}
       </Row>
       {showTable ? (
-        <div>Table Punishment.. (on progress)</div>
+        <TablePunishment
+          handleCloseModal={handleCloseModal}
+          isModalVisible={isModalVisible}
+        />
       ) : (
         <TableReward
           handleCloseModal={handleCloseModal}

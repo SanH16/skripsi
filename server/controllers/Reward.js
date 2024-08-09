@@ -72,6 +72,12 @@ export const getRewardById = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email", "role"],
+            include: [
+              {
+                model: Pegawai,
+                attributes: ["gaji_pegawai"],
+              },
+            ],
           },
         ],
       });
@@ -85,6 +91,12 @@ export const getRewardById = async (req, res) => {
           {
             model: User,
             attributes: ["name", "email"],
+            include: [
+              {
+                model: Pegawai,
+                attributes: ["gaji_pegawai"],
+              },
+            ],
           },
         ],
       });
