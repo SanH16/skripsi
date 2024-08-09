@@ -34,3 +34,29 @@ export const getDataPromosi = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
+export const deletePromosi = async (req, res) => {
+  try {
+    const promosi = await Promosi.findOne({
+      where: {
+        uuid: req.params.id,
+      },
+    });
+
+    if (!promosi) return res.status(404).json({ msg: "Data tidak ditemukan" });
+
+    if (req.role === "admin") {
+      await Promosi.destroy({
+        where: {
+          id: promosi.id,
+        },
+      });
+    } else {
+      return res.status(403).json({ msg: "Akses terlarang" });
+    }
+    // kirim response
+    res.status(200).json({ msg: "Promosi deleted successfuly" });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};

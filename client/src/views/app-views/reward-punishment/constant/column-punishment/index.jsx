@@ -2,17 +2,13 @@
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import { Button, Tag, Tooltip } from "antd";
-// import { Link } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 import { selectGetUserLogin } from "@/store/auth-get-user-slice";
-import { thousandSeparator } from "@/utils/ThousandSeparator";
-
-// import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDeleteSweep } from "react-icons/md";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
-export const ColumnReward = (handleOpenModalDelete) => {
+export const ColumnPunishment = (handleOpenModalDelete) => {
   const userState = useSelector(selectGetUserLogin);
   const verifRole = userState?.data?.role === "admin";
 
@@ -32,36 +28,12 @@ export const ColumnReward = (handleOpenModalDelete) => {
       sorter: (a, b) => a.nama_pegawai.localeCompare(b.nama_pegawai),
     },
     {
-      title: "Gaji Pokok Pegawai",
-      dataIndex: ["user", "pegawai", "gaji_pegawai"],
-      key: "gaji_pegawai",
-      width: 250,
-      render: (values) => (
-        <span>
-          {thousandSeparator(values)} {values < 1000000 ? "rb" : "jt"}
-        </span>
-      ),
-    },
-    {
-      title: "Bonus Imbalan",
-      dataIndex: "bonus_reward",
-      key: "bonus_reward",
+      title: "Keterangan Sanksi",
+      dataIndex: "keterangan_sanksi",
+      key: "keterangan_sanksi",
       width: 200,
       render: (values) => (
-        <Tag className="bg-green-100 font-bold text-green-600">
-          {thousandSeparator(values)} {values < 1000000 ? "rb" : "jt"}
-        </Tag>
-      ),
-    },
-    {
-      title: "Total Pendapatan",
-      dataIndex: "total_pendapatan",
-      key: "total_pendapatan",
-      width: 150,
-      render: (values) => (
-        <span>
-          {thousandSeparator(values)} {values < 1000000 ? "rb" : "jt"}
-        </span>
+        <Tag className="bg-red-100 font-bold text-red-600">{values}</Tag>
       ),
     },
     {
@@ -83,7 +55,6 @@ export const ColumnReward = (handleOpenModalDelete) => {
           <>
             {verifRole ? (
               <>
-                {/* <Link to={`/update-mutasi/${record.uuid}`}> */}
                 {/* <Button
                   type="primary"
                   className="me-2 h-[30px] w-[32px] p-0"
@@ -91,7 +62,6 @@ export const ColumnReward = (handleOpenModalDelete) => {
                 >
                   <FaRegEdit className="p-[2px] text-[20px]" />
                 </Button> */}
-                {/* </Link> */}
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
