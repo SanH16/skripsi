@@ -2,113 +2,59 @@ import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 import { useState } from "react";
-import { Card, Table, ConfigProvider, Drawer, Modal } from "antd";
+import { Card, Table, ConfigProvider, Modal, Drawer } from "antd";
 
 import { useQuery } from "@tanstack/react-query";
-import { APImutasi } from "@/apis/APImutasi";
-import { ColumnMutasi } from "../constant/column-mutasi";
-import { ModalDeleteMutasi } from "@/components/shared-components/ModalDeleteMutasi";
+import { ModalDeletePunishment } from "@/components/shared-components/ModalDeletePunishment";
 
 import { useDebounce } from "@/hooks/useDebounce";
 import { FilterSearchTable } from "@/components/shared-components/FilterSearchTable";
 import { CardTable } from "@/components/shared-components/CardTable";
+import { APIpromosi } from "@/apis/APIpromosi";
+import { ColumnPromosi } from "../constant/column-promosi";
+import PDFpromosi from "../misc/PDFpromosi";
 
-import PDFmutasi from "../misc/PDFmutasi";
-import AddMutasi from "../misc/AddMutasi";
-
-import jsPDF from "jspdf";
-import "jspdf-autotable";
-import dayjs from "dayjs";
-import "dayjs/locale/id";
-
-export function TableMutasi({ handleCloseModal, isModalVisible }) {
-  useDocumentTitle("Halaman Mutasi");
+export function TablePromosi({ handleCloseModal, isModalVisible }) {
+  useDocumentTitle("Halaman Promosi");
   useScrollToTop();
 
   const [isShowDelete, setIsShowDelete] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-  const [selectedMutasi, setSelectedMutasi] = useState(null);
+  const [selectedPromosi, setSelectedPromosi] = useState(null);
 
   const [searchValue, setSearchValue] = useState("");
   const searchQuery = useDebounce(searchValue, 800);
-
-  const handleRowClick = (record) => {
-    setSelectedMutasi(record); // Set data cuti terpilih
-    setIsDrawerVisible(true); // Buka Drawer
-  };
-
-  const handleCloseDrawer = () => {
-    setIsDrawerVisible(false);
-    setSelectedMutasi(null);
-  };
 
   const handleOpenModalDelete = (user) => {
     setUserToDelete(user);
     setIsShowDelete((prev) => !prev);
   };
-  const todayDate = dayjs().format("dddd,DD-MM-YYYY");
 
-  const handleDownloadPdf = () => {
-    const columns = [
-      { header: "ID", dataKey: "uuid" },
-      { header: "Nama Pegawai", dataKey: "name" },
-      { header: "Keterangan Mutasi", dataKey: "keterangan_mutasi" },
-      { header: "Cabang Sebelum", dataKey: "cabang_sebelum" },
-      { header: "Cabang Tujuan", dataKey: "cabang_tujuan" },
-      { header: "Tanggal Mulai", dataKey: "tanggal_mulai" },
-      { header: "Tanggal Dibuat", dataKey: "createdAt" },
-    ];
+  const handleRowClick = (record) => {
+    setSelectedPromosi(record); // Set data reward terpilih
+    setIsDrawerVisible(true); // Buka Drawer
+  };
 
-    const formattedData = dataMutasi.map((row) => ({
-      uuid: row.uuid.slice(0, 5),
-      name: row.user.name,
-      keterangan_mutasi: row.keterangan_mutasi,
-      createdAt: dayjs(row.createdAt).format("dddd, DD MMMM YYYY"),
-      cabang_tujuan: row.cabang_tujuan,
-      cabang_sebelum: row.cabang_sebelum,
-      tanggal_mulai: dayjs(row.tanggal_mulai).format("dddd, DD MMMM YYYY"),
-    }));
-
-    const doc = new jsPDF();
-    doc.text("Data Rekap Mutasi", 10, 10);
-    doc.autoTable({
-      theme: "grid",
-      head: [columns.map((col) => col.header)],
-      body: formattedData.map((row) => columns.map((col) => row[col.dataKey])),
-      columnStyles: {
-        0: { cellWidth: 10 }, // ID
-        1: { cellWidth: 30 }, // Nama Pegawai
-        2: { cellWidth: 40 }, // Keterangan Mutasi
-        3: { cellWidth: 30 }, // Cabang Sebelum
-        4: { cellWidth: 30 }, // Cabang Tujuan
-        5: { cellWidth: 30 }, // Tanggal Mulai
-        6: { cellWidth: 30 }, // Tanggal Dibuat
-      },
-      margin: { right: 5, left: 5 },
-      styles: { overflow: "linebreak" },
-    });
-    doc.save(`Mutasi_Radenmat-${todayDate}.pdf`);
+  const handleCloseDrawer = () => {
+    setIsDrawerVisible(false);
+    setSelectedPromosi(null);
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["mutasiData", searchQuery],
+    queryKey: ["promosiData", searchQuery],
     queryFn: async () => {
-      const result = await APImutasi.getAllMutasi();
+      const result = await APIpromosi.getDataPromosi();
       // return result;
 
       // Logika filter
       let filteredData = result;
       if (searchQuery) {
         filteredData = result.filter((data) => {
-          const filterBy =
-            data.nama_pegawai
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            data.cabang_tujuan
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase());
+          const filterBy = data.nama_pegawai
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
           return filterBy;
         });
       }
@@ -116,18 +62,17 @@ export function TableMutasi({ handleCloseModal, isModalVisible }) {
       return filteredData;
     },
   });
-  const dataMutasi = data || [];
-  console.log("mutasi query", dataMutasi);
+  const dataPromosi = data || [];
 
   return (
     <>
-      <CardTable data={dataMutasi} titleCard={"Data Mutasi hari ini"} />
+      <CardTable data={dataPromosi} titleCard={"Kenaikan Jabatan hari ini"} />
       <Card hoverable>
         <FilterSearchTable
           setSearchValue={setSearchValue}
-          title="Daftar Mutasi"
-          placeholder="data mutasi (nama/cabang)"
-          handleDownloadPdf={handleDownloadPdf}
+          title="Daftar Promosi"
+          placeholder="data promosi (nama)"
+          //   handleDownloadPdf={handleDownloadPdf}
         />
         <ConfigProvider
           theme={{
@@ -156,22 +101,22 @@ export function TableMutasi({ handleCloseModal, isModalVisible }) {
           }}
         >
           <Table
-            id="mutasi-table-list"
+            id="promosi-table-list"
             rowClassName={"hover:cursor-pointer"}
             loading={isLoading}
+            columns={ColumnPromosi(handleOpenModalDelete)}
+            dataSource={dataPromosi}
             onRow={(record) => ({
               onClick: () => {
                 handleRowClick(record);
               },
             })}
-            columns={ColumnMutasi(handleOpenModalDelete)}
-            dataSource={dataMutasi}
             scroll={{ x: true }}
             style={{ maxWidth: "100%" }}
             pagination={{
               defaultCurrent: 1,
               defaultPageSize: 3,
-              total: dataMutasi.length,
+              total: dataPromosi.length,
               showTotal: (total, range) =>
                 `Menampilkan ${range[0]}-${range[1]} dari ${total} data`,
             }}
@@ -194,7 +139,7 @@ export function TableMutasi({ handleCloseModal, isModalVisible }) {
       </Card>
       {/* drawer & modal */}
       {isShowDelete && (
-        <ModalDeleteMutasi
+        <ModalDeletePunishment
           closeModal={handleOpenModalDelete}
           stateModal={userToDelete}
           refetchDelete={refetch}
@@ -202,23 +147,23 @@ export function TableMutasi({ handleCloseModal, isModalVisible }) {
       )}
 
       <Drawer
-        title="Dokumen Mutasi Pegawai"
+        title="Promosi Pegawai"
         placement="right"
         size="large"
         onClose={handleCloseDrawer}
         open={isDrawerVisible}
       >
-        {selectedMutasi && <PDFmutasi mutasiData={selectedMutasi} />}
+        {selectedPromosi && <PDFpromosi punishmentData={selectedPromosi} />}
       </Drawer>
 
       <Modal
-        title="Tambah Mutasi"
+        title="Tambah Promosi"
         open={isModalVisible}
         onCancel={handleCloseModal}
         footer={null}
         width={900}
       >
-        <AddMutasi onClose={handleCloseModal} refetchMutasi={refetch} />
+        {/* <AddPunishment onClose={handleCloseModal} refetchPunishment={refetch} /> */}
       </Modal>
     </>
   );
